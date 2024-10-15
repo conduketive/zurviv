@@ -97,6 +97,11 @@ export class GameServer {
              * @param socket The socket being opened.
              */
             open(socket: WebSocket<GameSocketData>) {
+                const close = socket.close;
+                socket.close = function () {
+                    throw new Error();
+                    close();
+                };
                 server.manager.onOpen(socket.getUserData().id, socket);
             },
 

@@ -1,27 +1,32 @@
 import { platform } from "os";
 import NanoTimer from "nanotimer";
+import { parentPort } from "worker_threads";
+import { assert } from "../../../shared/utils/util";
 import { Config } from "../config";
 import { Game } from "./game";
 import { type ProcessMsg, ProcessMsgType } from "./gameProcessManager";
 
+assert(parentPort);
+
 let game: Game | undefined;
 
 function sendMsg(msg: ProcessMsg) {
-    process.send!(msg);
+    parentPort!.postMessage!(msg);
 }
 
-process.on("disconnect", () => {
-    process.exit();
-});
+// parentPort.on("disconnect", () => {
+// process.exit();
+// });
 
 const socketMsgs: Array<{
     socketId: string;
-    data: ArrayBuffer;
+    buff: ArrayBuffer;
+    length: number;
 }> = [];
 
 let lastMsgTime = Date.now();
 
-process.on("message", async (msg: ProcessMsg) => {
+parentPort.on("message", async (msg: ProcessMsg) => {
     if (msg.type) {
         lastMsgTime = Date.now();
     }
@@ -30,10 +35,11 @@ process.on("message", async (msg: ProcessMsg) => {
         game = new Game(
             msg.id,
             msg.config,
-            (id, data) => {
+            (id, buff, length) => {
                 socketMsgs.push({
                     socketId: id,
-                    data,
+                    buff,
+                    length,
                 });
             },
             (id) => {
@@ -63,7 +69,7 @@ process.on("message", async (msg: ProcessMsg) => {
             game.addJoinToken(msg.token, msg.autoFill, msg.playerCount);
             break;
         case ProcessMsgType.SocketMsg:
-            game.handleMsg(msg.msgs[0].data, msg.msgs[0].socketId);
+            game.handleMsg(msg.msgs[0].buff, msg.msgs[0].socketId);
             break;
         case ProcessMsgType.SocketClose:
             game.handleSocketClose(msg.socketId);

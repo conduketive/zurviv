@@ -1,6 +1,6 @@
-import { type ChildProcess, fork } from "child_process";
 import { randomBytes } from "crypto";
 import type { WebSocket } from "uWebSockets.js";
+import { Worker } from "worker_threads";
 import { type MapDef, MapDefs } from "../../../shared/defs/mapDefs";
 import type { TeamMode } from "../../../shared/gameConfig";
 import { Config } from "../config";
@@ -16,10 +16,10 @@ import type {
 let path: string;
 let args: string[];
 if (process.env.NODE_ENV === "production") {
-    path = "dist/server/src/game/gameProcess.js";
+    path = "./dist/server/src/game/gameProcess.js";
     args = ["--enable-source-maps"];
 } else {
-    path = "src/game/gameProcess.ts";
+    path = "./src/game/gameProcess.ts";
     args = [];
 }
 
@@ -68,7 +68,8 @@ export interface SocketMsgsMsg {
     type: ProcessMsgType.SocketMsg;
     msgs: Array<{
         socketId: string;
-        data: ArrayBuffer;
+        buff: ArrayBuffer;
+        length: number;
     }>;
 }
 
@@ -91,7 +92,9 @@ export type ProcessMsg =
     | SocketCloseMsg;
 
 class GameProcess implements GameData {
-    process: ChildProcess;
+    process: Worker;
+
+    killed = false;
 
     canJoin = true;
     teamMode: TeamMode = 1;
@@ -113,8 +116,8 @@ class GameProcess implements GameData {
 
     constructor(manager: GameProcessManager, id: string, config: ServerGameConfig) {
         this.manager = manager;
-        this.process = fork(path, args, {
-            serialization: "advanced",
+        this.process = new Worker(path, {
+            argv: args,
         });
 
         this.process.on("message", (msg: ProcessMsg) => {
@@ -153,7 +156,11 @@ class GameProcess implements GameData {
 
                         if (!socket) continue;
                         if (socket.getUserData().closed) continue;
-                        socket.send(socketMsg.data, true, false);
+                        socket.send(
+                            socketMsg.buff.slice(0, socketMsg.length),
+                            true,
+                            false,
+                        );
                     }
                     break;
                 case ProcessMsgType.SocketClose:
@@ -165,12 +172,19 @@ class GameProcess implements GameData {
             }
         });
 
+        this.process.on("error", () => {
+            this.killed = true;
+        });
+        this.process.on("exit", () => {
+            this.killed = true;
+        });
+
         this.create(id, config);
     }
 
     send(msg: ProcessMsg) {
-        if (this.process.killed || !this.process.channel) return;
-        this.process.send(msg);
+        if (this.killed) return;
+        this.process.postMessage(msg);
     }
 
     create(id: string, config: ServerGameConfig) {
@@ -203,7 +217,8 @@ class GameProcess implements GameData {
             msgs: [
                 {
                     socketId,
-                    data,
+                    buff: data,
+                    length: 0,
                 },
             ],
         });
@@ -231,12 +246,6 @@ export class GameProcessManager implements GameManager {
 
     constructor() {
         this.newGame(Config.modes[0]);
-
-        process.on("beforeExit", () => {
-            for (const gameProc of this.processes) {
-                gameProc.process.kill();
-            }
-        });
 
         setInterval(() => {
             for (const gameProc of this.processes) {
@@ -288,10 +297,7 @@ export class GameProcessManager implements GameManager {
             gameProc.process.on("exit", () => {
                 this.killProcess(gameProc!);
             });
-            gameProc.process.on("close", () => {
-                this.killProcess(gameProc!);
-            });
-            gameProc.process.on("disconnect", () => {
+            gameProc.process.on("error", (err) => {
                 this.killProcess(gameProc!);
             });
         } else {
@@ -312,13 +318,7 @@ export class GameProcessManager implements GameManager {
             socket.close();
         }
 
-        // send SIGTERM, if still hasn't terminated after 5 seconds, send SIGKILL >:3
-        gameProc.process.kill();
-        setTimeout(() => {
-            if (!gameProc.process.killed) {
-                gameProc.process.kill("SIGKILL");
-            }
-        }, 5000);
+        gameProc.process.terminate();
 
         const idx = this.processes.indexOf(gameProc);
         if (idx !== -1) {

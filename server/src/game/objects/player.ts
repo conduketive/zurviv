@@ -94,7 +94,7 @@ export class PlayerBarn {
             disconnectMsg.reason = "index-invalid-protocol";
             const stream = new net.MsgStream(new ArrayBuffer(128));
             stream.serializeMsg(net.MsgType.Disconnect, disconnectMsg);
-            this.game.sendSocketMsg(socketId, stream.getBuffer());
+            this.game.sendSocketMsg(socketId, stream.arrayBuf, stream.stream.byteIndex);
             setTimeout(() => {
                 this.game.closeSocket(socketId);
             }, 1);
@@ -1586,7 +1586,7 @@ export class Player extends BaseGameObject {
 
     private _firstUpdate = true;
 
-    msgStream = new net.MsgStream(new ArrayBuffer(65536));
+    msgStream = new net.MsgStream(new SharedArrayBuffer(65536));
     sendMsgs(): void {
         const msgStream = this.msgStream;
         const game = this.game;
@@ -1600,7 +1600,10 @@ export class Player extends BaseGameObject {
             joinedMsg.started = game.started;
             joinedMsg.teamMode = game.teamMode;
             joinedMsg.emotes = this.loadout.emotes;
-            this.sendMsg(net.MsgType.Joined, joinedMsg);
+
+            this.msgStream.serializeMsg(net.MsgType.Joined, joinedMsg);
+            this.sendData(msgStream.arrayBuf, msgStream.stream.byteIndex);
+            this.msgStream.stream.byteIndex = 0;
 
             const mapStream = game.map.mapStream.stream;
 
@@ -1825,7 +1828,7 @@ export class Player extends BaseGameObject {
         const globalMsgStream = this.game.msgsToSend.stream;
         msgStream.stream.writeBytes(globalMsgStream, 0, globalMsgStream.byteIndex);
 
-        this.sendData(msgStream.getBuffer());
+        this.sendData(msgStream.arrayBuf, msgStream.stream.byteIndex);
         this._firstUpdate = false;
     }
 
@@ -3724,13 +3727,10 @@ export class Player extends BaseGameObject {
         }
     }
 
-    sendMsg(type: number, msg: net.AbstractMsg, bytes = 128): void {
-        const stream = new net.MsgStream(new ArrayBuffer(bytes));
-        stream.serializeMsg(type, msg);
-        this.sendData(stream.getBuffer());
-    }
+    lockBuff = new Uint32Array(new SharedArrayBuffer(4));
 
-    sendData(buffer: ArrayBuffer | Uint8Array): void {
-        this.game.sendSocketMsg(this.socketId, buffer);
+    sendData(buffer: ArrayBuffer | Uint8Array, length: number): void {
+        Atomics.wait;
+        this.game.sendSocketMsg(this.socketId, buffer, length);
     }
 }

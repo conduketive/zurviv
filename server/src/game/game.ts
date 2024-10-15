@@ -87,7 +87,7 @@ export class Game {
     constructor(
         id: string,
         config: ServerGameConfig,
-        readonly sendSocketMsg: (id: string, data: ArrayBuffer) => void,
+        readonly sendSocketMsg: (id: string, data: ArrayBuffer, length: number) => void,
         readonly closeSocket: (id: string) => void,
         readonly sendData?: (data: UpdateDataMsg) => void,
     ) {

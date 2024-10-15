@@ -15,6 +15,7 @@ import { math } from "../utils/math";
 export var BitView = function BitView(source, byteOffset, byteLength) {
     var isBuffer =
         source instanceof ArrayBuffer ||
+        source instanceof SharedArrayBuffer ||
         (typeof Buffer !== "undefined" && source instanceof Buffer);
 
     if (!isBuffer) {
@@ -318,6 +319,7 @@ function stringToByteArray(str) {
 export var BitStream = function BitStream(source, byteOffset, byteLength) {
     var isBuffer =
         source instanceof ArrayBuffer ||
+        source instanceof SharedArrayBuffer ||
         (typeof Buffer !== "undefined" && source instanceof Buffer);
 
     if (!(source instanceof BitView) && !isBuffer) {

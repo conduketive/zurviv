@@ -211,12 +211,12 @@ export class MsgStream {
     arrayBuf: ArrayBuffer;
 
     constructor(buf: ArrayBuffer | Uint8Array) {
-        const arrayBuf =
-            buf instanceof ArrayBuffer
-                ? buf
-                : buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
+        const isArrayBuf = buf instanceof ArrayBuffer || buf instanceof SharedArrayBuffer;
+        const arrayBuf = isArrayBuf
+            ? buf
+            : buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
 
-        if (!(arrayBuf instanceof ArrayBuffer)) {
+        if (!isArrayBuf) {
             throw new Error(
                 `Invalid buf type ${
                     typeof buf === "undefined" ? "undefined" : typeof buf
