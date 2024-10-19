@@ -1,5 +1,6 @@
-import type { HttpResponse } from "uWebSockets.js";
-
+import { App, type HttpResponse, SSLApp, type TemplatedApp } from "uWebSockets.js";
+import type { WebSocket } from "uWebSockets.js";
+import type { GameSocket, GameSocketData } from "../game/game";
 /**
  * Apply CORS headers to a response.
  * @param res The response sent by the server.
@@ -16,7 +17,11 @@ export function cors(res: HttpResponse): void {
 }
 
 export function forbidden(res: HttpResponse): void {
-    res.writeStatus("403 Forbidden").end("403 Forbidden");
+    res.writeStatus("403").end("403 Forbidden");
+}
+
+export function InternalError(res: HttpResponse): void {
+    res.writeStatus("500").end("500 Internal Server Error");
 }
 
 export function returnJson(res: HttpResponse, data: Record<string, unknown>): void {
@@ -94,4 +99,83 @@ export function checkForBadWords(name: string) {
         if (name.match(regex)) return true;
     }
     return false;
+}
+
+export function createUWSApp(config?: {
+    keyFile: string;
+    certFile: string;
+}): TemplatedApp {
+    return config
+        ? SSLApp({
+              key_file_name: config.keyFile,
+              cert_file_name: config.certFile,
+              passphrase: "123",
+          })
+        : App();
+}
+
+export function setupGamePlayRoute(
+    app: TemplatedApp,
+    route: string,
+    gameExists: (id: string) => boolean,
+    onMessage: (socket: GameSocket, message: ArrayBuffer) => void,
+    onClose: (socket: GameSocket) => void,
+) {
+    app.ws<GameSocketData>(route, {
+        idleTimeout: 30,
+        /**
+         * Upgrade the connection to WebSocket.
+         */
+        upgrade(res, req, context) {
+            res.onAborted((): void => {});
+
+            const searchParams = new URLSearchParams(req.getQuery());
+            const gameId = searchParams.get("gameId");
+
+            if (!gameId || !gameExists(gameId)) {
+                forbidden(res);
+                return;
+            }
+
+            res.upgrade(
+                {
+                    gameId,
+                    closed: false,
+                    playerId: "",
+                },
+                req.getHeader("sec-websocket-key"),
+                req.getHeader("sec-websocket-protocol"),
+                req.getHeader("sec-websocket-extensions"),
+                context,
+            );
+        },
+
+        /**
+         * Handle opening of the socket.
+         * @param socket The socket being opened.
+         */
+        open(socket: WebSocket<GameSocketData>) {
+            if (!gameExists(socket.getUserData().gameId)) {
+                socket.close();
+            }
+        },
+
+        /**
+         * Handle messages coming from the socket.
+         * @param socket The socket in question.
+         * @param message The message to handle.
+         */
+        message(socket: WebSocket<GameSocketData>, message) {
+            onMessage(socket, message);
+        },
+
+        /**
+         * Handle closing of the socket.
+         * @param socket The socket being closed.
+         */
+        close(socket: WebSocket<GameSocketData>) {
+            socket.getUserData().closed = true;
+            onClose(socket);
+        },
+    });
 }

@@ -5,7 +5,7 @@ import { Config } from "../config";
 import { Logger } from "../utils/logger";
 import type { ServerGameConfig } from "./gameManager";
 import { GameModeManager } from "./gameModeManager";
-import { ProcessMsgType, type UpdateDataMsg } from "./gameProcessManager";
+import { ThreadMsgType, type UpdateDataMsg } from "./gameThreadManager";
 import { Grid } from "./grid";
 import { GameMap } from "./map";
 import { AirdropBarn } from "./objects/airdrop";
@@ -17,10 +17,22 @@ import { type GameObject, ObjectRegister } from "./objects/gameObject";
 import { Gas } from "./objects/gas";
 import { LootBarn } from "./objects/loot";
 import { PlaneBarn } from "./objects/plane";
-import { PlayerBarn } from "./objects/player";
+import { type Player, PlayerBarn } from "./objects/player";
 import { ProjectileBarn } from "./objects/projectile";
 import { SmokeBarn } from "./objects/smoke";
 import { PluginManager } from "./pluginManager";
+
+export interface GameSocketData {
+    gameId: string;
+    closed: boolean;
+    player?: Player;
+}
+
+export interface GameSocket {
+    send(message: ArrayBuffer, isBinary?: boolean, compress?: boolean): number;
+    close(): void;
+    getUserData(): GameSocketData;
+}
 
 export type GroupData = {
     hash: string;
@@ -87,8 +99,6 @@ export class Game {
     constructor(
         id: string,
         config: ServerGameConfig,
-        readonly sendSocketMsg: (id: string, data: ArrayBuffer) => void,
-        readonly closeSocket: (id: string) => void,
         readonly sendData?: (data: UpdateDataMsg) => void,
     ) {
         this.id = id;
@@ -250,10 +260,11 @@ export class Game {
         };
     }
 
-    handleMsg(buff: ArrayBuffer | Buffer, socketId: string): void {
+    handleMsg(socket: GameSocket, buff: ArrayBuffer | Buffer): void {
         if (!(buff instanceof ArrayBuffer)) return;
 
-        const player = this.playerBarn.socketIdToPlayer.get(socketId);
+        const data = socket.getUserData();
+        const player = data.player;
 
         let msg: net.AbstractMsg | undefined = undefined;
         let type = net.MsgType.None;
@@ -271,12 +282,12 @@ export class Game {
         if (!msg) return;
 
         if (type === net.MsgType.Join && !player) {
-            this.playerBarn.addPlayer(socketId, msg as net.JoinMsg);
+            this.playerBarn.addPlayer(socket, msg as net.JoinMsg);
             return;
         }
 
         if (!player) {
-            this.closeSocket(socketId);
+            socket.close();
             return;
         }
 
@@ -300,8 +311,8 @@ export class Game {
         }
     }
 
-    handleSocketClose(socketId: string): void {
-        const player = this.playerBarn.socketIdToPlayer.get(socketId);
+    handleSocketClose(socket: GameSocket): void {
+        const player = socket.getUserData().player;
         if (!player) return;
         this.logger.log(`"${player.name}" left`);
         player.disconnected = true;
@@ -339,7 +350,7 @@ export class Game {
 
     updateData() {
         this.sendData?.({
-            type: ProcessMsgType.UpdateData,
+            type: ThreadMsgType.UpdateData,
             id: this.id,
             teamMode: this.teamMode,
             mapName: this.mapName,
@@ -356,7 +367,7 @@ export class Game {
         this.allowJoin = false;
         for (const player of this.playerBarn.players) {
             if (!player.disconnected) {
-                this.closeSocket(player.socketId);
+                player.socket.close();
             }
         }
         this.logger.log("Game Ended");

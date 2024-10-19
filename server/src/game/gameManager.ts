@@ -1,11 +1,11 @@
 import { randomBytes } from "crypto";
 import { platform } from "os";
 import NanoTimer from "nanotimer";
-import type { WebSocket } from "uWebSockets.js";
 import type { MapDefs } from "../../../shared/defs/mapDefs";
 import type { TeamMode } from "../../../shared/gameConfig";
 import { Config } from "../config";
-import type { FindGameBody, GameSocketData } from "../gameServer";
+import type { FindGameBody, GameServer } from "../gameServer";
+import { setupGamePlayRoute } from "../utils/serverHelpers";
 import { Game } from "./game";
 
 export interface ServerGameConfig {
@@ -26,22 +26,15 @@ export interface GameData {
 export interface FindGameResponse {
     gameId: string;
     data: string;
+    route: string;
 }
 
 export abstract class GameManager {
-    abstract sockets: Map<string, WebSocket<GameSocketData>>;
-
     abstract getPlayerCount(): number;
 
     abstract getById(id: string): GameData | undefined;
 
     abstract findGame(body: FindGameBody): Promise<FindGameResponse>;
-
-    abstract onOpen(socketId: string, socket: WebSocket<GameSocketData>): void;
-
-    abstract onMsg(socketId: string, msg: ArrayBuffer): void;
-
-    abstract onClose(socketId: string): void;
 }
 
 /**
@@ -49,12 +42,10 @@ export abstract class GameManager {
  * Used for dev server
  */
 export class SingleThreadGameManager implements GameManager {
-    readonly sockets = new Map<string, WebSocket<GameSocketData>>();
-
     readonly gamesById = new Map<string, Game>();
     readonly games: Game[] = [];
 
-    constructor() {
+    constructor(server: GameServer) {
         // setInterval on windows sucks
         // and doesn't give accurate timings
         if (platform() === "win32") {
@@ -84,6 +75,24 @@ export class SingleThreadGameManager implements GameManager {
         }
 
         this.newGame(Config.modes[0]);
+
+        setupGamePlayRoute(
+            server.app,
+            "/play",
+            (id) => {
+                return this.gamesById.has(id);
+            },
+            (socket, message) => {
+                this.gamesById
+                    .get(socket.getUserData().gameId)
+                    ?.handleMsg(socket, message);
+            },
+            (socket) => {
+                this.gamesById
+                    .get(socket.getUserData().gameId)
+                    ?.handleSocketClose(socket);
+            },
+        );
     }
 
     update(): void {
@@ -116,19 +125,7 @@ export class SingleThreadGameManager implements GameManager {
 
     async newGame(config: ServerGameConfig): Promise<Game> {
         const id = randomBytes(20).toString("hex");
-        const game = new Game(
-            id,
-            config,
-            (id, data) => {
-                this.sockets.get(id)?.send(data, true, false);
-            },
-            (id) => {
-                const socket = this.sockets.get(id);
-                if (socket && !socket.getUserData().closed) {
-                    socket.close();
-                }
-            },
-        );
+        const game = new Game(id, config);
         await game.init();
         this.games.push(game);
         this.gamesById.set(id, game);
@@ -168,29 +165,7 @@ export class SingleThreadGameManager implements GameManager {
         return {
             gameId: game.id,
             data: id,
+            route: "play",
         };
-    }
-
-    onOpen(socketId: string, socket: WebSocket<GameSocketData>): void {
-        const data = socket.getUserData();
-        const game = this.gamesById.get(data.gameId);
-        if (game === undefined) {
-            socket.close();
-            return;
-        }
-        this.sockets.set(socketId, socket);
-    }
-
-    onMsg(socketId: string, msg: ArrayBuffer): void {
-        const data = this.sockets.get(socketId)?.getUserData();
-        if (!data) return;
-        this.gamesById.get(data.gameId)?.handleMsg(msg, socketId);
-    }
-
-    onClose(socketId: string) {
-        const data = this.sockets.get(socketId)?.getUserData();
-        if (!data) return;
-        this.gamesById.get(data.gameId)?.handleSocketClose(socketId);
-        this.sockets.delete(socketId);
     }
 }

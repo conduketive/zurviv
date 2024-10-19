@@ -72,7 +72,7 @@ export default defineConfig(({ mode }) => {
             ? {
                   local: {
                       https: false,
-                      address: `${Config.devServer.host}:${Config.devServer.port}`,
+                      address: `${Config.gameServer.host}:${Config.gameServer.port}`,
                       l10n: "index-local",
                   },
               }
@@ -138,12 +138,12 @@ export default defineConfig(({ mode }) => {
             host: "0.0.0.0",
             proxy: {
                 "/api": {
-                    target: `http://${Config.devServer.host}:${Config.devServer.port}`,
+                    target: `http://${Config.apiServer.host}:${Config.apiServer.port}`,
                     changeOrigin: true,
                     secure: false,
                 },
                 "/team_v2": {
-                    target: `http://${Config.devServer.host}:${Config.devServer.port}`,
+                    target: `http://${Config.gameServer.host}:${Config.gameServer.port}`,
                     changeOrigin: true,
                     secure: false,
                     ws: true,

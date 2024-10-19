@@ -33,6 +33,7 @@ export interface MatchData {
     hosts: string[];
     addrs: string[];
     data: string;
+    route: string;
 }
 
 class Application {
@@ -670,11 +671,9 @@ class Application {
         const hosts = matchData.hosts || [];
         const urls: string[] = [];
         for (let i = 0; i < hosts.length; i++) {
-            urls.push(
-                `ws${matchData.useHttps ? "s" : ""}://${hosts[i]}/play?gameId=${
-                    matchData.gameId
-                }`,
-            );
+            const protocol = `ws${matchData.useHttps ? "s" : ""}://`;
+            const route = `${matchData.route || "/play"}`;
+            urls.push(`${protocol}${hosts[i]}${route}?gameId=${matchData.gameId}`);
         }
         const joinGameImpl = (urls: string[], matchData: MatchData) => {
             const url = urls.shift();

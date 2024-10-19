@@ -20,32 +20,22 @@ class Region {
     async fetch<Data extends object>(endPoint: string, body: object) {
         const url = `http${this.data.https ? "s" : ""}://${this.data.address}/${endPoint}`;
 
-        return new Promise<Data>((resolve) => {
-            fetch(url, {
-                body: JSON.stringify({
-                    ...body,
-                    apiKey: Config.apiKey,
-                }),
-                method: "post",
-                headers: {
-                    "Content-type": "application/json",
-                },
-            })
-                .catch(console.error)
-                .then((response) => {
-                    if (response?.ok) {
-                        return response.json();
-                    }
-                    return [{ err: "Error connecting to region, is it down?" }];
-                })
-                .then((json) => {
-                    resolve(json);
-                })
-                .catch((error) => {
-                    console.error(error);
-                    return [{ err: "Error parsing region response JSON" }];
-                });
+        const res = await fetch(url, {
+            body: JSON.stringify({
+                ...body,
+                apiKey: Config.apiKey,
+            }),
+            method: "post",
+            headers: {
+                "Content-type": "application/json",
+            },
         });
+
+        if (res.ok && res.status === 200) {
+            return (await res.json()) as Data;
+        }
+
+        return [{ err: `Error connecting to region, status: ${res.status}` }] as Data;
     }
 }
 
@@ -160,6 +150,7 @@ if (process.argv.includes("--api-server")) {
             res,
             async (body: FindGameBody) => {
                 const data = await server.findGame(body);
+                console.log(data);
                 if (res.aborted) return;
                 res.cork(() => {
                     if (res.aborted) return;

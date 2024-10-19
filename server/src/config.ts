@@ -10,11 +10,6 @@ import type { Vec2 } from "../../shared/utils/v2";
  */
 
 export const Config = {
-    devServer: {
-        host: "127.0.0.1",
-        port: 8001,
-    },
-
     apiServer: {
         host: "0.0.0.0",
         port: 8000,
@@ -107,8 +102,6 @@ interface ServerConfig {
     };
 }
 export interface ConfigType {
-    devServer: ServerConfig;
-
     apiServer: ServerConfig;
     gameServer: ServerConfig & {
         apiServerUrl: string;

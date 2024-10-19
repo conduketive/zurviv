@@ -32,7 +32,7 @@ import { assert, util } from "../../../../shared/utils/util";
 import { type Vec2, v2 } from "../../../../shared/utils/v2";
 import { IDAllocator } from "../../utils/IDAllocator";
 import { checkForBadWords } from "../../utils/serverHelpers";
-import type { Game } from "../game";
+import type { Game, GameSocket } from "../game";
 import { Group } from "../group";
 import { Team } from "../team";
 import { WeaponManager, throwableList } from "../weaponManager";
@@ -55,8 +55,6 @@ export class PlayerBarn {
     deletedPlayers: number[] = [];
     groupIdAllocator = new IDAllocator(8);
     aliveCountDirty = false;
-
-    socketIdToPlayer = new Map<string, Player>();
 
     emotes: Emote[] = [];
 
@@ -83,9 +81,9 @@ export class PlayerBarn {
         return livingPlayers[util.randomInt(0, livingPlayers.length - 1)];
     }
 
-    addPlayer(socketId: string, joinMsg: net.JoinMsg) {
+    addPlayer(socket: GameSocket, joinMsg: net.JoinMsg) {
         if (!this.game.joinTokens.has(joinMsg.matchPriv)) {
-            this.game.closeSocket(socketId);
+            socket.close();
             return;
         }
 
@@ -94,9 +92,9 @@ export class PlayerBarn {
             disconnectMsg.reason = "index-invalid-protocol";
             const stream = new net.MsgStream(new ArrayBuffer(128));
             stream.serializeMsg(net.MsgType.Disconnect, disconnectMsg);
-            this.game.sendSocketMsg(socketId, stream.getBuffer());
+            socket.send(stream.getBuffer());
             setTimeout(() => {
-                this.game.closeSocket(socketId);
+                socket.close();
             }, 1);
         }
 
@@ -134,9 +132,9 @@ export class PlayerBarn {
 
         const pos: Vec2 = this.game.map.getSpawnPos(group, team);
 
-        const player = new Player(this.game, pos, socketId, joinMsg);
+        const player = new Player(this.game, pos, socket, joinMsg);
 
-        this.socketIdToPlayer.set(socketId, player);
+        socket.getUserData().player = player;
 
         if (team && group) {
             team.addPlayer(player);
@@ -851,7 +849,7 @@ export class Player extends BaseGameObject {
         return MeleeDefs.pan.reflectSurface![type];
     }
 
-    socketId: string;
+    socket: GameSocket;
 
     ack = 0;
 
@@ -882,10 +880,10 @@ export class Player extends BaseGameObject {
 
     obstacleOutfit?: Obstacle;
 
-    constructor(game: Game, pos: Vec2, socketId: string, joinMsg: net.JoinMsg) {
+    constructor(game: Game, pos: Vec2, socket: GameSocket, joinMsg: net.JoinMsg) {
         super(game, pos);
 
-        this.socketId = socketId;
+        this.socket = socket;
 
         this.name = joinMsg.name.trim();
         if (this.name === "" || checkForBadWords(this.name)) {
@@ -3738,6 +3736,6 @@ export class Player extends BaseGameObject {
     }
 
     sendData(buffer: ArrayBuffer | Uint8Array): void {
-        this.game.sendSocketMsg(this.socketId, buffer);
+        this.socket.send(buffer);
     }
 }

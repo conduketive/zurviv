@@ -1,13 +1,19 @@
-import { randomBytes } from "crypto";
-import { App, SSLApp, type TemplatedApp, type WebSocket } from "uWebSockets.js";
+import type { TemplatedApp, WebSocket } from "uWebSockets.js";
+import { Worker, isMainThread, parentPort, workerData } from "worker_threads";
 import { version } from "../../package.json";
 import { math } from "../../shared/utils/math";
 import { Config } from "./config";
-import { SingleThreadGameManager } from "./game/gameManager";
-import { GameProcessManager } from "./game/gameProcessManager";
+import { type GameManager, SingleThreadGameManager } from "./game/gameManager";
+import { GameThreadManager } from "./game/gameThreadManager";
 import { GIT_VERSION } from "./utils/gitRevision";
 import { Logger } from "./utils/logger";
-import { cors, forbidden, readPostedJSON, returnJson } from "./utils/serverHelpers";
+import {
+    cors,
+    createUWSApp,
+    forbidden,
+    readPostedJSON,
+    returnJson,
+} from "./utils/serverHelpers";
 
 export interface FindGameBody {
     region: string;
@@ -27,112 +33,78 @@ export type FindGameResponse = {
               hosts: string[];
               addrs: string[];
               data: string;
+              route: string;
           }
         | { err: string }
     >;
 };
 
-export interface GameSocketData {
-    gameId: string;
-    id: string;
-    closed: boolean;
-}
+const logger = new Logger("GameServer");
 
 export class GameServer {
-    readonly logger = new Logger("GameServer");
-
     readonly region = Config.regions[Config.thisRegion];
     readonly regionId = Config.thisRegion;
 
-    readonly manager =
-        Config.processMode === "single"
-            ? new SingleThreadGameManager()
-            : new GameProcessManager();
+    manager!: GameManager;
+    app: TemplatedApp;
+    port = Config.gameServer.port;
 
-    constructor() {}
+    constructor(app: TemplatedApp) {
+        this.app = app;
 
-    init(app: TemplatedApp): void {
+        const server = this;
+
+        app.options("/api/find_game", (res) => {
+            cors(res);
+            res.end();
+        });
+        app.post("/api/find_game", async (res) => {
+            res.onAborted(() => {
+                res.aborted = true;
+            });
+            cors(res);
+
+            readPostedJSON(
+                res,
+                async (body: FindGameBody & { apiKey: string }) => {
+                    try {
+                        if (res.aborted) return;
+                        if (body.apiKey !== Config.apiKey) {
+                            forbidden(res);
+                            return;
+                        }
+                        returnJson(res, await server.findGame(body));
+                    } catch (error) {
+                        logger.warn("API find_game error: ", error);
+                    }
+                },
+                () => {
+                    logger.warn("/api/find_game: Error retrieving body");
+                },
+            );
+        });
+
+        this.manager =
+            Config.processMode === "single"
+                ? new SingleThreadGameManager(this)
+                : new GameThreadManager(this);
+
         setInterval(() => {
             const memoryUsage = process.memoryUsage().rss;
 
             const perfString = `Memory usage: ${Math.round((memoryUsage / 1024 / 1024) * 100) / 100} MB`;
 
-            this.logger.log(perfString);
+            logger.log(perfString);
         }, 60000);
 
-        const server = this;
-
-        app.ws("/play", {
-            idleTimeout: 30,
-            /**
-             * Upgrade the connection to WebSocket.
-             */
-            upgrade(res, req, context) {
-                res.onAborted((): void => {});
-
-                const searchParams = new URLSearchParams(req.getQuery());
-                const gameId = searchParams.get("gameId");
-
-                if (!gameId || !server.manager.getById(gameId)) {
-                    forbidden(res);
-                    return;
-                }
-
-                const socketId = randomBytes(20).toString("hex");
-                res.upgrade(
-                    {
-                        gameId,
-                        id: socketId,
-                        closed: false,
-                    },
-                    req.getHeader("sec-websocket-key"),
-                    req.getHeader("sec-websocket-protocol"),
-                    req.getHeader("sec-websocket-extensions"),
-                    context,
-                );
-            },
-
-            /**
-             * Handle opening of the socket.
-             * @param socket The socket being opened.
-             */
-            open(socket: WebSocket<GameSocketData>) {
-                server.manager.onOpen(socket.getUserData().id, socket);
-            },
-
-            /**
-             * Handle messages coming from the socket.
-             * @param socket The socket in question.
-             * @param message The message to handle.
-             */
-            message(socket: WebSocket<GameSocketData>, message) {
-                server.manager.onMsg(socket.getUserData().id, message);
-            },
-
-            /**
-             * Handle closing of the socket.
-             * @param socket The socket being closed.
-             */
-            close(socket: WebSocket<GameSocketData>) {
-                socket.getUserData().closed = true;
-                server.manager.onClose(socket.getUserData().id);
-            },
-        });
-
-        // ping test
-        app.ws("/ptc", {
-            idleTimeout: 30,
-            maxPayloadLength: 16,
-
-            message(socket: WebSocket<never>, message) {
-                socket.send(message, true, false);
-            },
-        });
+        setInterval(() => {
+            server.sendData();
+        }, 10 * 1000);
     }
 
     async findGame(body: FindGameBody): Promise<FindGameResponse> {
         if (body.region !== this.regionId) {
-            this.logger.warn("/api/find_game: Invalid region");
+            logger.warn("/api/find_game: Invalid region");
             return {
                 res: [
                     {
@@ -177,6 +149,7 @@ export class GameServer {
             useHttps: this.region.https,
             hosts: [this.region.address],
             addrs: [this.region.address],
+            route: data.route,
         };
 
         return { res: [response] };
@@ -194,7 +167,7 @@ export class GameServer {
                 "Content-type": "application/json",
             },
         }).catch((error) => {
-            this.logger.warn(`Failed to fetch "${url}" error:`, error);
+            logger.warn(`Failed to fetch "${url}" error:`, error);
         });
     }
 
@@ -208,57 +181,79 @@ export class GameServer {
     }
 }
 
-if (process.argv.includes("--game-server")) {
-    const server = new GameServer();
+class ServerWorker {
+    worker!: Worker;
+    type: string;
+    app: TemplatedApp;
 
-    const app = Config.gameServer.ssl
-        ? SSLApp({
-              key_file_name: Config.gameServer.ssl.keyFile,
-              cert_file_name: Config.gameServer.ssl.certFile,
-          })
-        : App();
-
-    app.options("/api/find_game", (res) => {
-        cors(res);
-        res.end();
-    });
-    app.post("/api/find_game", async (res) => {
-        res.onAborted(() => {
-            res.aborted = true;
+    constructor(type: string, app: TemplatedApp) {
+        this.type = type;
+        this.app = app;
+        this.setupWorker();
+    }
+    setupWorker() {
+        this.worker = new Worker(__filename, {
+            workerData: {
+                type: this.type,
+            },
         });
-        cors(res);
 
-        readPostedJSON(
-            res,
-            async (body: FindGameBody & { apiKey: string }) => {
-                try {
-                    if (res.aborted) return;
-                    if (body.apiKey !== Config.apiKey) {
-                        forbidden(res);
-                        return;
-                    }
-                    returnJson(res, await server.findGame(body));
-                } catch (error) {
-                    server.logger.warn("API find_game error: ", error);
-                }
-            },
-            () => {
-                server.logger.warn("/api/find_game: Error retrieving body");
-            },
-        );
-    });
+        this.worker.on("message", (msg) => {
+            // @ts-expect-error
+            this.app.addChildAppDescriptor(msg);
+        });
+
+        this.worker.on("error", (err) => {
+            console.error(err);
+        });
+
+        this.worker.once("exit", (err) => {
+            console.error(err);
+
+            logger.log(`Worker ${this.type} exited`);
+            setTimeout(() => {
+                this.setupWorker();
+            }, 1000);
+        });
+    }
+}
+
+if (isMainThread && process.argv.includes("--game-server")) {
+    const app = createUWSApp(Config.gameServer.ssl);
 
     app.listen(Config.gameServer.host, Config.gameServer.port, () => {
-        server.logger.log(`Survev Game Server v${version} - GIT ${GIT_VERSION}`);
-        server.logger.log(
-            `Listening on ${Config.gameServer.host}:${Config.gameServer.port}`,
-        );
-        server.logger.log("Press Ctrl+C to exit.");
-
-        server.init(app);
-
-        setInterval(() => {
-            server.sendData();
-        }, 10 * 1000);
+        logger.log(`Survev Game Server v${version} - GIT ${GIT_VERSION}`);
+        logger.log(`Listening on ${Config.gameServer.host}:${Config.gameServer.port}`);
+        logger.log("Press Ctrl+C to exit.");
     });
+
+    new ServerWorker("main", app);
+    new ServerWorker("ping", app);
+}
+
+if (!isMainThread) {
+    const app = createUWSApp(Config.gameServer.ssl);
+
+    switch (workerData.type) {
+        case "main":
+            new GameServer(app);
+            break;
+        case "ping":
+            // ping test
+            app.ws("/ptc", {
+                idleTimeout: 30,
+                maxPayloadLength: 16,
+
+                message(socket: WebSocket<never>, message) {
+                    socket.send(message, true, false);
+                },
+            });
+            break;
+    }
+
+    app.listen(Config.gameServer.host, Config.gameServer.port, () => {
+        logger.log(`Thread ${workerData.type} listening`);
+    });
+    // @ts-expect-error
+    parentPort!.postMessage(app.getDescriptor());
 }
