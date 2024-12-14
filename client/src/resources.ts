@@ -172,44 +172,45 @@ export class ResourceManager {
         atlas.spritesheets = [];
     }
 
-    async loadMapAssets() {
-        console.log("Starting to load all assets...");
+    loadMapAssets() {
+        console.log("Load all atlases");
     
         const atlasKeys = Object.keys(spritesheetDefs[this.textureRes]) as Atlas[];
         const loadedKeys = Object.keys(this.atlases) as Atlas[];
     
-        for (const key of loadedKeys) {
+        for (let i = 0; i < loadedKeys.length; i++) {
+            const key = loadedKeys[i];
             if (!atlasKeys.includes(key)) {
                 this.unloadAtlas(key);
             }
         }
     
-        const atlasPromises = atlasKeys.map(async (atlas) => {
+        for (let i = 0; i < atlasKeys.length; i++) {
+            const atlas = atlasKeys[i];
             if (!this.isAtlasLoaded(atlas)) {
-                console.log(`Loading atlas: ${atlas}`);
+                console.log("Load atlas", atlas);
+    
                 this.atlases[atlas] = this.atlases[atlas] || {
                     loaded: false,
                     spritesheets: [],
                 };
     
                 const atlasDef = spritesheetDefs[this.textureRes][atlas];
-                for (const def of atlasDef) {
-                    const spritesheet = loadSpritesheet(this.renderer, def);
+                for (let j = 0; j < atlasDef.length; j++) {
+                    const spritesheet = loadSpritesheet(this.renderer, atlasDef[j]);
                     this.atlases[atlas].spritesheets.push(spritesheet);
                 }
                 this.atlases[atlas].loaded = true;
             }
-        });
+        }
     
-        await Promise.all(atlasPromises);
-        console.log("All atlases loaded.");
-    
-        console.log("Loading audio...");
-        this.audioManager.preloadSounds();
-        console.log("Audio loaded.");
+        setTimeout(() => {
+            console.log("Load audio");
+            this.audioManager.preloadSounds();
+        }, 0);
     
         this.loaded = true;
-        console.log("All assets successfully loaded!");
+        console.log("Assets loaded");
     }
     
 
