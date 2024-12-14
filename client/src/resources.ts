@@ -173,80 +173,46 @@ export class ResourceManager {
         atlas.spritesheets = [];
     }
 
-    loadMapAssets(mapName: string) {
-        console.log("Load map", mapName);
-
-        const mapDef = MapDefs[mapName as keyof typeof MapDefs];
-        if (!mapDef) {
-            throw new Error(`Failed loading mapDef ${this.mapName}`);
-        }
-
-        //
-        // Textures
-        //
-        const atlasList = mapDef.assets.atlases;
-
-        // Unload all atlases that aren't in the new list
-        const keys = Object.keys(this.atlases) as Atlas[];
-        for (let i = 0; i < keys.length; i++) {
-            const key = keys[i];
-            if (!atlasList.includes(key)) {
+    async loadMapAssets() {
+        console.log("Starting to load all assets...");
+    
+        const atlasKeys = Object.keys(spritesheetDefs[this.textureRes]) as Atlas[];
+        const loadedKeys = Object.keys(this.atlases) as Atlas[];
+    
+        for (const key of loadedKeys) {
+            if (!atlasKeys.includes(key)) {
                 this.unloadAtlas(key);
             }
         }
-
-        // Load all new atlases
-        for (let i = 0; i < atlasList.length; i++) {
-            const atlas = atlasList[i];
+    
+        const atlasPromises = atlasKeys.map(async (atlas) => {
             if (!this.isAtlasLoaded(atlas)) {
-                this.loadAtlas(atlas);
-            }
-        }
-
-        //
-        // Audio
-        //
-        // PIXI spritesheets internally defer loading textures if the spritesheet
-        // has more than 1000 images as a part of its internal batching process.
-        //
-        // Because we want images to load before audio, we'll also defer loading
-        // audio in a similar fashion.
-        setTimeout(() => {
-            // Load shared audio
-            this.audioManager.preloadSounds();
-
-            // Load audio specific to the map
-            const soundList = mapDef.assets.audio;
-            for (let i = 0; i < soundList.length; i++) {
-                const sound = soundList[i];
-
-                // @HACK: Sometimes the channel doesn't correspond to where
-                // the sound is defined in sound-defs.js; this is the case
-                // with "players" sounds. Use an alternate method for looking
-                // up the sound def.
-                let soundsList = SoundDefs.Sounds[sound.channel];
-                if (!soundsList) {
-                    const channelDef = SoundDefs.Channels[sound.channel];
-                    soundsList = SoundDefs.Sounds[channelDef.list];
-                }
-
-                const soundDef = soundsList[sound.name];
-
-                const options = {
-                    canCoalesce: soundDef.canCoalesce!,
-                    channels: soundDef.maxInstances,
-                    volume: soundDef.volume,
+                console.log(`Loading atlas: ${atlas}`);
+                this.atlases[atlas] = this.atlases[atlas] || {
+                    loaded: false,
+                    spritesheets: [],
                 };
-
-                this.audioManager.loadSound({
-                    name: sound.name,
-                    channel: sound.channel,
-                    path: soundDef.path,
-                    options,
-                });
+    
+                const atlasDef = spritesheetDefs[this.textureRes][atlas];
+                for (const def of atlasDef) {
+                    const spritesheet = loadSpritesheet(this.renderer, def);
+                    this.atlases[atlas].spritesheets.push(spritesheet);
+                }
+                this.atlases[atlas].loaded = true;
             }
-        }, 0);
+        });
+    
+        await Promise.all(atlasPromises);
+        console.log("All atlases loaded.");
+    
+        console.log("Loading audio...");
+        this.audioManager.preloadSounds();
+        console.log("Audio loaded.");
+    
+        this.loaded = true;
+        console.log("All assets successfully loaded!");
     }
+    
 
     update(dt: number) {
         // Debug
