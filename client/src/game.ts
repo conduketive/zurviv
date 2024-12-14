@@ -1230,7 +1230,7 @@ export class Game {
                 const msg = new net.MapMsg();
                 msg.deserialize(stream);
                 this.map.loadMap(msg, this.camera, this.canvasMode, this.particleBarn);
-                this.resourceManager.loadMapAssets(this.map.mapName);
+                this.resourceManager.loadMapAssets();
                 this.map.renderMap(this.pixi.renderer, this.canvasMode);
                 this.playerBarn.onMapLoad(this.map);
                 this.bulletBarn.onMapLoad(this.map);
