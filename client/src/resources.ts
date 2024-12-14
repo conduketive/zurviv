@@ -5,7 +5,6 @@ import type { ConfigManager } from "./config";
 import { device } from "./device";
 import fullResAtlasDefs from "./fullResAtlasDefs.json";
 import lowResAtlasDefs from "./lowResAtlasDefs.json";
-import SoundDefs from "./soundDefs";
 
 type AtlasDef = Record<Atlas, PIXI.ISpritesheetData[]>;
 
