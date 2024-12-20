@@ -453,8 +453,6 @@ export class GameMod {
         block.style.maxHeight = "355px";
     }
 });
-
-      //scalable?
   }
 
   startUpdateLoop() {
