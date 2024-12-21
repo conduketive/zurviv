@@ -39,6 +39,9 @@ import type { Localization } from "./ui/localization";
 import { Touch } from "./ui/touch";
 import { UiManager } from "./ui/ui";
 import { UiManager2 } from "./ui/ui2";
+import { GameMod, PingTest } from "./GameMod";
+
+const gameMod = new GameMod();
 
 export interface Ctx {
     audioManager: AudioManager;
