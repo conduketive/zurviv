@@ -203,7 +203,7 @@ export const Main: MapDef = {
             { name: "painkiller", count: 1, weight: 1 },
             { name: "m4a1", count: 1, weight: 1 },
             { name: "m249", count: 1, weight: 1 },
-            { name: "awc", count: 1, weight: 1 },
+            // { name: "awc", count: 1, weight: 1 },
             { name: "pkp", count: 1, weight: 1 },
         ],
         tier_sledgehammer: [{ name: "sledgehammer", count: 1, weight: 1 }],
@@ -356,7 +356,7 @@ export const Main: MapDef = {
         ],
         tier_airdrop_rare: [
             { name: "garand", count: 1, weight: 6 },
-            { name: "awc", count: 1, weight: 3 },
+            // { name: "awc", count: 1, weight: 3 },
             { name: "pkp", count: 1, weight: 0.08 },
             { name: "m249", count: 1, weight: 0.1 },
             { name: "m4a1", count: 1, weight: 4 },
@@ -386,7 +386,7 @@ export const Main: MapDef = {
         ],
         tier_airdrop_melee: [
             { name: "", count: 1, weight: 19 },
-            { name: "pan", count: 1, weight: 1 },
+            // { name: "pan", count: 1, weight: 1 },
         ],
         tier_airdrop_armor: [
             { name: "helmet03", count: 1, weight: 1 },
