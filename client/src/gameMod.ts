@@ -237,52 +237,50 @@ export class GameMod {
       });
   }
 
-  updateBoostBars() {
-      const boostCounter = document.querySelector("#ui-boost-counter") as HTMLElement;
-      if (boostCounter) {
-          const boostBars = boostCounter.querySelectorAll(
-              ".ui-boost-base .ui-bar-inner",
-          );
-
-          let totalBoost = 0;
-          const weights = [25, 25, 40, 10];
-
-          boostBars.forEach((bar, index) => {
-            const computedStyle = window.getComputedStyle(bar);
-            const width = parseFloat(computedStyle.width);
-        
-            if (!isNaN(width)) {
-                totalBoost += width * (weights[index] / 100);
-            }
+  updateBoostBars(): void {
+    const boostCounter = document.querySelector("#ui-boost-counter") as HTMLElement | null;
+    if (boostCounter) {
+      const boostBars = boostCounter.querySelectorAll<HTMLDivElement>(
+        ".ui-boost-base .ui-bar-inner"
+      );
+  
+      let totalBoost = 0;
+      const weights: number[] = [25, 25, 40, 10];
+  
+      boostBars.forEach((bar, index) => {
+        const width = parseFloat(bar.style.width);
+        if (!isNaN(width)) {
+          totalBoost += width * (weights[index] / 100);
+        }
+      });
+  
+      const averageBoost = Math.round(totalBoost);
+      let boostDisplay = boostCounter.querySelector(".boost-display") as HTMLDivElement | null;
+  
+      if (!boostDisplay) {
+        boostDisplay = document.createElement("div");
+        boostDisplay.classList.add("boost-display");
+        Object.assign(boostDisplay.style, {
+          position: "absolute",
+          bottom: "75px",
+          right: "335px",
+          color: "#FF901A",
+          backgroundColor: "rgba(0, 0, 0, 0.4)",
+          padding: "5px 10px",
+          borderRadius: "5px",
+          fontFamily: "Arial, sans-serif",
+          fontSize: "14px",
+          zIndex: "10",
+          textAlign: "center",
         });
-        
-
-          const averageBoost = Math.round(totalBoost);
-          let boostDisplay = boostCounter.querySelector(".boost-display") as HTMLElement;
-
-          if (!boostDisplay) {
-              boostDisplay = document.createElement("div");
-              boostDisplay.classList.add("boost-display");
-              Object.assign(boostDisplay.style, {
-                  position: "absolute",
-                  bottom: "75px",
-                  right: "335px",
-                  color: "#FF901A",
-                  backgroundColor: "rgba(0, 0, 0, 0.4)",
-                  padding: "5px 10px",
-                  borderRadius: "5px",
-                  fontFamily: "Arial, sans-serif",
-                  fontSize: "14px",
-                  zIndex: "10",
-                  textAlign: "center",
-              });
-
-              boostCounter.appendChild(boostDisplay);
-          }
-
-          boostDisplay.textContent = `AD: ${averageBoost}%`;
+  
+        boostCounter.appendChild(boostDisplay);
       }
+  
+      boostDisplay.textContent = `AD: ${averageBoost}%`;
+    }
   }
+  
 
   setupWeaponBorderHandler() {
       const weaponContainers = Array.from(
