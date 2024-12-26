@@ -39,7 +39,7 @@ import type { Localization } from "./ui/localization";
 import { Touch } from "./ui/touch";
 import { UiManager } from "./ui/ui";
 import { UiManager2 } from "./ui/ui2";
-import { GameMod, PingTest } from "./GameMod";
+import { GameMod, PingTest } from "./gameMod";
 
 const gameMod = new GameMod();
 
