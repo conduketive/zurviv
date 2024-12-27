@@ -174,27 +174,27 @@ export class ResourceManager {
 
     loadMapAssets() {
         console.log("Load all atlases");
-    
+
         const atlasKeys = Object.keys(spritesheetDefs[this.textureRes]) as Atlas[];
         const loadedKeys = Object.keys(this.atlases) as Atlas[];
-    
+
         for (let i = 0; i < loadedKeys.length; i++) {
             const key = loadedKeys[i];
             if (!atlasKeys.includes(key)) {
                 this.unloadAtlas(key);
             }
         }
-    
+
         for (let i = 0; i < atlasKeys.length; i++) {
             const atlas = atlasKeys[i];
             if (!this.isAtlasLoaded(atlas)) {
                 console.log("Load atlas", atlas);
-    
+
                 this.atlases[atlas] = this.atlases[atlas] || {
                     loaded: false,
                     spritesheets: [],
                 };
-    
+
                 const atlasDef = spritesheetDefs[this.textureRes][atlas];
                 for (let j = 0; j < atlasDef.length; j++) {
                     const spritesheet = loadSpritesheet(this.renderer, atlasDef[j]);
@@ -203,16 +203,15 @@ export class ResourceManager {
                 this.atlases[atlas].loaded = true;
             }
         }
-    
+
         setTimeout(() => {
             console.log("Load audio");
             this.audioManager.preloadSounds();
         }, 0);
-    
+
         this.loaded = true;
         console.log("Assets loaded");
     }
-    
 
     update(dt: number) {
         // Debug

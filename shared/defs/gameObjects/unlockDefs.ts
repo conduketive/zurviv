@@ -1,5 +1,5 @@
-import { HealEffectDefs } from "./healEffectDefs";
 import { CrosshairDefs } from "./crosshairDefs";
+import { HealEffectDefs } from "./healEffectDefs";
 import { PassDefs } from "./passDefs";
 
 const _allowedHealEffects = Object.keys(HealEffectDefs);

@@ -37,6 +37,7 @@ import { debugLines } from "../debugLines";
 import { device } from "../device";
 import type { Ctx, DebugOptions } from "../game";
 import { helpers } from "../helpers";
+import { InputHandler } from "../input";
 import type { SoundHandle } from "../lib/createJS";
 import type { Map } from "../map";
 import type { Renderer } from "../renderer";
@@ -54,7 +55,6 @@ import type { Obstacle } from "./obstacle";
 import type { Emitter, ParticleBarn } from "./particles";
 import { halloweenSpriteMap } from "./projectile";
 import { createCasingParticle } from "./shot";
-import { InputHandler } from "../input";
 const inputManager = new InputHandler(document.body);
 
 const submergeMaskScaleFactor = 0.1;
@@ -728,11 +728,11 @@ export class Player implements AbstractObject {
         !(
             Math.abs(this.pos.x - this.posOld.x) > 50 ||
             Math.abs(this.pos.y - this.posOld.y) > 50
-          ) &&
+        ) &&
             //movement interpolation
             ((this.pos.x += (this.posOld.x - this.pos.x) * 0.5),
             (this.pos.y += (this.posOld.y - this.pos.y) * 0.5)),
-        this.dir = v2.copy(this.netData.dir);
+            (this.dir = v2.copy(this.netData.dir));
         this.layer = this.netData.layer;
         this.downed = this.netData.downed;
         this.rad = this.netData.scale * GameConfig.player.radius;
@@ -762,8 +762,6 @@ export class Player implements AbstractObject {
         // Should happen early in the frame so the rest of the update will have
         // accurate hasPerk() calls
         this.updatePerks(isActivePlayer, isSpectating, ui2Manager);
-
-
 
         const weapTypeDirty = this.weapTypeOld != this.netData.activeWeapon;
         this.weapTypeOld = this.netData.activeWeapon;
@@ -1706,17 +1704,16 @@ export class Player implements AbstractObject {
 
         const mouseY = inputManager.mousePos.y;
         const mouseX = inputManager.mousePos.x;
-        //local rotation
-        if (this.activeId == this.__id && !this.isSpectating) {
-        this.bodyContainer.rotation = Math.atan2(
-            mouseY - window.innerHeight / 2,
-            mouseX - window.innerWidth / 2,
-        );
-        } else if (this.activeId != this.__id) {
-        this.bodyContainer.rotation = -Math.atan2(this.dir.y, this.dir.x);
-        }
 
-        
+        // local rotation
+        if (this.activeId == this.__id && !this.isSpectating) {
+            this.bodyContainer.rotation = Math.atan2(
+                mouseY - window.innerHeight / 2,
+                mouseX - window.innerWidth / 2,
+            );
+        } else {
+            this.bodyContainer.rotation = -Math.atan2(this.dir.y, this.dir.x);
+        }
     }
 
     playActionStartEffect(
