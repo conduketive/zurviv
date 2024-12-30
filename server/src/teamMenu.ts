@@ -86,7 +86,7 @@ export class TeamMenu {
             upgrade(res, req, context) {
                 res.onAborted((): void => {});
 
-                const ip = getIp(res);
+                const ip = getIp(res, req);
 
                 if (httpRateLimit.isRateLimited(ip) || wsRateLimit.isIpRateLimited(ip)) {
                     res.writeStatus("429 Too Many Requests");
