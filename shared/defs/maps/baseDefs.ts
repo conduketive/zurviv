@@ -175,7 +175,7 @@ export const Main: MapDef = {
         tier_scopes_sniper: [
             { name: "4xscope", count: 1, weight: 5 }, // ?
             { name: "8xscope", count: 1, weight: 1 }, // ?
-            { name: "15xscope", count: 1, weight: 0.02 }, // ?
+           // { name: "15xscope", count: 1, weight: 0.02 }, // ?
         ],
         tier_mansion_floor: [{ name: "outfitCasanova", count: 1, weight: 1 }],
         tier_vault_floor: [{ name: "outfitJester", count: 1, weight: 1 }],
@@ -575,14 +575,14 @@ export const Main: MapDef = {
                 cache_02: 2, // mosin tree
                 cache_07: 2,
                 mansion_structure_01: 1,
-                police_01: 1,
-                bank_01: 1,
+                police_01: 2,
+                bank_01: 2,
                 bunker_structure_01: 1,
                 bunker_structure_02: 1,
                 bunker_structure_03: 1,
                 bunker_structure_04: 1,
                 bunker_structure_05: 1,
-                warehouse_complex_01: 16,
+                warehouse_complex_01: 2,
                 chest_01: 1,
                 chest_03: 1,
                 mil_crate_02: 1,
@@ -594,12 +594,12 @@ export const Main: MapDef = {
         ],
         randomSpawns: [
             {
-                spawns: ["mansion_structure_01", "police_01", "bank_01"],
-                choose: 3,
+                spawns: ["mansion_structure_01"],
+                choose: 1,
             },
         ],
         spawnReplacements: [{}],
-        importantSpawns: ["warehouse_complex_01"],
+        importantSpawns: ["mansion_structure_01"],
     },
     /* STRIP_FROM_PROD_CLIENT:END */
 };
