@@ -582,7 +582,7 @@ export const Main: MapDef = {
                 bunker_structure_03: 1,
                 bunker_structure_04: 1,
                 bunker_structure_05: 1,
-                warehouse_complex_01: 2,
+                warehouse_complex_01: 16,
                 chest_01: 1,
                 chest_03: 1,
                 mil_crate_02: 1,
@@ -599,7 +599,7 @@ export const Main: MapDef = {
             },
         ],
         spawnReplacements: [{}],
-        importantSpawns: ["club_complex_01"],
+        importantSpawns: ["warehouse_complex_01"],
     },
     /* STRIP_FROM_PROD_CLIENT:END */
 };
