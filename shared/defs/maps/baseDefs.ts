@@ -574,9 +574,9 @@ export const Main: MapDef = {
                 cache_01: 2,
                 cache_02: 2, // mosin tree
                 cache_07: 2,
-                mansion_structure_01: 2,
-                police_01: 2,
-                bank_01: 2,
+                mansion_structure_01: 1,
+                police_01: 1,
+                bank_01: 1,
                 bunker_structure_01: 1,
                 bunker_structure_02: 1,
                 bunker_structure_03: 1,
@@ -587,6 +587,12 @@ export const Main: MapDef = {
                 chest_03: 1,
                 mil_crate_02: 1,
                 tree_02: 3,
+            },
+        ],
+        randomSpawns: [
+            {
+                spawns: ["mansion_structure_01", "police_01", "bank_01"],
+                choose: 3,
                 teahouse_complex_01su: 3,
                 stone_04: 2,
                 club_complex_01: 2,
@@ -595,4 +601,5 @@ export const Main: MapDef = {
         spawnReplacements: [{}],
         importantSpawns: ["club_complex_01"],
     },
+    /* STRIP_FROM_PROD_CLIENT:END */
 };
