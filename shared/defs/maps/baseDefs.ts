@@ -574,6 +574,9 @@ export const Main: MapDef = {
                 cache_01: 1,
                 cache_02: 1, // mosin tree
                 cache_07: 1,
+                mansion_structure_01: 1,
+                police_01: 1,
+                bank_01: 1,
                 bunker_structure_01: { odds: 0.05 },
                 bunker_structure_02: 1,
                 bunker_structure_03: 1,
@@ -595,7 +598,7 @@ export const Main: MapDef = {
         randomSpawns: [
             {
                 spawns: ["mansion_structure_01", "police_01", "bank_01"],
-                choose: 2,
+                choose: 3,
             },
         ],
         spawnReplacements: [{}],
