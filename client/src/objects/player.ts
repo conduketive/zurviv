@@ -1707,12 +1707,12 @@ export class Player implements AbstractObject {
         const mouseY = inputManager.mousePos.y;
         const mouseX = inputManager.mousePos.x;
         //local rotation
-        if (this.activeId == this.__id && !this.isSpectating) {
+        if (this.activeId == this.__id && !this.isSpectating && device.mobile == false) {
         this.bodyContainer.rotation = Math.atan2(
             mouseY - window.innerHeight / 2,
             mouseX - window.innerWidth / 2,
         );
-        } else if (this.activeId != this.__id) {
+        } else {
         this.bodyContainer.rotation = -Math.atan2(this.dir.y, this.dir.x);
         }
 

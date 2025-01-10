@@ -1409,146 +1409,87 @@ export class UiManager {
         map: Map,
         ui2: UiManager2,
     ) {
-        // If we're spectating a team that's not our own, and the game isn't over yet,
-        // don't display the stats screen again.
         if (!spectating || teamId == localTeamId || gameOver) {
             this.toggleEscMenu(true);
             this.displayingStats = true;
             this.pieTimer.stop();
             this.displayMapLarge(true);
+            
             this.clearStatsElems();
+            
             this.setSpectating(false, teamMode);
-
             this.removeAds();
             this.statsMain.css("display", "block");
             this.statsLogo.css("display", "block");
-
-            this.statsContentsContainer.css({
-                top: "",
-            });
-            this.statsInfoBox.css({
-                height: "",
-            });
-
+    
+            this.statsContentsContainer.css({ top: "" });
+    
             const victory = localTeamId == winningTeamId;
             const statsDelay = victory ? 1750 : 2500;
-
+    
             this.setBannerAd(statsDelay, ui2);
-
-            const isLocalTeamWinner =
-                localTeamId == winningTeamId || (spectating && winningTeamId == teamId);
-            const spectatingAnotherTeam = spectating && localTeamId != teamId;
-            const S = isLocalTeamWinner
-                ? this.getTitleVictoryText(
-                      spectatingAnotherTeam,
-                      map.getMapDef().gameMode,
-                  )
-                : this.getTitleDefeatText(teamMode, spectatingAnotherTeam);
-            let teamKills = 0;
-            for (let i = 0; i < playerStats.length; i++) {
-                teamKills += playerStats[i].kills;
-            }
-            const z = this.getOverviewElems(
-                teamMode,
-                teamRank,
-                teamKills,
-                map.getMapDef().gameMode.factionMode!,
-            );
-            const I = $("<div/>")
-                .append(
-                    $("<div/>", {
-                        class: "ui-stats-header-title",
-                        html: S,
-                    }),
-                )
-                .append(
-                    $("<div/>", {
-                        class: "ui-stats-header-overview",
-                        html: z,
-                    }),
-                );
-            this.statsHeader.html(I as unknown as HTMLElement);
-            const T = (e: string, t: string | number) =>
-                $("<div/>", {
-                    class: "ui-stats-info",
-                })
-                    .append(
-                        $("<div/>", {
-                            html: e,
-                        }),
-                    )
-                    .append(
-                        $("<div/>", {
-                            html: t,
-                        }),
-                    );
-            const M = device.uiLayout != device.UiLayout.Sm || device.tablet ? 250 : 125;
-            let P = 0;
-            P -= ((playerStats.length - 1) * M) / 2;
-            P -= (playerStats.length - 1) * 10;
-            for (let C = 0; C < playerStats.length; C++) {
-                const stats = playerStats[C];
+    
+            const title = $("<div/>", {
+                class: "ui-stats-title",
+                text: "Battle Result"
+            });
+    
+            const tableContainer = $("<div/>", {
+                class: "ui-stats-table-container",
+                css: { opacity: 0 }
+            });
+    
+            const tableHeader = $("<div/>", {
+                class: "ui-stats-row header"
+            }).append([
+                $("<div/>", { class: "ui-stats-col player-tittle", text: "PLAYER" }),
+                $("<div/>", { class: "ui-stats-col", text: "KILLS" }),
+                $("<div/>", { class: "ui-stats-col", text: "DAMAGE DEALT" }),
+                $("<div/>", { class: "ui-stats-col", text: "DAMAGE TAKEN" }),
+                $("<div/>", { class: "ui-stats-col", text: "TIME" })
+            ]);
+    
+            const sortedPlayerStats = playerStats.sort((a, b) => {
+                if (a.rank === 0) return -1;
+                if (b.rank === 0) return 1;
+                return a.rank - b.rank;
+            });
+    
+            const tableRowsContainer = $("<div/>", {
+                class: "ui-stats-table-rows"
+            });
+    
+            for (const stats of sortedPlayerStats) {
                 const playerInfo = playerBarn.getPlayerInfo(stats.playerId);
-                const D = humanizeTime(stats.timeAlive);
-                let E = "ui-stats-info-player";
-                E += stats.dead ? " ui-stats-info-status" : "";
-                const B = ((e) =>
+                const timeAlive = humanizeTime(stats.timeAlive);
+    
+                const playerRow = $("<div/>", {
+                    class: "ui-stats-row"
+                }).append([
                     $("<div/>", {
-                        class: e,
-                    }))(E);
-                B.css("left", P);
-                B.append(
-                    $("<div/>", {
-                        class: "ui-stats-info-player-name",
-                        html: helpers.htmlEscape(playerInfo.name),
+                        class: "ui-stats-col rank",
+                        text: stats.rank === 0 ? "#?" : "#" + stats.rank
                     }),
-                );
-                B.append(T(this.localization.translate("game-kills"), `${stats.kills}`))
-                    .append(
-                        T(
-                            this.localization.translate("game-damage-dealt"),
-                            stats.damageDealt,
-                        ),
-                    )
-                    .append(
-                        T(
-                            this.localization.translate("game-damage-taken"),
-                            stats.damageTaken,
-                        ),
-                    )
-                    .append(T(this.localization.translate("game-survived"), D));
-                if (map.getMapDef().gameMode.factionMode && gameOver) {
-                    switch (C) {
-                        case 1:
-                            B.append(
-                                $("<div/>", {
-                                    class: "ui-stats-info-player-badge ui-stats-info-player-red-leader",
-                                }),
-                            );
-                            break;
-                        case 2:
-                            B.append(
-                                $("<div/>", {
-                                    class: "ui-stats-info-player-badge ui-stats-info-player-blue-leader",
-                                }),
-                            );
-                            break;
-                        case 3: {
-                            const R =
-                                playerInfo.teamId == 1
-                                    ? "ui-stats-info-player-red-ribbon"
-                                    : "ui-stats-info-player-blue-ribbon";
-                            B.append(
-                                $("<div/>", {
-                                    class: `ui-stats-info-player-badge ${R}`,
-                                }),
-                            );
-                        }
-                    }
-                }
-                this.statsInfoBox.append(B);
-                P += 10;
+                    $("<div/>", {
+                        class: "ui-stats-col name",
+                        text: helpers.htmlEscape(playerInfo.name)
+                    }),
+                    $("<div/>", { class: "ui-stats-col", text: stats.kills }),
+                    $("<div/>", { class: "ui-stats-col", text: stats.damageDealt }),
+                    $("<div/>", { class: "ui-stats-col", text: stats.damageTaken }),
+                    $("<div/>", { class: "ui-stats-col", text: timeAlive })
+                ]);
+    
+                tableRowsContainer.append(playerRow);
             }
+    
+            tableContainer.append(tableHeader);
+            tableContainer.append(tableRowsContainer);
+    
+            const statsOptions = $("<div/>", {
+                id: "ui-stats-options",
+            });
+    
             const restartButton = $("<a/>", {
                 class: "ui-stats-restart btn-green btn-darken menu-option",
                 html: this.localization.translate("game-play-new-game"),
@@ -1556,100 +1497,70 @@ export class UiManager {
             restartButton.on("click", () => {
                 this.quitGame();
             });
-            this.statsOptions.append(restartButton);
-            if (gameOver || this.waitingForPlayers) {
-                restartButton.css({
-                    width:
-                        device.uiLayout != device.UiLayout.Sm || device.tablet
-                            ? 225
-                            : 130,
-                });
-            } else {
-                restartButton.css({
-                    left:
-                        device.uiLayout != device.UiLayout.Sm || device.tablet
-                            ? -72
-                            : -46,
-                });
-                const q = $("<a/>", {
+    
+            if (!gameOver && !this.waitingForPlayers) {
+                const spectateButton = $("<a/>", {
                     class: "btn-green btn-darken menu-option ui-stats-spectate",
                     html: this.localization.translate("game-spectate"),
                 });
-                q.on("click", this.beginSpectating.bind(this));
-                this.statsOptions.append(q);
+                spectateButton.on("click", this.beginSpectating.bind(this));
+                statsOptions.append(spectateButton);
             }
-
+    
+            statsOptions.append(restartButton);
+            tableContainer.append(statsOptions);
+    
+            tableContainer.prepend(title);
+    
+            this.statsContentsContainer.append(tableContainer);
+    
             let elemIdx = 0;
-            const elemFadeTime = 500;
-            const elemDelay = 250 / math.max(1, playerStats.length);
-            const baseDelay = 750 / math.max(1, playerStats.length);
-            this.statsInfoBox.children().each((idx, elem) => {
+            const elemFadeTime = 200;
+            const elemDelay = 150 / Math.max(1, playerStats.length);
+            const baseDelay = 450 / Math.max(1, playerStats.length);
+    
+            tableContainer.delay(statsDelay).animate({ opacity: 1 }, 1000); 
+    
+            tableContainer.children().each((idx, elem) => {
                 const e = $(elem);
                 e.css("opacity", 0);
                 e.delay(statsDelay + baseDelay + (elemIdx + idx) * elemDelay).animate(
-                    {
-                        opacity: 1,
-                    },
+                    { opacity: 1 },
                     elemFadeTime,
                     () => {
                         e.children().each((idx, elem) => {
                             $(elem)
                                 .delay(idx * elemDelay)
-                                .animate(
-                                    {
-                                        opacity: 1,
-                                    },
-                                    elemFadeTime,
-                                );
+                                .animate({ opacity: 1 }, elemFadeTime);
                         });
-                    },
+                    }
                 );
-                e.children().each((_idx, elem) => {
-                    $(elem).css("opacity", 0);
-                    elemIdx++;
-                });
-                elemIdx++;
             });
-
-            this.statsOptions.children().each((idx, elem) => {
-                const e = $(elem);
-                e.hide();
-                const delay = statsDelay + baseDelay + (elemIdx + idx) * elemDelay + 500;
-                e.delay(delay).fadeIn(elemFadeTime);
-                elemIdx++;
-            });
-
+    
             this.statsElem.stop();
             this.statsElem.css("display", "block");
             this.statsElem.delay(statsDelay).animate(
-                {
-                    opacity: 1,
-                },
-                1000,
+                { opacity: 1 },
+                1000
             );
-
+    
             this.statsContents.stop();
             this.statsContents.css("display", "block");
             this.statsContents.delay(statsDelay).animate(
-                {
-                    opacity: 1,
-                },
-                1000,
+                { opacity: 1 },
+                1000
             );
         }
-    }
-
+    }    
+       
     clearStatsElems() {
-        this.statsHeader.empty();
-        this.statsInfoBox.empty();
-        this.statsOptions.empty();
-        this.statsAds.css("display", "none");
-        this.statsContents.stop();
+        this.statsContentsContainer.empty();
+        this.statsContents.stop(true, true);
+        this.statsElem.stop(true, true);
         this.statsContents.css({
             display: "none",
             opacity: 0,
         });
-        this.statsElem.stop();
         this.statsElem.css({
             display: "none",
             opacity: 0,
@@ -1796,6 +1707,7 @@ export class UiManager {
 
     setLocalStats(stats: PlayerStatsMsg["playerStats"]) {
         const displayStats = {
+            rank: this.localization.translate("game-rank"),
             kills: this.localization.translate("game-kills"),
             damageDealt: this.localization.translate("game-damage-dealt"),
             damageTaken: this.localization.translate("game-damage-taken"),

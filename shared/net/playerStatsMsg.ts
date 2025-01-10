@@ -3,6 +3,7 @@ import type { AbstractMsg, BitStream } from "./net";
 export class PlayerStatsMsg implements AbstractMsg {
     playerStats = {
         playerId: 0,
+        rank: 0,
         timeAlive: 0,
         kills: 0,
         dead: false,
@@ -12,6 +13,7 @@ export class PlayerStatsMsg implements AbstractMsg {
 
     serialize(s: BitStream) {
         s.writeUint16(this.playerStats.playerId);
+        s.writeUint16(this.playerStats.rank);
         s.writeUint16(this.playerStats.timeAlive);
         s.writeUint8(this.playerStats.kills);
         s.writeUint8(this.playerStats.dead as unknown as number);
@@ -24,6 +26,7 @@ export class PlayerStatsMsg implements AbstractMsg {
     deserialize(s: BitStream) {
         const playerStats = {} as this["playerStats"];
         playerStats.playerId = s.readUint16();
+        playerStats.rank = s.readUint16();
         playerStats.timeAlive = s.readUint16();
         playerStats.kills = s.readUint8();
         playerStats.dead = s.readUint8() as unknown as boolean;
