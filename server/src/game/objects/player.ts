@@ -900,6 +900,7 @@ export class Player extends BaseGameObject {
         emotes: [...GameConfig.defaultEmoteLoadout],
     };
 
+    rank = 0;
     damageTaken = 0;
     damageDealt = 0;
     kills = 0;
@@ -2016,45 +2017,40 @@ export class Player extends BaseGameObject {
      * adds gameover message to "this.msgsToSend" for the player and all their spectators
      */
     addGameOverMsg(winningTeamId: number = 0): void {
-        const targetPlayer = this.spectating ?? this;
-        let stats: net.PlayerStatsMsg["playerStats"][] = [targetPlayer];
+        // Collect stats for all players
+        const allPlayerStats = this.game.playerBarn.players
 
-        if (this.group) {
-            stats = this.group.players;
-        }
+        .map(player => ({
+            playerId: player.playerId,
+            rank: player.rank,
+            timeAlive: player.timeAlive,
+            kills: player.kills,
+            dead: player.dead,
+            damageDealt: player.damageDealt,
+            damageTaken: player.damageTaken,
+            teamId: player.teamId, 
+        
+        })
+        );
 
-        const aliveCount = this.game.modeManager.aliveCount();
+        const gameOverMsg = new net.GameOverMsg();
+        gameOverMsg.playerStats = allPlayerStats;
+        gameOverMsg.teamRank =
+            winningTeamId === this.teamId ? 1 : this.game.modeManager.aliveCount() + 1;
+        gameOverMsg.teamId = this.teamId;
+        gameOverMsg.winningTeamId = winningTeamId;
+        gameOverMsg.gameOver = !!winningTeamId;
 
-        if (this.game.modeManager.showStatsMsg(targetPlayer)) {
-            for (const stat of stats) {
-                const statsMsg = new net.PlayerStatsMsg();
-                statsMsg.playerStats = stat;
-
-                this.msgsToSend.push({ type: net.MsgType.PlayerStats, msg: statsMsg });
-
-                for (const spectator of this.spectators) {
-                    spectator.msgsToSend.push({
-                        type: net.MsgType.PlayerStats,
-                        msg: statsMsg,
-                    });
-                }
-            }
-        } else {
-            const gameOverMsg = new net.GameOverMsg();
-            gameOverMsg.playerStats = stats;
-            gameOverMsg.teamRank =
-                winningTeamId == targetPlayer.teamId ? 1 : aliveCount + 1; //gameover msg sent after alive count updated
-            gameOverMsg.teamId = targetPlayer.teamId;
-            gameOverMsg.winningTeamId = winningTeamId;
-            gameOverMsg.gameOver = !!winningTeamId;
-            this.msgsToSend.push({ type: net.MsgType.GameOver, msg: gameOverMsg });
-
-            for (const spectator of this.spectators) {
-                spectator.msgsToSend.push({
-                    type: net.MsgType.GameOver,
-                    msg: gameOverMsg,
-                });
-            }
+        this.msgsToSend.push({
+            type: net.MsgType.GameOver,
+            msg: gameOverMsg,
+        });
+    
+        for (const spectator of this.spectators) {
+            spectator.msgsToSend.push({
+                type: net.MsgType.GameOver,
+                msg: gameOverMsg,
+            });
         }
     }
 
