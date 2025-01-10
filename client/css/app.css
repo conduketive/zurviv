@@ -307,8 +307,13 @@ a:active {
 }
 
 .ad-block-med-rect {
+  padding: 20px;
   height: 250px;
   width: 300px;
+}
+
+.ad-block-med-rect>p{
+  width: 80%;
 }
 
 @media (max-width: 850px), (max-width: 900px) and (-webkit-min-device-pixel-ratio: 3),
