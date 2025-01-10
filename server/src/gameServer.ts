@@ -83,7 +83,7 @@ export class GameServer {
             upgrade(res, req, context) {
                 res.onAborted((): void => {});
 
-                const ip = getIp(res);
+                const ip = getIp(res, req);
                 if (
                     gameHTTPRateLimit.isRateLimited(ip) ||
                     gameWsRateLimit.isIpRateLimited(ip)
@@ -168,7 +168,7 @@ export class GameServer {
             upgrade(res, req, context) {
                 res.onAborted((): void => {});
 
-                const ip = getIp(res);
+                const ip = getIp(res, req);
 
                 if (
                     pingHTTPRateLimit.isRateLimited(ip) ||

@@ -24,135 +24,139 @@ export class GameMod {
       this.isPingVisible = true;
       this.isKillsVisible = true;
 
-      this.pingCounter = null;
-      this.initPingCounter();
+        this.pingCounter = null;
+        this.initPingCounter();
 
-      this.animationFrameCallback = (callback: () => void) => setTimeout(callback, 1);
+        this.animationFrameCallback = (callback: () => void) => setTimeout(callback, 1);
 
-      this.initFpsCounter();
-      this.initKillsCounter();
-      this.startUpdateLoop();
-      this.setupWeaponBorderHandler();
-  }
+        this.initFpsCounter();
+        this.initKillsCounter();
+        this.startUpdateLoop();
+        this.setupWeaponBorderHandler();
+    }
 
-  initFpsCounter() {
-      this.fpsCounter = document.createElement("div");
-      this.fpsCounter.id = "fpsCounter";
-      Object.assign(this.fpsCounter.style, {
-          color: "white",
-          backgroundColor: "rgba(0, 0, 0, 0.2)",
-          padding: "5px 10px",
-          marginTop: "10px",
-          borderRadius: "5px",
-          fontFamily: "Arial, sans-serif",
-          fontSize: "14px",
-          zIndex: "10000",
-          pointerEvents: "none",
-      });
+    initFpsCounter() {
+        this.fpsCounter = document.createElement("div");
+        this.fpsCounter.id = "fpsCounter";
+        Object.assign(this.fpsCounter.style, {
+            color: "white",
+            backgroundColor: "rgba(0, 0, 0, 0.2)",
+            padding: "5px 10px",
+            marginTop: "10px",
+            borderRadius: "5px",
+            fontFamily: "Arial, sans-serif",
+            fontSize: "14px",
+            zIndex: "10000",
+            pointerEvents: "none",
+        });
 
-      const uiTopLeft = document.getElementById("ui-top-left");
-      if (uiTopLeft) {
-          uiTopLeft.appendChild(this.fpsCounter);
-      }
+        const uiTopLeft = document.getElementById("ui-top-left");
+        if (uiTopLeft) {
+            uiTopLeft.appendChild(this.fpsCounter);
+        }
 
-      this.updateFpsVisibility();
-  }
+        this.updateFpsVisibility();
+    }
 
-  initPingCounter() {
-      this.pingCounter = document.createElement("div");
-      this.pingCounter.id = "pingCounter";
-      Object.assign(this.pingCounter.style, {
-          color: "white",
-          backgroundColor: "rgba(0, 0, 0, 0.2)",
-          padding: "5px 10px",
-          marginTop: "10px",
-          borderRadius: "5px",
-          fontFamily: "Arial, sans-serif",
-          fontSize: "14px",
-          zIndex: "10000",
-          pointerEvents: "none",
-      });
+    initPingCounter() {
+        this.pingCounter = document.createElement("div");
+        this.pingCounter.id = "pingCounter";
+        Object.assign(this.pingCounter.style, {
+            color: "white",
+            backgroundColor: "rgba(0, 0, 0, 0.2)",
+            padding: "5px 10px",
+            marginTop: "10px",
+            borderRadius: "5px",
+            fontFamily: "Arial, sans-serif",
+            fontSize: "14px",
+            zIndex: "10000",
+            pointerEvents: "none",
+        });
 
-      const uiTopLeft = document.getElementById("ui-top-left");
-      if (uiTopLeft) {
-          uiTopLeft.appendChild(this.pingCounter);
-      }
-      this.updatePingVisibility();
-  }
+        const uiTopLeft = document.getElementById("ui-top-left");
+        if (uiTopLeft) {
+            uiTopLeft.appendChild(this.pingCounter);
+        }
+        this.updatePingVisibility();
+    }
 
-  initKillsCounter() {
-      this.killsCounter = document.createElement("div");
-      this.killsCounter.id = "killsCounter";
-      Object.assign(this.killsCounter.style, {
-          color: "white",
-          backgroundColor: "rgba(0, 0, 0, 0.2)",
-          padding: "5px 10px",
-          marginTop: "10px",
-          borderRadius: "5px",
-          fontFamily: "Arial, sans-serif",
-          fontSize: "14px",
-          zIndex: "10000",
-          pointerEvents: "none",
-      });
+    initKillsCounter() {
+        this.killsCounter = document.createElement("div");
+        this.killsCounter.id = "killsCounter";
+        Object.assign(this.killsCounter.style, {
+            color: "white",
+            backgroundColor: "rgba(0, 0, 0, 0.2)",
+            padding: "5px 10px",
+            marginTop: "10px",
+            borderRadius: "5px",
+            fontFamily: "Arial, sans-serif",
+            fontSize: "14px",
+            zIndex: "10000",
+            pointerEvents: "none",
+        });
 
-      const uiTopLeft = document.getElementById("ui-top-left");
-      if (uiTopLeft) {
-          uiTopLeft.appendChild(this.killsCounter);
-      }
-      this.updateKillsVisibility();
-  }
+        const uiTopLeft = document.getElementById("ui-top-left");
+        if (uiTopLeft) {
+            uiTopLeft.appendChild(this.killsCounter);
+        }
+        this.updateKillsVisibility();
+    }
 
-  updateFpsVisibility() {
-      if (this.fpsCounter) {
-          this.fpsCounter.style.display = this.isFpsVisible ? "block" : "none";
-          this.fpsCounter.style.backgroundColor = this.isFpsVisible
-              ? "rgba(0, 0, 0, 0.2)"
-              : "transparent";
-      }
-  }
+    updateFpsVisibility() {
+        if (this.fpsCounter) {
+            this.fpsCounter.style.display = this.isFpsVisible ? "block" : "none";
+            this.fpsCounter.style.backgroundColor = this.isFpsVisible
+                ? "rgba(0, 0, 0, 0.2)"
+                : "transparent";
+        }
+    }
 
-  updatePingVisibility() {
-      if (this.pingCounter) {
-          this.pingCounter.style.display = this.isPingVisible ? "block" : "none";
-      }
-  }
+    updatePingVisibility() {
+        if (this.pingCounter) {
+            this.pingCounter.style.display = this.isPingVisible ? "block" : "none";
+        }
+    }
 
-  updateKillsVisibility() {
-      if (this.killsCounter) {
-          this.killsCounter.style.display = this.isKillsVisible ? "block" : "none";
-          this.killsCounter.style.backgroundColor = this.isKillsVisible
-              ? "rgba(0, 0, 0, 0.2)"
-              : "transparent";
-      }
-  }
+    updateKillsVisibility() {
+        if (this.killsCounter) {
+            this.killsCounter.style.display = this.isKillsVisible ? "block" : "none";
+            this.killsCounter.style.backgroundColor = this.isKillsVisible
+                ? "rgba(0, 0, 0, 0.2)"
+                : "transparent";
+        }
+    }
 
 
-  getKills(): number {
-      const killElement = document.querySelector(
-          ".ui-player-kills.js-ui-player-kills",
-      ) as HTMLElement;
-      if (killElement) {
-          const kills = parseInt(killElement.textContent || "0", 10);
-          return isNaN(kills) ? 0 : kills;
-      }
-      return 0;
-  }
+    getKills(): number {
+        const killElement = document.querySelector(
+            ".ui-player-kills.js-ui-player-kills",
+        ) as HTMLElement;
+        if (killElement) {
+            const kills = parseInt(killElement.textContent || "0", 10);
+            return isNaN(kills) ? 0 : kills;
+        }
+        return 0;
+    }
 
-  getRegionFromLocalStorage(): string | null {
-      let config = localStorage.getItem("surviv_config");
-      if (config) {
-          let configObject = JSON.parse(config);
-          return configObject.region;
-      }
-      return null;
-  }
+    getRegionFromLocalStorage(): string | null {
+        let config = localStorage.getItem("surviv_config");
+        if (config) {
+            let configObject = JSON.parse(config);
+            return configObject.region;
+        }
+        return null;
+    }
 
-  startPingTest() {
-    const currentUrl = window.location.href;
-    const isSpecialUrl = /\/#\w+/.test(currentUrl);
+    startPingTest() {
+        const currentUrl = window.location.href;
+        const isSpecialUrl = /\/#\w+/.test(currentUrl);
 
-    const teamSelectElement = document.getElementById("team-server-select") as HTMLSelectElement | null;
-    const mainSelectElement = document.getElementById("server-select-main") as HTMLSelectElement | null;
+        const teamSelectElement = document.getElementById(
+            "team-server-select",
+        ) as HTMLSelectElement | null;
+        const mainSelectElement = document.getElementById(
+            "server-select-main",
+        ) as HTMLSelectElement | null;
 
     const region =
         isSpecialUrl && teamSelectElement
@@ -161,130 +165,137 @@ export class GameMod {
                 ? mainSelectElement.value || mainSelectElement.getAttribute("value")
                 : null;
 
-    if (region && region !== this.currentServer) {
-        this.currentServer = region;
-        this.resetPing();
+        if (region && region !== this.currentServer) {
+            this.currentServer = region;
+            this.resetPing();
 
         const servers = [
             { region: "NA", url: "na.zurviv.io" },
             { region: "EU", url: "eu.zurviv.io" }
         ];
 
-        const selectedServer = servers.find(
-            (server) => region.toUpperCase() === server.region.toUpperCase(),
-        );
+            const selectedServer = servers.find(
+                (server) => region.toUpperCase() === server.region.toUpperCase(),
+            );
 
-        if (selectedServer) {
-            this.pingTest = new PingTest(selectedServer);
-            this.pingTest.startPingTest();
-        } else {
-            this.resetPing();
+            if (selectedServer) {
+                this.pingTest = new PingTest(selectedServer);
+                this.pingTest.startPingTest();
+            } else {
+                this.resetPing();
+            }
         }
     }
-}
 
-  resetPing() {
-      if (this.pingTest && this.pingTest.test.ws) {
-          this.pingTest.test.ws.close();
-          this.pingTest.test.ws = null;
-      }
-      this.pingTest = null;
-  }
-
-  updateHealthBars() {
-      const healthBars = document.querySelectorAll("#ui-health-container");
-      healthBars.forEach((container) => {
-          const bar = container.querySelector("#ui-health-actual") as HTMLElement;
-          if (bar) {
-              const width = Math.round(parseFloat(bar.style.width));
-              let percentageText = container.querySelector(".health-text") as HTMLElement;
-
-              if (!percentageText) {
-                  percentageText = document.createElement("span");
-                  percentageText.classList.add("health-text");
-                  Object.assign(percentageText.style, {
-                      width: "100%",
-                      textAlign: "center",
-                      marginTop: "5px",
-                      color: "#333",
-                      fontSize: "20px",
-                      fontWeight: "bold",
-                      position: "absolute",
-                      zIndex: "10",
-                  });
-                  container.appendChild(percentageText);
-              }
-
-              percentageText.textContent = `${width}%`;
-          }
-      });
-  }
-
-  updateBoostBars(): void {
-    const boostCounter = document.querySelector("#ui-boost-counter") as HTMLElement | null;
-    if (boostCounter) {
-      const boostBars = boostCounter.querySelectorAll<HTMLDivElement>(
-        ".ui-boost-base .ui-bar-inner"
-      );
-  
-      let totalBoost = 0;
-      const weights: number[] = [25, 25, 40, 10];
-  
-      boostBars.forEach((bar, index) => {
-        const width = parseFloat(bar.style.width);
-        if (!isNaN(width)) {
-          totalBoost += width * (weights[index] / 100);
+    resetPing() {
+        if (this.pingTest && this.pingTest.test.ws) {
+            this.pingTest.test.ws.close();
+            this.pingTest.test.ws = null;
         }
-      });
-  
-      const averageBoost = Math.round(totalBoost);
-      let boostDisplay = boostCounter.querySelector(".boost-display") as HTMLDivElement | null;
-  
-      if (!boostDisplay) {
-        boostDisplay = document.createElement("div");
-        boostDisplay.classList.add("boost-display");
-        Object.assign(boostDisplay.style, {
-          position: "absolute",
-          bottom: "75px",
-          right: "335px",
-          color: "#FF901A",
-          backgroundColor: "rgba(0, 0, 0, 0.4)",
-          padding: "5px 10px",
-          borderRadius: "5px",
-          fontFamily: "Arial, sans-serif",
-          fontSize: "14px",
-          zIndex: "10",
-          textAlign: "center",
+        this.pingTest = null;
+    }
+
+    updateHealthBars() {
+        const healthBars = document.querySelectorAll("#ui-health-container");
+        healthBars.forEach((container) => {
+            const bar = container.querySelector("#ui-health-actual") as HTMLElement;
+            if (bar) {
+                const width = Math.round(parseFloat(bar.style.width));
+                let percentageText = container.querySelector(
+                    ".health-text",
+                ) as HTMLElement;
+
+                if (!percentageText) {
+                    percentageText = document.createElement("span");
+                    percentageText.classList.add("health-text");
+                    Object.assign(percentageText.style, {
+                        width: "100%",
+                        textAlign: "center",
+                        marginTop: "5px",
+                        color: "#333",
+                        fontSize: "20px",
+                        fontWeight: "bold",
+                        position: "absolute",
+                        zIndex: "10",
+                    });
+                    container.appendChild(percentageText);
+                }
+
+                percentageText.textContent = `${width}%`;
+            }
         });
-  
-        boostCounter.appendChild(boostDisplay);
-      }
-  
-      boostDisplay.textContent = `AD: ${averageBoost}%`;
     }
-  }
-  
 
-  setupWeaponBorderHandler() {
-      const weaponContainers = Array.from(
-          document.getElementsByClassName("ui-weapon-switch"),
-      ) as HTMLElement[];
-      weaponContainers.forEach((container) => {
-          if (container.id === "ui-weapon-id-4") {
-              container.style.border = "3px solid #2f4032";
-          } else {
-              container.style.border = "3px solid #FFFFFF";
-          }
-      });
+    updateBoostBars(): void {
+        const boostCounter = document.querySelector(
+            "#ui-boost-counter",
+        ) as HTMLElement | null;
+        if (boostCounter) {
+            const boostBars = boostCounter.querySelectorAll<HTMLDivElement>(
+                ".ui-boost-base .ui-bar-inner",
+            );
 
-      const weaponNames = Array.from(
-          document.getElementsByClassName("ui-weapon-name"),
-      ) as HTMLElement[];
-      weaponNames.forEach((weaponNameElement) => {
-          const weaponContainer = weaponNameElement.closest(".ui-weapon-switch") as HTMLElement;
-          const observer = new MutationObserver(() => {
-              const weaponName = weaponNameElement.textContent?.trim() || "";
-              let border = "#FFFFFF";
+            let totalBoost = 0;
+            const weights: number[] = [25, 25, 40, 10];
+
+            boostBars.forEach((bar, index) => {
+                const width = parseFloat(bar.style.width);
+                if (!isNaN(width)) {
+                    totalBoost += width * (weights[index] / 100);
+                }
+            });
+
+            const averageBoost = Math.round(totalBoost);
+            let boostDisplay = boostCounter.querySelector(
+                ".boost-display",
+            ) as HTMLDivElement | null;
+
+            if (!boostDisplay) {
+                boostDisplay = document.createElement("div");
+                boostDisplay.classList.add("boost-display");
+                Object.assign(boostDisplay.style, {
+                    position: "absolute",
+                    bottom: "75px",
+                    right: "335px",
+                    color: "#FF901A",
+                    backgroundColor: "rgba(0, 0, 0, 0.4)",
+                    padding: "5px 10px",
+                    borderRadius: "5px",
+                    fontFamily: "Arial, sans-serif",
+                    fontSize: "14px",
+                    zIndex: "10",
+                    textAlign: "center",
+                });
+
+                boostCounter.appendChild(boostDisplay);
+            }
+
+            boostDisplay.textContent = `AD: ${averageBoost}%`;
+        }
+    }
+
+    setupWeaponBorderHandler() {
+        const weaponContainers = Array.from(
+            document.getElementsByClassName("ui-weapon-switch"),
+        ) as HTMLElement[];
+        weaponContainers.forEach((container) => {
+            if (container.id === "ui-weapon-id-4") {
+                container.style.border = "3px solid #2f4032";
+            } else {
+                container.style.border = "3px solid #FFFFFF";
+            }
+        });
+
+        const weaponNames = Array.from(
+            document.getElementsByClassName("ui-weapon-name"),
+        ) as HTMLElement[];
+        weaponNames.forEach((weaponNameElement) => {
+            const weaponContainer = weaponNameElement.closest(
+                ".ui-weapon-switch",
+            ) as HTMLElement;
+            const observer = new MutationObserver(() => {
+                const weaponName = weaponNameElement.textContent?.trim() || "";
+                let border = "#FFFFFF";
 
               switch (weaponName.toUpperCase()) {
 
@@ -308,166 +319,163 @@ export class GameMod {
               case "FLARE GUN": border = "#FF4500"; break; case "M79": border = "#008080"; break; case "HEART CANNON": border = "#FFC0CB"; break; 
               default: border = "#FFFFFF"; break; }
 
-              if (weaponContainer.id !== "ui-weapon-id-4") {
-                  weaponContainer.style.border = `3px solid ${border}`;
-              }
-          });
+                if (weaponContainer.id !== "ui-weapon-id-4") {
+                    weaponContainer.style.border = `3px solid ${border}`;
+                }
+            });
 
-          observer.observe(weaponNameElement, {
-              childList: true,
-              characterData: true,
-              subtree: true,
-          });
-      });
-  }
-
-  updateUiElements() {
-      const currentUrl = window.location.href;
-
-      const isSpecialUrl = /\/#\w+/.test(currentUrl);
-
-      const playerOptions = document.getElementById("player-options");
-      const teamMenuContents = document.getElementById("team-menu-contents");
-      const startMenuContainer = document.querySelector(
-          "#start-menu .play-button-container",
-      );
-
-      if (!playerOptions) return;
-
-      if (
-          isSpecialUrl &&
-          teamMenuContents &&
-          playerOptions.parentNode !== teamMenuContents
-      ) {
-          teamMenuContents.appendChild(playerOptions);
-      } else if (
-          !isSpecialUrl &&
-          startMenuContainer &&
-          playerOptions.parentNode !== startMenuContainer
-      ) {
-          const firstChild = startMenuContainer.firstChild;
-          startMenuContainer.insertBefore(playerOptions, firstChild);
-      }
-      const teamMenu = document.getElementById("team-menu");
-      if (teamMenu) {
-          teamMenu.style.height = "355px";
-      }
-      const menuBlocks = document.querySelectorAll<HTMLElement>(".menu-block");
-
-    menuBlocks.forEach((block) => {
-    if (block instanceof HTMLElement) {
-        block.style.maxHeight = "355px";
+            observer.observe(weaponNameElement, {
+                childList: true,
+                characterData: true,
+                subtree: true,
+            });
+        });
     }
-});
-  }
 
-  startUpdateLoop() {
-      const now = performance.now();
-      const delta = now - this.lastFrameTime;
+    updateUiElements() {
+        const currentUrl = window.location.href;
 
-      this.frameCount++;
+        const isSpecialUrl = /\/#\w+/.test(currentUrl);
 
-      if (delta >= 1000) {
-          this.fps = Math.round((this.frameCount * 1000) / delta);
-          this.frameCount = 0;
-          this.lastFrameTime = now;
+        const playerOptions = document.getElementById("player-options");
+        const teamMenuContents = document.getElementById("team-menu-contents");
+        const startMenuContainer = document.querySelector(
+            "#start-menu .play-button-container",
+        );
 
-          this.kills = this.getKills();
+        if (!playerOptions) return;
 
-          if (this.isFpsVisible && this.fpsCounter) {
-              this.fpsCounter.textContent = `FPS: ${this.fps}`;
-          }
+        if (
+            isSpecialUrl &&
+            teamMenuContents &&
+            playerOptions.parentNode !== teamMenuContents
+        ) {
+            teamMenuContents.appendChild(playerOptions);
+        } else if (
+            !isSpecialUrl &&
+            startMenuContainer &&
+            playerOptions.parentNode !== startMenuContainer
+        ) {
+            const firstChild = startMenuContainer.firstChild;
+            startMenuContainer.insertBefore(playerOptions, firstChild);
+        }
+        const teamMenu = document.getElementById("team-menu");
+        if (teamMenu) {
+            teamMenu.style.height = "355px";
+        }
+        const menuBlocks = document.querySelectorAll<HTMLElement>(".menu-block");
 
-          if (this.isKillsVisible && this.killsCounter) {
-              this.killsCounter.textContent = `Kills: ${this.kills}`;
-          }
+        menuBlocks.forEach((block) => {
+            if (block instanceof HTMLElement) {
+                block.style.maxHeight = "355px";
+            }
+        });
+    }
 
-          if (this.isPingVisible && this.pingCounter && this.pingTest) {
-              const result = this.pingTest.getPingResult();
-              this.pingCounter.textContent = `PING: ${result.ping} ms`;
-          }
-      }
+    startUpdateLoop() {
+        const now = performance.now();
+        const delta = now - this.lastFrameTime;
 
-      this.startPingTest();
-      this.animationFrameCallback(() => this.startUpdateLoop());
-      this.updateUiElements();
-      this.updateBoostBars();
-      this.updateHealthBars();
-  }
+        this.frameCount++;
+
+        if (delta >= 1000) {
+            this.fps = Math.round((this.frameCount * 1000) / delta);
+            this.frameCount = 0;
+            this.lastFrameTime = now;
+
+            this.kills = this.getKills();
+
+            if (this.isFpsVisible && this.fpsCounter) {
+                this.fpsCounter.textContent = `FPS: ${this.fps}`;
+            }
+
+            if (this.isKillsVisible && this.killsCounter) {
+                this.killsCounter.textContent = `Kills: ${this.kills}`;
+            }
+
+            if (this.isPingVisible && this.pingCounter && this.pingTest) {
+                const result = this.pingTest.getPingResult();
+                this.pingCounter.textContent = `PING: ${result.ping} ms`;
+            }
+        }
+
+        this.startPingTest();
+        this.animationFrameCallback(() => this.startUpdateLoop());
+        this.updateUiElements();
+        this.updateBoostBars();
+        this.updateHealthBars();
+    }
 }
 
 export class PingTest {
-  ptcDataBuf: ArrayBuffer;
-  test: {
-      region: string;
-      url: string;
-      ping: number | string;
-      ws: WebSocket | null;
-      sendTime: number;
-      retryCount: number;
-  };
+    ptcDataBuf: ArrayBuffer;
+    test: {
+        region: string;
+        url: string;
+        ping: number | string;
+        ws: WebSocket | null;
+        sendTime: number;
+        retryCount: number;
+    };
 
-  constructor(selectedServer: { region: string; url: string }) {
-      this.ptcDataBuf = new ArrayBuffer(1);
-      this.test = {
-          region: selectedServer.region,
-          url: `wss://${selectedServer.url}/ptc`,
-          ping: 9999,
-          ws: null,
-          sendTime: 0,
-          retryCount: 0,
-      };
-  }
+    constructor(selectedServer: { region: string; url: string }) {
+        this.ptcDataBuf = new ArrayBuffer(1);
+        this.test = {
+            region: selectedServer.region,
+            url: `wss://${selectedServer.url}/ptc`,
+            ping: 9999,
+            ws: null,
+            sendTime: 0,
+            retryCount: 0,
+        };
+    }
 
-  startPingTest() {
-      if (!this.test.ws) {
-          const ws = new WebSocket(this.test.url);
-          ws.binaryType = "arraybuffer";
+    startPingTest() {
+        if (!this.test.ws) {
+            const ws = new WebSocket(this.test.url);
+            ws.binaryType = "arraybuffer";
 
-          ws.onopen = () => {
-              this.sendPing();
-              this.test.retryCount = 0;
-          };
+            ws.onopen = () => {
+                this.sendPing();
+                this.test.retryCount = 0;
+            };
 
-          ws.onmessage = () => {
-              const elapsed = (Date.now() - this.test.sendTime) / 1e3;
-              this.test.ping = Math.round(elapsed * 1000);
-              this.test.retryCount = 0;
-              setTimeout(() => this.sendPing(), 200);
-          };
+            ws.onmessage = () => {
+                const elapsed = (Date.now() - this.test.sendTime) / 1e3;
+                this.test.ping = Math.round(elapsed * 1000);
+                this.test.retryCount = 0;
+                setTimeout(() => this.sendPing(), 200);
+            };
 
-          ws.onerror = () => {
-              this.test.ping = "Error";
-              this.test.retryCount++;
-              if (this.test.retryCount < 5) {
-                  setTimeout(() => this.startPingTest(), 2000);
-              } else {
+            ws.onerror = () => {
+                this.test.ping = "Error";
+                this.test.retryCount++;
+                if (this.test.retryCount < 5) {
+                    setTimeout(() => this.startPingTest(), 2000);
+                } else {
+                    this.test.ws = null;
+                }
+            };
 
-                  this.test.ws = null;
-              }
-          };
+            ws.onclose = () => {
+                this.test.ws = null;
+            };
 
-          ws.onclose = () => {
-              this.test.ws = null;
-          };
+            this.test.ws = ws;
+        }
+    }
 
-          this.test.ws = ws;
-      }
-  }
+    sendPing() {
+        if (this.test.ws && this.test.ws.readyState === WebSocket.OPEN) {
+            this.test.sendTime = Date.now();
+            this.test.ws.send(this.ptcDataBuf);
+        }
+    }
 
-  sendPing() {
-      if (this.test.ws && this.test.ws.readyState === WebSocket.OPEN) {
-          this.test.sendTime = Date.now();
-          this.test.ws.send(this.ptcDataBuf);
-      }
-  }
-
-  getPingResult() {
-      return {
-          region: this.test.region,
-          ping: this.test.ping,
-      };
-  }
+    getPingResult() {
+        return {
+            region: this.test.region,
+            ping: this.test.ping,
+        };
+    }
 }
-
-
