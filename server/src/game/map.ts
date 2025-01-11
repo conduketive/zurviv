@@ -276,6 +276,7 @@ export class GameMap {
 
     placeSpawns: string[];
     placesToSpawn: Vec2[];
+    playerSpawnPositions: Vec2[] = [];
 
     factionMode: boolean;
     perkMode: boolean;
@@ -1551,6 +1552,17 @@ export class GameMap {
                     collided = true;
                     break;
                 }
+                //prevent players from spawning in already spawned areas
+                for (const spawnPos of this.playerSpawnPositions) { // {{ edit_2 }}
+                    if (v2.distance(spawnPos, circle.pos) < GameConfig.player.minPosSpawnRad) {
+                        collided = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!collided) {
+                this.playerSpawnPositions.push(circle.pos); // {{ edit_3 }}
             }
 
             // prevent players from spawning bellow airdrops or grenades

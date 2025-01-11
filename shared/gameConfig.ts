@@ -166,7 +166,8 @@ export const GameConfig = {
         medicReviveRange: 6,
         spectateDeadTimeout: 2,
         killLeaderMinKills: 3,
-        minSpawnRad: 25,
+        minSpawnRad: 40,
+        minPosSpawnRad: 20,
 
         /* STRIP_FROM_PROD_CLIENT:START */
         defaultItems: {
