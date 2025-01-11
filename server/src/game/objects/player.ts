@@ -1967,10 +1967,11 @@ export class Player extends BaseGameObject {
                 finalDamage -= finalDamage * PerkProperties.steelskin.damageReduction;
             }
 
-            let isHeadShot = false;
+            //let isHeadShot = false;
+            const isHeadShot = false;
 
             if (gameSourceDef && "headshotMult" in gameSourceDef) {
-                isHeadShot = gameSourceDef.headshotMult > 1 && Math.random() < 0.15;
+                //isHeadShot = gameSourceDef.headshotMult > 1 && Math.random() < 0.15;
 
                 if (isHeadShot) {
                     finalDamage *= gameSourceDef.headshotMult;
