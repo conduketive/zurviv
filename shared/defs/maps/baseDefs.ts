@@ -80,15 +80,15 @@ export const Main: MapDef = {
             { name: "tier_guns", count: 1, weight: 0.29 }, // TODO get more data on this from original
             { name: "tier_ammo", count: 1, weight: 0.04 }, // ?
             { name: "tier_scopes", count: 1, weight: 0.15 }, // ?
-            { name: "tier_armor", count: 1, weight: 0.1 }, // ?
-            { name: "tier_medical", count: 1, weight: 0.17 }, // ?
+            { name: "tier_armor", count: 1, weight: 0.15 }, // ?
+            { name: "tier_medical", count: 1, weight: 0.2 }, // ?
             { name: "tier_throwables", count: 1, weight: 0.05 }, // ?
             { name: "tier_packs", count: 1, weight: 0.09 }, // ?
         ],
         tier_surviv: [
             { name: "tier_scopes", count: 1, weight: 0.15 }, // TODO get more data on this from original
-            { name: "tier_armor", count: 1, weight: 0.1 }, // ?
-            { name: "tier_medical", count: 1, weight: 0.17 }, // ?
+            { name: "tier_armor", count: 1, weight: 0.15 }, // ?
+            { name: "tier_medical", count: 1, weight: 0.2 }, // ?
             { name: "tier_throwables", count: 1, weight: 0.05 }, // ?
             { name: "tier_packs", count: 1, weight: 0.09 }, // ?
         ],
@@ -96,8 +96,8 @@ export const Main: MapDef = {
             { name: "tier_guns", count: 1, weight: 0.29 },
             { name: "tier_ammo", count: 1, weight: 0.04 },
             { name: "tier_scopes", count: 1, weight: 0.15 },
-            { name: "tier_armor", count: 1, weight: 0.1 },
-            { name: "tier_medical", count: 1, weight: 0.17 },
+            { name: "tier_armor", count: 1, weight: 0.2 },
+            { name: "tier_medical", count: 1, weight: 0.2 },
             { name: "tier_throwables", count: 1, weight: 0.05 },
             { name: "tier_packs", count: 1, weight: 0.09 },
             { name: "tier_outfits", count: 1, weight: 0.035 }, // !
