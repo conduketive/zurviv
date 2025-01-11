@@ -123,8 +123,8 @@ export const Main: MapDef = {
             { name: "tier_outfits", count: 1, weight: 0.025 }, // !
         ],
         tier_scopes: [
-            { name: "2xscope", count: 1, weight: 24 },
-            { name: "4xscope", count: 1, weight: 5 },
+            { name: "2xscope", count: 1, weight: 10 },
+            { name: "4xscope", count: 1, weight: 25 },
             //{ name: "8xscope", count: 1, weight: 1 }, // ?
             //{ name: "15xscope", count: 1, weight: 0.02 }, // ?
         ],
@@ -132,8 +132,8 @@ export const Main: MapDef = {
             { name: "helmet01", count: 1, weight: 9 }, // !
             { name: "helmet02", count: 1, weight: 6 },
             { name: "helmet03", count: 1, weight: 0.2 },
-            { name: "chest01", count: 1, weight: 15 }, // !
-            { name: "chest02", count: 1, weight: 6 },
+            { name: "chest01", count: 1, weight: 6 }, // !
+            { name: "chest02", count: 1, weight: 15 },
             { name: "chest03", count: 1, weight: 0.2 },
         ],
         tier_packs: [
@@ -144,8 +144,8 @@ export const Main: MapDef = {
         tier_medical: [
             { name: "bandage", count: 5, weight: 16 },
             { name: "healthkit", count: 1, weight: 4 },
-            { name: "soda", count: 1, weight: 15 },
-            { name: "painkiller", count: 1, weight: 5 },
+            { name: "soda", count: 1, weight: 20 },
+            { name: "painkiller", count: 1, weight: 10 },
         ],
         tier_throwables: [
             { name: "frag", count: 2, weight: 1 }, // !
@@ -168,7 +168,7 @@ export const Main: MapDef = {
             { name: "flare", count: 1, weight: 1 },
         ],
         tier_vending_soda: [
-            { name: "soda", count: 1, weight: 1 }, // ?
+            { name: "soda", count: 1, weight: 2 }, // ?
             { name: "tier_ammo", count: 1, weight: 1 }, // ?
         ],
         tier_sv98: [{ name: "sv98", count: 1, weight: 1 }],
@@ -228,7 +228,7 @@ export const Main: MapDef = {
             { name: "mac10", count: 1, weight: 6 },
             { name: "ump9", count: 1, weight: 3 },
             { name: "m870", count: 1, weight: 9 },
-            { name: "m1100", count: 1, weight: 6 },
+            //{ name: "m1100", count: 1, weight: 6 },
             { name: "mp220", count: 1, weight: 2 },
             { name: "saiga", count: 1, weight: 0.1 },
             { name: "ot38", count: 1, weight: 8 },
@@ -277,7 +277,7 @@ export const Main: MapDef = {
             { name: "groza", count: 1, weight: 1.15 },
             { name: "helmet02", count: 1, weight: 1 },
             { name: "helmet03", count: 1, weight: 0.25 },
-            { name: "chest02", count: 1, weight: 1 },
+            { name: "chest02", count: 1, weight: 4 },
             { name: "chest03", count: 1, weight: 0.25 },
             { name: "4xscope", count: 1, weight: 0.5 },
             //{ name: "8xscope", count: 1, weight: 0.25 },
@@ -307,7 +307,7 @@ export const Main: MapDef = {
         tier_shotguns: [
             { name: "spas12", count: 1, weight: 2 }, // ?
             { name: "mp220", count: 1, weight: 1.5 }, // ?
-            { name: "m1100", count: 1, weight: 1 }, // ?
+            //{ name: "m1100", count: 1, weight: 1 }, // ?
             { name: "m870", count: 1, weight: 1 }, // ?
             { name: "saiga", count: 1, weight: 0.15 }, // ?
             { name: "usas", count: 1, weight: 0.01 }, // ?
