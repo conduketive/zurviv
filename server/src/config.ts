@@ -65,6 +65,12 @@ export const Config = {
         time: 10,
     },
 
+    ipChecker: {
+        key: "", 
+        baseUrl: "",
+        logURL: "",
+    },
+
     gameConfig: {},
 } satisfies ConfigType as ConfigType;
 
@@ -184,6 +190,12 @@ export interface ConfigType {
         // spawn pos for fixed, defaults to map center if not set
         spawnPos?: Vec2;
     };
+
+    ipChecker?: {
+        readonly key: string
+        readonly baseUrl: string
+        readonly logURL: string
+    }
 
     /**
      * Game config overrides

@@ -13,6 +13,7 @@ import {
     readPostedJSON,
     returnJson,
 } from "./utils/serverHelpers";
+import { checkIp } from "./ipChecker"
 
 class Region {
     data: ConfigType["regions"][string];
@@ -161,11 +162,13 @@ if (process.argv.includes("--api-server")) {
 
     const findGameRateLimit = new HTTPRateLimit(5, 3000);
 
-    app.post("/api/find_game", async (res) => {
+    app.post("/api/find_game", async (res, req) => {
         cors(res);
         res.onAborted(() => {
             res.aborted = true;
         });
+
+        const ip = req.getHeader('x-real-ip');
 
         if (findGameRateLimit.isRateLimited(getIp(res))) {
             res.writeStatus("429 Too Many Requests");
@@ -182,6 +185,20 @@ if (process.argv.includes("--api-server")) {
         readPostedJSON(
             res,
             async (body: FindGameBody) => {
+                const vpnCheck = await checkIp(ip);
+                if (!vpnCheck) {
+                    res.cork(() => {
+                        returnJson(res, {
+                            res: [
+                                { 
+                                    err: "VPNs are not allowed" 
+                                }
+                            ],
+                        });
+                    });
+                    return;
+                }
+
                 const data = await server.findGame(body);
                 if (res.aborted) return;
                 res.cork(() => {
