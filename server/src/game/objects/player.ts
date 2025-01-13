@@ -2113,7 +2113,7 @@ export class Player extends BaseGameObject {
                 ) {
                     player = this.killedBy;
                 } else {
-                    player = this.group.randomPlayer(this);
+                    player = this.game.playerBarn.randomPlayer(this);
                 }
             }
         }
