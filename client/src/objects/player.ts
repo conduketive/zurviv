@@ -1704,7 +1704,7 @@ export class Player implements AbstractObject {
 
         const mouseY = inputManager.mousePos.y;
         const mouseX = inputManager.mousePos.x;
-        //local rotation
+        //local  rotation
         if (this.activeId == this.__id && !this.isSpectating && device.mobile == false) {
         this.bodyContainer.rotation = Math.atan2(
             mouseY - window.innerHeight / 2,
@@ -1712,16 +1712,6 @@ export class Player implements AbstractObject {
         );
         } else {
         this.bodyContainer.rotation = -Math.atan2(this.dir.y, this.dir.x);
-        }
-
-        // local rotation
-        if (this.activeId == this.__id && !this.isSpectating) {
-            this.bodyContainer.rotation = Math.atan2(
-                mouseY - window.innerHeight / 2,
-                mouseX - window.innerWidth / 2,
-            );
-        } else {
-            this.bodyContainer.rotation = -Math.atan2(this.dir.y, this.dir.x);
         }
     }
 
