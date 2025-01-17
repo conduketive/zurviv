@@ -3,6 +3,7 @@ export class GameMod {
   frameCount: number;
   fps: number;
   kills: number;
+  isLocalRotation: boolean;
   isFpsUncapped: boolean;
   isFpsVisible: boolean;
   isPingVisible: boolean;
@@ -10,6 +11,7 @@ export class GameMod {
   pingCounter!: HTMLElement | null;
   fpsCounter!: HTMLElement | null;
   killsCounter!: HTMLElement | null;
+  localRotation!: HTMLElement | null;
   currentServer!: string | null;
   pingTest!: PingTest | null;
   animationFrameCallback: (callback: () => void) => void;
@@ -19,6 +21,7 @@ export class GameMod {
       this.frameCount = 0;
       this.fps = 0;
       this.kills = 0;
+      this.isLocalRotation = true;
       this.isFpsUncapped = true;
       this.isFpsVisible = true;
       this.isPingVisible = true;
@@ -34,7 +37,7 @@ export class GameMod {
         this.startUpdateLoop();
         this.setupWeaponBorderHandler();
     }
-
+    
     initFpsCounter() {
         this.fpsCounter = document.createElement("div");
         this.fpsCounter.id = "fpsCounter";
@@ -370,6 +373,40 @@ export class GameMod {
                 block.style.maxHeight = "355px";
             }
         });
+
+
+    }
+
+    localRotationSetting(){
+        
+    const box = document.querySelector("#modal-settings-local-rotation");
+    if (!box){
+        this.localRotation = document.createElement("div");
+        this.localRotation.id = "modal-settings-local-rotation";
+        this.localRotation.className = "modal-settings-item";
+
+        const localRotationCheckbox = document.createElement("input");
+        localRotationCheckbox.type = "checkbox";
+        localRotationCheckbox.id = "localRotationCheck";
+        localRotationCheckbox.addEventListener("change", (event) => {
+            this.isLocalRotation = (event.target as HTMLInputElement).checked;
+            this.isLocalRotation = !this.isLocalRotation;
+            console.log(this.isLocalRotation);
+        });
+
+        const label = document.createElement("p");
+        label.className = "modal-settings-checkbox-text";
+        label.textContent = "Local Rotation (enable/disable local rotation)";
+
+        this.localRotation.appendChild(localRotationCheckbox);
+        this.localRotation.appendChild(label);
+
+        const menuSettingsOptions = document.querySelector("#modal-settings-body"); 
+        if (menuSettingsOptions) {
+            menuSettingsOptions.appendChild(this.localRotation);
+        }
+    }
+
     }
 
     startUpdateLoop() {
@@ -404,6 +441,7 @@ export class GameMod {
         this.updateUiElements();
         this.updateBoostBars();
         this.updateHealthBars();
+        this.localRotationSetting();
     }
 }
 

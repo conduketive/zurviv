@@ -13,7 +13,6 @@ import type { ConfigManager } from "./config";
 import { debugLines } from "./debugLines";
 import { device } from "./device";
 import { EmoteBarn } from "./emote";
-import { GameMod } from "./gameMod";
 import { Gas } from "./gas";
 import { helpers } from "./helpers";
 import { type InputHandler, Key } from "./input";
@@ -40,8 +39,6 @@ import type { Localization } from "./ui/localization";
 import { Touch } from "./ui/touch";
 import { UiManager } from "./ui/ui";
 import { UiManager2 } from "./ui/ui2";
-
-const gameMod = new GameMod();
 
 export interface Ctx {
     audioManager: AudioManager;

@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js-legacy";
+import { GameMod } from "../gameMod";
 import { GameObjectDefs, type LootDef } from "../../../shared/defs/gameObjectDefs";
 import type { GunDef } from "../../../shared/defs/gameObjects/gunDefs";
 import type { MeleeDef } from "../../../shared/defs/gameObjects/meleeDefs";
@@ -56,6 +57,7 @@ import type { Emitter, ParticleBarn } from "./particles";
 import { halloweenSpriteMap } from "./projectile";
 import { createCasingParticle } from "./shot";
 const inputManager = new InputHandler(document.body);
+const gameMod = new GameMod();
 
 const submergeMaskScaleFactor = 0.1;
 
@@ -1704,8 +1706,8 @@ export class Player implements AbstractObject {
 
         const mouseY = inputManager.mousePos.y;
         const mouseX = inputManager.mousePos.x;
-        //local  rotation
-        if (this.activeId == this.__id && !this.isSpectating && device.mobile == false) {
+        //local rotation
+        if (this.activeId == this.__id && !this.isSpectating && device.mobile == false && gameMod.isLocalRotation == true) {
         this.bodyContainer.rotation = Math.atan2(
             mouseY - window.innerHeight / 2,
             mouseX - window.innerWidth / 2,
