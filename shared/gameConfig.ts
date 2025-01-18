@@ -167,7 +167,7 @@ export const GameConfig = {
         spectateDeadTimeout: 2,
         killLeaderMinKills: 3,
         minSpawnRad: 40,
-        minPosSpawnRad: 20,
+        minPosSpawnRad: 100,
 
         /* STRIP_FROM_PROD_CLIENT:START */
         defaultItems: {
