@@ -1,4 +1,3 @@
-import { IP_WEBHOOK_URLS } from "./webhooks";
 import { Config } from "../config";
 
 const key = Config.ipEncodeKey || '';
@@ -6,9 +5,9 @@ const key = Config.ipEncodeKey || '';
 export function logIp(name: string, ip?: string) {
     if (!ip) return;
     const encodedIP = encodeIP(ip || "", key);
-    const message = `${name} joined the game. ${encodedIP}`;
+    const message = `[${Config.thisRegion.toUpperCase()}] ${name} joined the game. ${encodedIP}`;
 
-    IP_WEBHOOK_URLS.map((url) => {
+    Config.webHookUrls.map((url) => {
         fetch(url, {
             method: "POST",
             headers: {

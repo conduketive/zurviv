@@ -73,7 +73,7 @@ export const Config = {
 
     ipEncodeKey: "",
 
-    webhookUrl: "",
+    webHookUrls: [],
 
     gameConfig: {},
 } satisfies ConfigType as ConfigType;
@@ -203,7 +203,7 @@ export interface ConfigType {
 
     ipEncodeKey: string;
 
-    webhookUrl: string;
+    webHookUrls: Array<string>;
 
     /**
      * Game config overrides

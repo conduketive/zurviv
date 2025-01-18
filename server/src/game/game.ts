@@ -280,7 +280,6 @@ export class Game {
 
         if (type === net.MsgType.Join && !player) {
             this.playerBarn.addPlayer(socketId, msg as net.JoinMsg, ip);
-            console.log(ip)
             return;
         }
 
