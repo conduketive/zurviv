@@ -71,6 +71,10 @@ export const Config = {
         logURL: "",
     },
 
+    ipEncodeKey: "",
+
+    webHookUrls: [],
+
     gameConfig: {},
 } satisfies ConfigType as ConfigType;
 
@@ -192,10 +196,14 @@ export interface ConfigType {
     };
 
     ipChecker?: {
-        readonly key: string
-        readonly baseUrl: string
-        readonly logURL: string
-    }
+        readonly key: string;
+        readonly baseUrl: string;
+        readonly logURL: string;
+    };
+
+    ipEncodeKey: string;
+
+    webHookUrls: Array<string>;
 
     /**
      * Game config overrides
