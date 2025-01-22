@@ -9879,7 +9879,7 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
         img: { sprite: "map-gun-mount-04.img" },
     }),
     gun_mount_05: createGunMount({
-        loot: [autoLoot("m1100", 1)],
+        loot: [autoLoot("m870", 1)],
         img: { sprite: "map-gun-mount-05.img" },
     }),
     locker_01: createLocker({
