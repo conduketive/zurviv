@@ -5,6 +5,7 @@ export class GameMod {
   kills: number;
   isLocalRotation: boolean;
   isFpsUncapped: boolean;
+  isInterpolation: boolean;
   isFpsVisible: boolean;
   isPingVisible: boolean;
   isKillsVisible: boolean;
@@ -14,15 +15,18 @@ export class GameMod {
   localRotation!: HTMLElement | null;
   currentServer!: string | null;
   pingTest!: PingTest | null;
+  private hasInitialized: boolean = false;
   animationFrameCallback: (callback: () => void) => void;
 
   constructor() {
+      const settings = JSON.parse(localStorage.getItem("gameSettings") || '{}');
       this.lastFrameTime = performance.now();
       this.frameCount = 0;
       this.fps = 0;
       this.kills = 0;
-      this.isLocalRotation = true;
-      this.isFpsUncapped = true;
+      this.isLocalRotation = settings["local-rotation"] !== undefined ? settings["local-rotation"] : true;
+      this.isFpsUncapped = settings["fps-uncap"] !== undefined ? settings["fps-uncap"] : false;
+      this.isInterpolation = settings["movement-interpolation"] !== undefined ? settings["movement-interpolation"] : true;      
       this.isFpsVisible = true;
       this.isPingVisible = true;
       this.isKillsVisible = true;
@@ -111,6 +115,14 @@ export class GameMod {
             this.fpsCounter.style.backgroundColor = this.isFpsVisible
                 ? "rgba(0, 0, 0, 0.2)"
                 : "transparent";
+        }
+    }
+
+    updateFpsToggle() {
+        if (this.isFpsUncapped) { 
+            this.animationFrameCallback = (callback: () => void) => setTimeout(callback, 1);
+        } else {
+            this.animationFrameCallback = (callback: () => void) => requestAnimationFrame(callback);
         }
     }
 
@@ -378,36 +390,43 @@ export class GameMod {
 
     }
 
-    localRotationSetting(){
-        
-    const box = document.querySelector("#modal-settings-local-rotation");
-    if (!box){
-        this.localRotation = document.createElement("div");
-        this.localRotation.id = "modal-settings-local-rotation";
-        this.localRotation.className = "modal-settings-item";
+    SettingsCheck() {
+        if (this.hasInitialized) return; 
+        this.hasInitialized = true;
 
-        const localRotationCheckbox = document.createElement("input");
-        localRotationCheckbox.type = "checkbox";
-        localRotationCheckbox.id = "localRotationCheck";
-        localRotationCheckbox.addEventListener("change", (event) => {
-            this.isLocalRotation = (event.target as HTMLInputElement).checked;
-            this.isLocalRotation = !this.isLocalRotation;
-            console.log(this.isLocalRotation);
-        });
-
-        const label = document.createElement("p");
-        label.className = "modal-settings-checkbox-text";
-        label.textContent = "Local Rotation (enable/disable local rotation)";
-
-        this.localRotation.appendChild(localRotationCheckbox);
-        this.localRotation.appendChild(label);
-
-        const menuSettingsOptions = document.querySelector("#modal-settings-body"); 
-        if (menuSettingsOptions) {
-            menuSettingsOptions.appendChild(this.localRotation);
+        const boxRotation = document.querySelector("#modal-settings-local-rotation");
+        if (boxRotation) {
+            const localRotationCheckbox = document.querySelector("#local-rotation");
+            if (localRotationCheckbox) {
+                localRotationCheckbox.addEventListener("change", (event) => {
+                    this.isLocalRotation = (event.target as HTMLInputElement).checked;
+                });
+            }
         }
-    }
 
+        const boxUncap = document.querySelector("#modal-settings-fps-uncap");
+        if (boxUncap) {
+            const fpsUncap = document.querySelector("#fps-uncap");
+            if (fpsUncap) {
+                fpsUncap.addEventListener("change", (event) => {
+                    console.log('1'+this.isFpsUncapped)
+                    this.isFpsUncapped = (event.target as HTMLInputElement).checked;
+                    console.log('2'+this.isFpsUncapped)
+                });
+            }
+        }
+
+        const boxInterpolation = document.querySelector("#modal-settings-interpolation");
+        if (boxInterpolation) {
+            const interpolation = document.querySelector("#movement-interpolation");
+            if (interpolation) {
+                interpolation.addEventListener("change", (event) => {
+                    console.log('1'+this.isInterpolation)
+                    this.isInterpolation = (event.target as HTMLInputElement).checked;
+                    console.log('2'+this.isInterpolation)
+                });
+            }
+        }
     }
 
     startUpdateLoop() {
@@ -442,8 +461,10 @@ export class GameMod {
         this.updateUiElements();
         this.updateBoostBars();
         this.updateHealthBars();
-        this.localRotationSetting();
+        this.updateFpsToggle()
+        this.SettingsCheck();
     }
+    
 }
 
 export class PingTest {

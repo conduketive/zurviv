@@ -727,14 +727,16 @@ export class Player implements AbstractObject {
         this.dirOld = v2.copy(this.dir);
         this.pos = v2.copy(this.netData.pos);
         //interpolation
-        !(
-            Math.abs(this.pos.x - this.posOld.x) > 50 ||
-            Math.abs(this.pos.y - this.posOld.y) > 50
-        ) &&
-            //movement interpolation
-            ((this.pos.x += (this.posOld.x - this.pos.x) * 0.5),
-            (this.pos.y += (this.posOld.y - this.pos.y) * 0.5)),
-            (this.dir = v2.copy(this.netData.dir));
+        if(gameMod.isInterpolation == true){
+            !(
+                Math.abs(this.pos.x - this.posOld.x) > 50 ||
+                Math.abs(this.pos.y - this.posOld.y) > 50
+            ) &&
+                //movement interpolation
+                ((this.pos.x += (this.posOld.x - this.pos.x) * 0.5),
+                (this.pos.y += (this.posOld.y - this.pos.y) * 0.5))
+        }
+        this.dir = v2.copy(this.netData.dir);
         this.layer = this.netData.layer;
         this.downed = this.netData.downed;
         this.rad = this.netData.scale * GameConfig.player.radius;
@@ -1703,10 +1705,11 @@ export class Player implements AbstractObject {
         }
         this.handLContainer.position.x -= this.gunRecoilL * 1.125;
         this.handRContainer.position.x -= this.gunRecoilR * 1.125;
-
+        
         const mouseY = inputManager.mousePos.y;
         const mouseX = inputManager.mousePos.x;
         //local rotation
+        console.log('xd '+gameMod.isLocalRotation);
         if (this.activeId == this.__id && !this.isSpectating && device.mobile == false && gameMod.isLocalRotation == true) {
         this.bodyContainer.rotation = Math.atan2(
             mouseY - window.innerHeight / 2,
