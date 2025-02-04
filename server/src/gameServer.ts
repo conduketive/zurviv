@@ -25,6 +25,7 @@ export interface FindGameBody {
     autoFill: boolean;
     gameModeIdx: number;
 }
+import { isBanned } from "./utils/moderation";
 
 export type FindGameResponse = {
     res: Array<
@@ -80,10 +81,18 @@ export class GameServer {
             /**
              * Upgrade the connection to WebSocket.
              */
-            upgrade(res, req, context) {
+            async upgrade(res, req, context) {
                 res.onAborted((): void => {});
 
                 const ip = getIp(res, req);
+
+                if (await isBanned(ip)) {
+                    res.writeStatus("403 Forbidden");
+                    res.write("403 Forbidden");
+                    res.end();
+                    return;
+                }
+
                 if (
                     gameHTTPRateLimit.isRateLimited(ip) ||
                     gameWsRateLimit.isIpRateLimited(ip)

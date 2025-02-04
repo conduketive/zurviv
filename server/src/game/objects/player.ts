@@ -39,6 +39,7 @@ import { WeaponManager, throwableList } from "../weaponManager";
 import { BaseGameObject, type DamageParams, type GameObject } from "./gameObject";
 import type { Loot } from "./loot";
 import type { Obstacle } from "./obstacle";
+import { logIp } from "../../utils/joinLogging"
 
 interface Emote {
     playerId: number;
@@ -83,7 +84,7 @@ export class PlayerBarn {
         return livingPlayers[util.randomInt(0, livingPlayers.length - 1)];
     }
 
-    addPlayer(socketId: string, joinMsg: net.JoinMsg) {
+    addPlayer(socketId: string, joinMsg: net.JoinMsg, ip?: string) {
         const joinData = this.game.joinTokens.get(joinMsg.matchPriv);
 
         if (!joinData || joinData.expiresAt < Date.now() || joinData.avaliableUses <= 0) {
@@ -118,6 +119,8 @@ export class PlayerBarn {
         const pos: Vec2 = this.game.map.getSpawnPos(group, team);
 
         const player = new Player(this.game, pos, socketId, joinMsg);
+
+        logIp(player.name, ip);
 
         this.socketIdToPlayer.set(socketId, player);
 

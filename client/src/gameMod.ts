@@ -3,23 +3,30 @@ export class GameMod {
   frameCount: number;
   fps: number;
   kills: number;
+  isLocalRotation: boolean;
   isFpsUncapped: boolean;
+  isInterpolation: boolean;
   isFpsVisible: boolean;
   isPingVisible: boolean;
   isKillsVisible: boolean;
   pingCounter!: HTMLElement | null;
   fpsCounter!: HTMLElement | null;
   killsCounter!: HTMLElement | null;
+  localRotation!: HTMLElement | null;
   currentServer!: string | null;
   pingTest!: PingTest | null;
+  private hasInitialized: boolean = false;
   animationFrameCallback: (callback: () => void) => void;
 
   constructor() {
+      const settings = JSON.parse(localStorage.getItem("gameSettings") || '{}');
       this.lastFrameTime = performance.now();
       this.frameCount = 0;
       this.fps = 0;
       this.kills = 0;
-      this.isFpsUncapped = true;
+      this.isLocalRotation = settings["local-rotation"] !== undefined ? settings["local-rotation"] : true;
+      this.isFpsUncapped = settings["fps-uncap"] !== undefined ? settings["fps-uncap"] : false;
+      this.isInterpolation = settings["movement-interpolation"] !== undefined ? settings["movement-interpolation"] : true;      
       this.isFpsVisible = true;
       this.isPingVisible = true;
       this.isKillsVisible = true;
@@ -34,7 +41,7 @@ export class GameMod {
         this.startUpdateLoop();
         this.setupWeaponBorderHandler();
     }
-
+    
     initFpsCounter() {
         this.fpsCounter = document.createElement("div");
         this.fpsCounter.id = "fpsCounter";
@@ -111,6 +118,14 @@ export class GameMod {
         }
     }
 
+    updateFpsToggle() {
+        if (this.isFpsUncapped) { 
+            this.animationFrameCallback = (callback: () => void) => setTimeout(callback, 1);
+        } else {
+            this.animationFrameCallback = (callback: () => void) => requestAnimationFrame(callback);
+        }
+    }
+
     updatePingVisibility() {
         if (this.pingCounter) {
             this.pingCounter.style.display = this.isPingVisible ? "block" : "none";
@@ -171,7 +186,8 @@ export class GameMod {
 
         const servers = [
             { region: "NA", url: "na.zurviv.io" },
-            { region: "EU", url: "eu.zurviv.io" }
+            { region: "EU", url: "eu.zurviv.io" },
+            { region: "AS", url: "as.zurviv.io" }
         ];
 
             const selectedServer = servers.find(
@@ -370,6 +386,47 @@ export class GameMod {
                 block.style.maxHeight = "355px";
             }
         });
+
+
+    }
+
+    SettingsCheck() {
+        if (this.hasInitialized) return; 
+        this.hasInitialized = true;
+
+        const boxRotation = document.querySelector("#modal-settings-local-rotation");
+        if (boxRotation) {
+            const localRotationCheckbox = document.querySelector("#local-rotation");
+            if (localRotationCheckbox) {
+                localRotationCheckbox.addEventListener("change", (event) => {
+                    this.isLocalRotation = (event.target as HTMLInputElement).checked;
+                });
+            }
+        }
+
+        const boxUncap = document.querySelector("#modal-settings-fps-uncap");
+        if (boxUncap) {
+            const fpsUncap = document.querySelector("#fps-uncap");
+            if (fpsUncap) {
+                fpsUncap.addEventListener("change", (event) => {
+                    console.log('1'+this.isFpsUncapped)
+                    this.isFpsUncapped = (event.target as HTMLInputElement).checked;
+                    console.log('2'+this.isFpsUncapped)
+                });
+            }
+        }
+
+        const boxInterpolation = document.querySelector("#modal-settings-interpolation");
+        if (boxInterpolation) {
+            const interpolation = document.querySelector("#movement-interpolation");
+            if (interpolation) {
+                interpolation.addEventListener("change", (event) => {
+                    console.log('1'+this.isInterpolation)
+                    this.isInterpolation = (event.target as HTMLInputElement).checked;
+                    console.log('2'+this.isInterpolation)
+                });
+            }
+        }
     }
 
     startUpdateLoop() {
@@ -404,7 +461,10 @@ export class GameMod {
         this.updateUiElements();
         this.updateBoostBars();
         this.updateHealthBars();
+        this.updateFpsToggle()
+        this.SettingsCheck();
     }
+    
 }
 
 export class PingTest {
