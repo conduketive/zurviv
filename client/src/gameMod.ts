@@ -409,9 +409,7 @@ export class GameMod {
             const fpsUncap = document.querySelector("#fps-uncap");
             if (fpsUncap) {
                 fpsUncap.addEventListener("change", (event) => {
-                    console.log('1'+this.isFpsUncapped)
                     this.isFpsUncapped = (event.target as HTMLInputElement).checked;
-                    console.log('2'+this.isFpsUncapped)
                 });
             }
         }
@@ -421,9 +419,7 @@ export class GameMod {
             const interpolation = document.querySelector("#movement-interpolation");
             if (interpolation) {
                 interpolation.addEventListener("change", (event) => {
-                    console.log('1'+this.isInterpolation)
                     this.isInterpolation = (event.target as HTMLInputElement).checked;
-                    console.log('2'+this.isInterpolation)
                 });
             }
         }

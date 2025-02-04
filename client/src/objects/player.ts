@@ -1709,7 +1709,6 @@ export class Player implements AbstractObject {
         const mouseY = inputManager.mousePos.y;
         const mouseX = inputManager.mousePos.x;
         //local rotation
-        console.log('xd '+gameMod.isLocalRotation);
         if (this.activeId == this.__id && !this.isSpectating && device.mobile == false && gameMod.isLocalRotation == true) {
         this.bodyContainer.rotation = Math.atan2(
             mouseY - window.innerHeight / 2,
