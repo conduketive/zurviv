@@ -187,7 +187,8 @@ export class GameMod {
         const servers = [
             { region: "NA", url: "na.zurviv.io" },
             { region: "EU", url: "eu.zurviv.io" },
-            { region: "AS", url: "as.zurviv.io" }
+            { region: "AS", url: "as.zurviv.io" },
+            { region: "SA", url: "sa.zurviv.io" }
         ];
 
             const selectedServer = servers.find(
