@@ -401,6 +401,7 @@ export class GameMod {
             if (localRotationCheckbox) {
                 localRotationCheckbox.addEventListener("change", (event) => {
                     this.isLocalRotation = (event.target as HTMLInputElement).checked;
+                    this.saveLocalStorage();
                 });
             }
         }
@@ -411,6 +412,7 @@ export class GameMod {
             if (fpsUncap) {
                 fpsUncap.addEventListener("change", (event) => {
                     this.isFpsUncapped = (event.target as HTMLInputElement).checked;
+                    this.saveLocalStorage();
                 });
             }
         }
@@ -421,9 +423,20 @@ export class GameMod {
             if (interpolation) {
                 interpolation.addEventListener("change", (event) => {
                     this.isInterpolation = (event.target as HTMLInputElement).checked;
+                    this.saveLocalStorage();
                 });
             }
         }
+    }
+
+    saveLocalStorage() {
+        const settings = {
+            "local-rotation": this.isLocalRotation,
+            "fps-uncap": this.isFpsUncapped,
+            "movement-interpolation": this.isInterpolation,
+        };
+        localStorage.setItem("gameSettings", JSON.stringify(settings));
+    
     }
 
     startUpdateLoop() {
