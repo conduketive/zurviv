@@ -3298,10 +3298,32 @@ a:active {
     -webkit-box-shadow: 0 0 9px #908d2d;
   }
 }
+
+@keyframes spring-pulse {
+  from {
+    background-color: #902d83;
+    -webkit-box-shadow: 0 0 9px #902d83;
+  }
+  50% {
+    background-color: #e454f7;
+    -webkit-box-shadow: 0 0 18px #e454f7;
+  }
+  to {
+    background-color: #902d83;
+    -webkit-box-shadow: 0 0 9px #902d83;
+  }
+}
+
 .btn-mode-faction {
   animation-name: faction-pulse;
   animation-duration: 4s;
   border-bottom: 4px solid #00448a;
+}
+
+.btn-mode-spring {
+  animation-name: spring-pulse;
+  animation-duration: 4s;
+  border-bottom: 4px solid #902d83;
 }
 
 @media (max-width: 850px), (max-width: 900px) and (min-resolution: 3dppx) {
