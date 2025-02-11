@@ -34,8 +34,8 @@ export const Config = {
     apiKey: "Kongregate Sucks",
 
     modes: [
-        { mapName: "main", teamMode: TeamMode.Solo, enabled: true },
-        { mapName: "faction", teamMode: TeamMode.Duo, enabled: true },
+        { mapName: "main_spring", teamMode: TeamMode.Solo, enabled: true },
+        { mapName: "main", teamMode: TeamMode.Duo, enabled: true },
         { mapName: "main", teamMode: TeamMode.Squad, enabled: true },
     ],
 
@@ -50,7 +50,7 @@ export const Config = {
     client: {
         AIP_ID: undefined,
         AIP_PLACEMENT_ID: undefined,
-        theme: "faction",
+        theme: "main",
     },
 
     thisRegion: "local",
