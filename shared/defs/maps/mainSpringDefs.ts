@@ -3,6 +3,12 @@ import type { MapDef } from "../mapDefs";
 import { Main } from "./baseDefs";
 
 const mapDef = {
+    mapId: 5,
+    desc: {
+        name: "Spring",
+        icon: "img/particles/part-leaf-07.svg",
+        buttonCss: "btn-mode-spring"
+    },
     assets: {
         audio: [],
         atlases: ["gradient", "loadout", "shared", "main"],
@@ -23,12 +29,6 @@ const mapDef = {
         particles: { camera: "falling_leaf_spring" },
     },
     /* STRIP_FROM_PROD_CLIENT:START */
-    desc: {
-        name: "Spring",
-        icon: "img/particles/part-leaf-07.svg",
-        buttonCss: "btn-mode-spring",
-        buttonText: "solo",
-    },
     mapGen: {
         densitySpawns: [
             {
