@@ -315,7 +315,7 @@ const mapDef = {
         ],
         tier_ghillie: [
             {
-                name: "outfitDarkGhillie",
+                name: "outfitGhillie",
                 count: 1,
                 weight: 0.5,
             },
@@ -324,7 +324,7 @@ const mapDef = {
             { name: "", count: 1, weight: 25 },
             { name: "outfitHeaven", count: 1, weight: 1 },
             {
-                name: "outfitDarkGhillie",
+                name: "outfitGhillie",
                 count: 1,
                 weight: 0.5,
             },
@@ -346,6 +346,14 @@ const mapDef = {
                 weight: 1,
             },
         ],
+        tier_faction_outfits: [
+            { name: "outfitVerde", count: 1, weight: 1 },
+            { name: "outfitWoodland", count: 1, weight: 1 },
+            { name: "outfitKeyLime", count: 1, weight: 1 },
+            { name: "outfitCamo", count: 1, weight: 1 },
+        ],
+        tier_airdrop_faction_outfits: [{ name: "outfitGhillie", count: 1, weight: 1 }],
+        tier_airdrop_faction_melee: [{ name: "pan", count: 1, weight: 1 }],
     },
     mapGen: {
         map: {
@@ -358,8 +366,8 @@ const mapDef = {
             rivers: {
                 weights: [
                     { weight: 1, widths: [20] },
-                    { weight: 1, widths: [20, 4] },
-                    { weight: 1, widths: [20, 8, 4] },
+                    // { weight: 1, widths: [20, 4] },
+                    // { weight: 1, widths: [20, 8, 4] },
                 ],
                 smoothness: 0.15,
             },

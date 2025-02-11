@@ -1,3 +1,4 @@
+import { TeamColor } from "../../../shared/defs/maps/factionDefs";
 import { GameConfig, TeamMode } from "../../../shared/gameConfig";
 import { ObjectType } from "../../../shared/net/objectSerializeFns";
 import type { PlayerStatus } from "../../../shared/net/updateMsg";
@@ -182,14 +183,8 @@ export class GameModeManager {
             );
     }
 
-    /**
-     * by default, true if the current context mode supports reviving
-     *
-     * always true regardless of context mode with self revive
-     * @param playerReviving player that initializes the revive action
-     */
-    canRevive(playerReviving: Player): boolean {
-        return playerReviving.hasPerk("self_revive") || !this.isSolo;
+    isReviveSupported(): boolean {
+        return !this.isSolo;
     }
 
     isReviving(player: Player): boolean {
@@ -225,25 +220,78 @@ export class GameModeManager {
             case GameMode.Team:
                 return !player.group!.allDeadOrDisconnected && this.aliveCount() > 1;
             case GameMode.Faction:
-                /**
-                 * temporary fix for when you kill the last non knocked player on a team
-                 * and all of the knocked players are supposed to bleed out
-                 * technically everyone is "dead" at this point and the stats message shouldnt show for anyone
-                 * but since the last knocked player gets killed first the downed teammates are technically still "alive"
-                 *
-                 * i believe the solution is to separate kills and gameovermsgs so that all kills in a tick get done first
-                 * then all gameovermsgs get done after
-                 * for (const kill of kills){};
-                 * for (const msg of gameovermsgs){};
-                 */
-                if (player.team!.checkAllDowned(player)) return false;
+                return this.aliveCount() > 1;
+        }
+    }
 
-                if (!this.game.isTeamMode) {
-                    //stats msg can only show in solos if it's also faction mode
-                    return this.aliveCount() > 1;
+    getGameoverPlayers(player: Player): Player[] {
+        switch (this.mode) {
+            case GameMode.Solo:
+                return [player];
+            case GameMode.Team:
+                return player.group!.players;
+            case GameMode.Faction:
+                const redLeader = this.game.playerBarn.teams[TeamColor.Red - 1].leader;
+                const blueLeader = this.game.playerBarn.teams[TeamColor.Blue - 1].leader;
+                const highestKiller = this.game.playerBarn.players.reduce(
+                    (highestKiller, p) =>
+                        highestKiller.kills > p.kills ? highestKiller : p,
+                );
+                //if game ends before leaders are promoted, just show the player by himself
+                return !redLeader || !blueLeader
+                    ? [player]
+                    : [player, redLeader, blueLeader, highestKiller];
+        }
+    }
+
+    /**
+     * gives all the players spectating the player who died a new player to spectate
+     * @param player player who died
+     */
+    assignNewSpectate(player: Player): void {
+        if (player.spectatorCount == 0) return;
+        // the reason this method doesn't use a mode switchcase like all the other methods in this class
+        // is because the solos/duos/squads spectate logic should be identical for factions minus one specific case
+        // the case is: if a player's group is dead in factions, the new player to spectate should be someone on the team...
+        // not any random player in the game
+
+        let playerToSpec: Player;
+        if (!this.game.isTeamMode) {
+            if (player.killedBy && player.killedBy != player) {
+                playerToSpec = player.killedBy;
+            } else {
+                playerToSpec =
+                    this.mode == GameMode.Faction
+                        ? player.team!.randomPlayer()
+                        : player.game.playerBarn.randomPlayer();
+            }
+
+            for (const spectator of player.spectators) {
+                spectator.spectating = playerToSpec;
+            }
+        } else if (player.group) {
+            //DOD = dead or disconnected
+            const groupAllDOD: boolean = player.group.checkAllDeadOrDisconnected(player);
+
+            //can only spec other groups once player's entire group is dead
+            if (groupAllDOD) {
+                if (player.killedBy && player.killedBy != player) {
+                    playerToSpec = player.killedBy;
+                } else {
+                    playerToSpec =
+                        this.mode == GameMode.Faction
+                            ? player.team!.randomPlayer()
+                            : player.game.playerBarn.randomPlayer();
                 }
+            } else {
+                playerToSpec = player.group.randomPlayer();
+            }
 
-                return !player.group!.allDeadOrDisconnected && this.aliveCount() > 1;
+            for (const spectator of player.spectators) {
+                //if the entire group is dead, all the group members need to get a gameover msg instead of spectating someone new
+                if (groupAllDOD && player.group.players.includes(spectator)) continue;
+                spectator.spectating = playerToSpec;
+            }
         }
     }
 
@@ -340,10 +388,13 @@ export class GameModeManager {
                         return;
                     }
 
+                    const teamHasSelfRevive = team.livingPlayers.find((p) =>
+                        p.hasPerk("self_revive"),
+                    );
                     const allDead = team.checkAllDead(player);
                     const allDowned = team.checkAllDowned(player);
 
-                    if (allDead || allDowned) {
+                    if (!teamHasSelfRevive && (allDead || allDowned)) {
                         player.kill(params);
                         if (allDowned) {
                             team.killAllTeammates();
