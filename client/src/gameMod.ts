@@ -186,7 +186,7 @@ export class GameMod {
 
         const servers = [
             { region: "NA", url: "na.zurviv.io" },
-            { region: "WA", url: "na-w.zurviv.io" },
+            { region: "WA", url: "w.na.zurviv.io" },
             { region: "EU", url: "eu.zurviv.io" },
             { region: "AS", url: "as.zurviv.io" },
             { region: "SA", url: "sa.zurviv.io" }
