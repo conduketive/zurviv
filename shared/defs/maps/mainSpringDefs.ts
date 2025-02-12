@@ -66,6 +66,7 @@ const mapDef = {
                 police_01: 1,
                 hut_01: 4,
                 hut_02: 1,
+                hut_03: 1,
                 shack_03a: 2,
                 shack_03b: { small: 2, large: 3 },
                 greenhouse_01: 1,
