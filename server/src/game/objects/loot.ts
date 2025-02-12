@@ -199,6 +199,7 @@ export class Loot extends BaseGameObject {
         super(game, pos);
 
         const def = GameObjectDefs[type];
+        console.log(type)
         assert("lootImg" in def, `Invalid loot type ${type}`);
 
         this.layer = layer;

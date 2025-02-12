@@ -373,7 +373,7 @@ export const Main: MapDef = {
             { name: "scarssr", count: 1, weight: 1 }, // ?
             { name: "usas", count: 1, weight: 0.5 }, // ?
             { name: "p30l_dual", count: 1, weight: 1 }, // ?
-            { name: "awc", count: 1, weight: 0.1 }, // ?
+            // { name: "awc", count: 1, weight: 0.1 }, // ?
             { name: "pkp", count: 1, weight: 0.3 }, // ?
             { name: "m249", count: 1, weight: 0.3 }, // ?
         ],
@@ -395,7 +395,7 @@ export const Main: MapDef = {
         ],
         tier_airdrop_melee: [
             { name: "", count: 1, weight: 19 },
-            // { name: "pan", count: 1, weight: 1 },
+            { name: "pan", count: 1, weight: 1 },
         ],
         tier_airdrop_armor: [
             { name: "helmet03", count: 1, weight: 1 },
@@ -417,6 +417,13 @@ export const Main: MapDef = {
         tier_saloon: [
             { name: "vector45", count: 1, weight: 1 },
             { name: "mkg45", count: 1, weight: 1 },
+        ],
+        tier_cattle_crate: [
+            { name: "m1a1", count: 1, weight: 1 },
+            { name: "model94", count: 1, weight: 1 },
+            { name: "colt45", count: 1, weight: 1 },
+            { name: "outfitVerde", count: 1, weight: 0.1 },
+            { name: "outfitDesertCamo", count: 1, weight: 0.1 },
         ],
         tier_pumpkin_perks: [{ name: "halloween_mystery", count: 1, weight: 1 }],
         tier_xp_uncommon: [
