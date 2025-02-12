@@ -41,6 +41,10 @@ class Application {
     playMode0Btn = $("#btn-start-mode-0");
     playMode1Btn = $("#btn-start-mode-1");
     playMode2Btn = $("#btn-start-mode-2");
+    playMode3Btn = $("#btn-start-mode-3");
+    playMode4Btn = $("#btn-start-mode-4");
+    playMode5Btn = $("#btn-start-mode-5");
+    playMode6Btn = $("#btn-start-mode-6");
     muteBtns = $(".btn-sound-toggle");
     aimLineBtn = $("#btn-game-aim-line");
     masterSliders = $<HTMLInputElement>(".sl-master-volume");
@@ -157,6 +161,18 @@ class Application {
             });
             this.playMode2Btn.on("click", () => {
                 this.tryQuickStartGame(2);
+            });
+            this.playMode3Btn.on("click", () => {
+                this.tryQuickStartGame(3);
+            });
+            this.playMode4Btn.on("click", () => {
+                this.tryQuickStartGame(4);
+            });
+            this.playMode5Btn.on("click", () => {
+                this.tryQuickStartGame(5);
+            });
+            this.playMode6Btn.on("click", () => {
+                this.tryQuickStartGame(6);
             });
             this.serverSelect.change(() => {
                 const t = this.serverSelect.find(":selected").val();
@@ -522,6 +538,10 @@ class Application {
         updateButton(this.playMode0Btn, 0);
         updateButton(this.playMode1Btn, 1);
         updateButton(this.playMode2Btn, 2);
+        updateButton(this.playMode3Btn, 3);
+        updateButton(this.playMode4Btn, 4);
+        updateButton(this.playMode5Btn, 5);
+        updateButton(this.playMode6Btn, 6);
     }
 
     waitOnAccount(cb: () => void) {

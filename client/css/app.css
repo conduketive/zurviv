@@ -3421,15 +3421,15 @@ a:active {
   }
 }
 
-#btns-quick-start {
+.btns-quick-start {
   display: flex;
 }
 
-#btns-quick-start > a {
+.btns-quick-start > a {
   display: inline-block;
 }
 
-#btns-quick-start > a:not(:last-child) {
+.btns-quick-start > a:not(:last-child) {
   margin-right: 4px;
 }
 
