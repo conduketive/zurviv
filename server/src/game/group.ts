@@ -77,7 +77,7 @@ export class Group {
      */
     checkAllDeadOrDisconnected(player: Player) {
         const alivePlayers = this.players.filter(
-            (p) => (!p.dead || !p.disconnected) && p !== player,
+            (p) => !p.dead && !p.disconnected && p !== player,
         );
         return alivePlayers.length <= 0;
     }
@@ -130,14 +130,5 @@ export class Group {
         const newIndex =
             currentPlayerIndex == 0 ? alivePlayers.length - 1 : currentPlayerIndex - 1;
         return alivePlayers[newIndex];
-    }
-
-    addGameOverMsg(winningTeamId: number = -1) {
-        for (const p of this.players) {
-            p.addGameOverMsg(winningTeamId);
-            for (const spectator of p.spectators) {
-                spectator.addGameOverMsg(winningTeamId);
-            }
-        }
     }
 }

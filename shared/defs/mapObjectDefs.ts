@@ -9439,7 +9439,7 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
     } as unknown as Partial<ObstacleDef>),
     airdrop_crate_01x: createAirdrop({
         button: {
-            useImg: "map-crate-13x.img",
+            useImg: "map-airdrop-02x.img",
             useParticle: "airdropCrate01x",
             sound: { on: "airdrop_open_01", off: "" },
         },
@@ -9452,7 +9452,7 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
     } as unknown as Partial<ObstacleDef>),
     airdrop_crate_02x: createAirdrop({
         button: {
-            useImg: "map-crate-13x.img",
+            useImg: "map-airdrop-02x.img",
             useParticle: "airdropCrate01x",
             sound: { on: "airdrop_open_01", off: "" },
         },
