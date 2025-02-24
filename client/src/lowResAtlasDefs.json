@@ -4070,6 +4070,26 @@
             "h": 64
           }
         },
+        "loot-scope-05.img": {
+          "frame": {
+            "x": 1604,
+            "y": 4,
+            "w": 64,
+            "h": 64
+          },
+          "rotated": false,
+          "trimmed": false,
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          }
+        },
         "loot-scope-01.img": {
           "frame": {
             "x": 206,
