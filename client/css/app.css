@@ -3314,6 +3314,21 @@ a:active {
   }
 }
 
+@keyframes gamerio-pulse {
+  from {
+    background-color: #54c9f7;
+    -webkit-box-shadow: 0 0 9px #54c9f7;
+  }
+  50% {
+    background-color: #8bbaf7;
+    -webkit-box-shadow: 0 0 18px #8bbaf7;
+  }
+  to {
+    background-color: #54c9f7;
+    -webkit-box-shadow: 0 0 9px #54c9f7;
+  }
+}
+
 .btn-mode-faction {
   animation-name: faction-pulse;
   animation-duration: 4s;
@@ -3324,6 +3339,12 @@ a:active {
   animation-name: spring-pulse;
   animation-duration: 4s;
   border-bottom: 4px solid #902d83;
+}
+
+.btn-mode-gamerio {
+  animation-name: gamerio-pulse;
+  animation-duration: 4s;
+  border-bottom: 4px solid #325685;
 }
 
 @media (max-width: 850px), (max-width: 900px) and (min-resolution: 3dppx) {
