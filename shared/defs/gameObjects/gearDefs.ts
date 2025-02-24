@@ -683,6 +683,21 @@ const ScopeDefs: Record<string, ScopeDef> = {
             pickup: "scope_pickup_01",
         },
     },
+    "30xscope": {
+        name: "30x Scope",
+        type: "scope",
+        level: 30,
+        lootImg: {
+            sprite: "loot-scope-05.img",
+            tint: 0xffffff,
+            border: "loot-circle-outer-01.img",
+            borderTint: 0,
+            scale: 0.2,
+        },
+        sound: {
+            pickup: "scope_pickup_01",
+        },
+    },
 };
 
 const SkinDefs = {

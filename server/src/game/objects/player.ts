@@ -2903,6 +2903,7 @@ export class Player extends BaseGameObject {
             case "4xscope":
             case "8xscope":
             case "15xscope":
+            case "30xscope":
                 if (this.inventory[msg.useItem]) {
                     this.scope = msg.useItem;
                     this.inventoryDirty = true;

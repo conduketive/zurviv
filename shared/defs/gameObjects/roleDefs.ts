@@ -63,6 +63,7 @@ type DefaultItems = {
         "4xscope": number;
         "8xscope": number;
         "15xscope": number;
+        "30xscope": number;
     };
 };
 
@@ -136,6 +137,7 @@ function createDefaultItems<T extends DefaultItems>(e: DeepPartial<T>): T {
             "4xscope": 0,
             "8xscope": 0,
             "15xscope": 0,
+            "30xscope": 0,
         },
     };
     return util.mergeDeep(defaultItems, e || {});
