@@ -7044,3 +7044,39 @@ input [type="image"]:focus {
     top: 310px;
   }
 }
+
+.dropdown-container {
+  width: 100%;
+  position: relative;
+  display: inline-block;
+}
+
+#dropdown-main-button-1 {
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+}
+
+.dropdown-buttons-1 {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: #a3c082;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  z-index: 1000;
+}
+
+.dropdown-buttons-2 {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: #a3c082;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  z-index: 1000;
+}

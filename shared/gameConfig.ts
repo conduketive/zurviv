@@ -1,6 +1,7 @@
 export enum TeamMode {
     Solo = 1,
     Duo = 2,
+    Trio = 3,
     Squad = 4,
 }
 

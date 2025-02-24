@@ -37,14 +37,7 @@ export interface MatchData {
 
 class Application {
     nameInput = $("#player-name-input-solo");
-    serverSelect = $("#server-select-main");
-    playMode0Btn = $("#btn-start-mode-0");
-    playMode1Btn = $("#btn-start-mode-1");
-    playMode2Btn = $("#btn-start-mode-2");
-    playMode3Btn = $("#btn-start-mode-3");
-    playMode4Btn = $("#btn-start-mode-4");
-    playMode5Btn = $("#btn-start-mode-5");
-    playMode6Btn = $("#btn-start-mode-6");
+    serverSelect = $("#server-select-main");    
     muteBtns = $(".btn-sound-toggle");
     aimLineBtn = $("#btn-game-aim-line");
     masterSliders = $<HTMLInputElement>(".sl-master-volume");
@@ -153,27 +146,93 @@ class Application {
 
             (this.nameInput as unknown as HTMLInputElement).maxLength =
                 net.Constants.PlayerNameMaxLen;
-            this.playMode0Btn.on("click", () => {
-                this.tryQuickStartGame(0);
+
+            $(document).ready(() => {
+                function updateButtonText(buttonId: string, selectedButton: HTMLElement): void {
+                    const button = document.getElementById(buttonId);
+                    if (!button) return;
+            
+                    button.className = selectedButton.className;
+            
+                    if (selectedButton.style.backgroundImage) {
+                        button.style.backgroundImage = selectedButton.style.backgroundImage;
+                    }
+            
+                    button.innerHTML = `${selectedButton.innerText} | ▼`;
+                }
+            
+                $("#dropdown-main-button-1").click((event) => {
+                    event.stopPropagation();
+                    $(".dropdown-buttons-1").toggle();
+                });
+            
+                $(document).click((event) => {
+                    if (!$(event.target).closest("#dropdown-container-1").length) {
+                        $(".dropdown-buttons-1").hide();
+                    }
+                });
+            
+                $(".dropdown-buttons-1 a").click((event) => {
+                    if (event.target instanceof HTMLElement) {
+                        updateButtonText("dropdown-main-button-1", event.target);
+                        $(".dropdown-buttons-1").hide();
+                    }
+                });
+            
+                $("#dropdown-main-button-2").click((event) => {
+                    event.stopPropagation();
+                    $(".dropdown-buttons-2").toggle();
+                });
+            
+                $(document).click(() => {
+                    $(".dropdown-buttons-2").hide();
+                });
+            
+                $(".dropdown-buttons-2 a").click((event) => {
+                    if (event.target instanceof HTMLElement) {
+                        updateButtonText("dropdown-main-button-2", event.target);
+                        $(".dropdown-buttons-2").hide();
+                    }
+                });
             });
-            this.playMode1Btn.on("click", () => {
-                this.tryQuickStartGame(1);
+            
+            $(document).ready(() => {
+                const modeOptions = {
+                    "Play Solo": 0,
+                    "Play Duo": 4,
+                    "Play Squad": 8,
+                    "Play 50v50": 12,
+                };
+            
+                const teamOptions = {
+                    "Play Solo": 0,
+                    "Play Duo": 1,
+                    "Play Trio": 2,
+                    "Play Squad": 3,
+                };
+            
+                function getSelectedMode(): number {
+                    const modeButton = $("#dropdown-main-button-1");
+                    const selectedModeText = modeButton.text().trim().split(" |")[0];
+                    return modeOptions[selectedModeText as keyof typeof modeOptions] || 0;
+                }
+            
+                function getSelectedTeam(): number {
+                    const teamButton = $("#dropdown-main-button-2");
+                    const selectedTeamText = teamButton.text().trim().split(" |")[0];
+                    return teamOptions[selectedTeamText as keyof typeof teamOptions] || 0;
+                }
+            
+                $("#play-button-menu").click(() => {
+                    const selectedMode = getSelectedMode();
+                    const selectedTeam = getSelectedTeam();
+            
+                    const totalValue = selectedMode + selectedTeam;
+            
+                    this.tryQuickStartGame(totalValue);
+                });
             });
-            this.playMode2Btn.on("click", () => {
-                this.tryQuickStartGame(2);
-            });
-            this.playMode3Btn.on("click", () => {
-                this.tryQuickStartGame(3);
-            });
-            this.playMode4Btn.on("click", () => {
-                this.tryQuickStartGame(4);
-            });
-            this.playMode5Btn.on("click", () => {
-                this.tryQuickStartGame(5);
-            });
-            this.playMode6Btn.on("click", () => {
-                this.tryQuickStartGame(6);
-            });
+                
             this.serverSelect.change(() => {
                 const t = this.serverSelect.find(":selected").val();
                 this.config.set("region", t as string);
@@ -535,13 +594,6 @@ class Application {
             );
         };
 
-        updateButton(this.playMode0Btn, 0);
-        updateButton(this.playMode1Btn, 1);
-        updateButton(this.playMode2Btn, 2);
-        updateButton(this.playMode3Btn, 3);
-        updateButton(this.playMode4Btn, 4);
-        updateButton(this.playMode5Btn, 5);
-        updateButton(this.playMode6Btn, 6);
     }
 
     waitOnAccount(cb: () => void) {
