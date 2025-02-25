@@ -257,7 +257,8 @@ export const Main: MapDef = {
             { name: "ots38_dual", count: 1, weight: 0.15 }, // ?
             { name: "pkp", count: 1, weight: 0.1 },
             { name: "blr", count: 1, weight: 0.2 },
-            { name: "l86", count: 1, weight: 0.2 } // ?
+            { name: "svd", count: 1, weight: 0.2 },
+            { name: "l86", count: 1, weight: 0.2 }, // ?
             //{ name: "m9", count: 1, weight: 0.01 }, // ?
         ],
         tier_chest: [
@@ -274,6 +275,7 @@ export const Main: MapDef = {
             { name: "mp220", count: 1, weight: 1.5 },
             { name: "deagle", count: 1, weight: 0.15 },
             { name: "blr", count: 1, weight: 1 },
+            { name: "svd", count: 1, weight: 1 },
             { name: "l86", count: 1, weight: 1},
             { name: "vector", count: 1, weight: 0.1 },
             { name: "sv98", count: 1, weight: 0.1 },
@@ -345,6 +347,7 @@ export const Main: MapDef = {
         tier_verde_outfit: [{ name: "outfitVerde", count: 1, weight: 1 }],
         tier_airdrop_uncommon: [
             { name: "blr", count: 1, weight: 1.5 },
+            { name: "svd", count: 1, weight: 1.5 },
             { name: "l86", count: 1, weight: 1.5 },
             { name: "mk12", count: 1, weight: 2.5 },
             { name: "scar", count: 1, weight: 0.75 },
