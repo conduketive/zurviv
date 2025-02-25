@@ -76,7 +76,17 @@ export class SiteInfo {
 
         const availableModes = [];
         const modes = this.info.modes || [];
+        console.log(modes)
         for (let i = 0; i < modes.length; i++) {
+            const button = document.getElementById(`btn-start-mode-${i}`);
+            if (button) {
+                const mapNameParts = modes[i].mapName.split("_");
+                const formattedMapName = mapNameParts.length > 1 
+                    ? mapNameParts[1].charAt(0).toUpperCase() + mapNameParts[1].slice(1) 
+                    : modes[i].mapName.substring(0,1).toUpperCase()+modes[i].mapName.substring(1);
+
+                button.innerHTML = `Play ${formattedMapName}`;
+            }
             const mode = modes[i];
             const mapDef = (MapDefs[mode.mapName as keyof typeof MapDefs] || MapDefs.main)
                 .desc;
@@ -100,8 +110,6 @@ export class SiteInfo {
                 const style = getGameModeStyles[i];
                 const selector = `index-play-${style.buttonText}`;
                 const btn = $(`#btn-start-mode-${i}`);
-                btn.data("l10n", selector);
-                btn.html(this.localization.translate(selector));
                 if (style.icon || style.buttonCss) {
                     if (i == 0) {
                         btn.addClass("btn-custom-mode-no-indent");

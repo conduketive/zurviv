@@ -147,91 +147,77 @@ class Application {
             (this.nameInput as unknown as HTMLInputElement).maxLength =
                 net.Constants.PlayerNameMaxLen;
 
-            $(document).ready(() => {
-                function updateButtonText(buttonId: string, selectedButton: HTMLElement): void {
-                    const button = document.getElementById(buttonId);
-                    if (!button) return;
-            
-                    button.className = selectedButton.className;
-            
-                    if (selectedButton.style.backgroundImage) {
-                        button.style.backgroundImage = selectedButton.style.backgroundImage;
+                $(document).ready(() => {
+                    const modeOptions: Record<string, number> = {
+                        "Play Gamerio": 0,
+                        "Play Main": 4,
+                        "Play Spring": 8,
+                        "Play Faction": 12,
+                    };
+                
+                    const teamOptions: Record<string, number> = {
+                        "Play Solo": 0,
+                        "Play Duo": 1,
+                        "Play Trio": 2,
+                        "Play Squad": 3,
+                    };
+                
+                    function updateButtonText(buttonId: string, selectedButton: HTMLElement): void {
+                        const button = document.getElementById(buttonId);
+                        if (!button) return;
+                
+                        button.className = selectedButton.className;
+                
+                        if (selectedButton.style.backgroundImage) {
+                            button.style.backgroundImage = selectedButton.style.backgroundImage;
+                        }
+                        button.innerHTML = `${selectedButton.innerText} | ▼`;
                     }
-            
-                    button.innerHTML = `${selectedButton.innerText} | ▼`;
-                }
-            
-                $("#dropdown-main-button-1").click((event) => {
-                    event.stopPropagation();
-                    $(".dropdown-buttons-1").toggle();
-                });
-            
-                $(document).click((event) => {
-                    if (!$(event.target).closest("#dropdown-container-1").length) {
-                        $(".dropdown-buttons-1").hide();
+                
+                    function setupDropdown(mainButtonId: string, dropdownClass: string, containerId: string): void {
+                        const mainButton = $(`#${mainButtonId}`);
+                        const dropdown = $(`.${dropdownClass}`);
+                
+                        mainButton.click((event) => {
+                            event.stopPropagation();
+                
+                            $(".dropdown-menu").not(dropdown).hide();
+                
+                            dropdown.toggle();
+                        });
+                
+                        $(document).click((event) => {
+                            if (!$(event.target).closest(`#${containerId}`).length) {
+                                dropdown.hide();
+                            }
+                        });
+                
+                        dropdown.find("a").click((event) => {
+                            if (event.target instanceof HTMLElement) {
+                                updateButtonText(mainButtonId, event.target);
+                                dropdown.hide();
+                            }
+                        });
+                
+                        dropdown.addClass("dropdown-menu");
                     }
-                });
-            
-                $(".dropdown-buttons-1 a").click((event) => {
-                    if (event.target instanceof HTMLElement) {
-                        updateButtonText("dropdown-main-button-1", event.target);
-                        $(".dropdown-buttons-1").hide();
+                
+                    function getSelectedValue(buttonId: string, options: Record<string, number>): number {
+                        const selectedText = $(`#${buttonId}`).text().trim().split(" |")[0];
+                        return options[selectedText] || 0;
                     }
+                
+                    setupDropdown("dropdown-main-button-1", "dropdown-buttons-1", "dropdown-container-1");
+                    setupDropdown("dropdown-main-button-2", "dropdown-buttons-2", "dropdown-container-2");
+                
+                    $("#play-button-menu").click(() => {
+                        const selectedMode = getSelectedValue("dropdown-main-button-1", modeOptions);
+                        const selectedTeam = getSelectedValue("dropdown-main-button-2", teamOptions);
+                        const totalValue = selectedMode + selectedTeam;
+                
+                        this.tryQuickStartGame(totalValue);
+                    });
                 });
-            
-                $("#dropdown-main-button-2").click((event) => {
-                    event.stopPropagation();
-                    $(".dropdown-buttons-2").toggle();
-                });
-            
-                $(document).click(() => {
-                    $(".dropdown-buttons-2").hide();
-                });
-            
-                $(".dropdown-buttons-2 a").click((event) => {
-                    if (event.target instanceof HTMLElement) {
-                        updateButtonText("dropdown-main-button-2", event.target);
-                        $(".dropdown-buttons-2").hide();
-                    }
-                });
-            });
-            
-            $(document).ready(() => {
-                const modeOptions = {
-                    "Play Solo": 0,
-                    "Play Duo": 4,
-                    "Play Squad": 8,
-                    "Play 50v50": 12,
-                };
-            
-                const teamOptions = {
-                    "Play Solo": 0,
-                    "Play Duo": 1,
-                    "Play Trio": 2,
-                    "Play Squad": 3,
-                };
-            
-                function getSelectedMode(): number {
-                    const modeButton = $("#dropdown-main-button-1");
-                    const selectedModeText = modeButton.text().trim().split(" |")[0];
-                    return modeOptions[selectedModeText as keyof typeof modeOptions] || 0;
-                }
-            
-                function getSelectedTeam(): number {
-                    const teamButton = $("#dropdown-main-button-2");
-                    const selectedTeamText = teamButton.text().trim().split(" |")[0];
-                    return teamOptions[selectedTeamText as keyof typeof teamOptions] || 0;
-                }
-            
-                $("#play-button-menu").click(() => {
-                    const selectedMode = getSelectedMode();
-                    const selectedTeam = getSelectedTeam();
-            
-                    const totalValue = selectedMode + selectedTeam;
-            
-                    this.tryQuickStartGame(totalValue);
-                });
-            });
                 
             this.serverSelect.change(() => {
                 const t = this.serverSelect.find(":selected").val();
