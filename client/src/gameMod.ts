@@ -377,19 +377,6 @@ export class GameMod {
             const firstChild = startMenuContainer.firstChild;
             startMenuContainer.insertBefore(playerOptions, firstChild);
         }
-        const teamMenu = document.getElementById("team-menu");
-        if (teamMenu) {
-            teamMenu.style.height = "355px";
-        }
-        const menuBlocks = document.querySelectorAll<HTMLElement>(".menu-block");
-
-        menuBlocks.forEach((block) => {
-            if (block instanceof HTMLElement) {
-                block.style.maxHeight = "355px";
-            }
-        });
-
-
     }
 
     SettingsCheck() {

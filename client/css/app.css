@@ -258,7 +258,6 @@ a:active {
   border-radius: 5px;
   box-sizing: border-box;
   display: block;
-  max-height: 325px;
 }
 
 @media (max-width: 850px), (max-width: 900px) and (min-resolution: 3dppx) {
@@ -1171,7 +1170,7 @@ a:active {
 
 #team-menu {
   display: none;
-  height: 325px;
+  height: 375px;
   padding: 12px;
   position: relative;
   width: 625px;
@@ -1220,7 +1219,6 @@ a:active {
   margin-left: auto;
   margin-right: auto;
   margin-top: 0;
-  max-height: 350px;
 }
 
 #team-menu-members {
