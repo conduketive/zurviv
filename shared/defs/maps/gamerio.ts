@@ -83,8 +83,6 @@ const mapDef = {
             { name: "tier_outfits", count: 1, weight: 0.025 }, // !
         ],
         tier_scopes: [
-            { name: "2xscope", count: 1, weight: 0 },
-            { name: "4xscope", count: 1, weight: 0 },
             { name: "8xscope", count: 1, weight: 24 }, // ?
             { name: "15xscope", count: 1, weight: 5 },
             { name: "30xscope", count: 1, weight: 1 }, // ?
@@ -134,9 +132,8 @@ const mapDef = {
         ],
         tier_sv98: [{ name: "sv98", count: 1, weight: 1 }],
         tier_scopes_sniper: [
-            { name: "4xscope", count: 1, weight: 5 }, // ?
-            { name: "8xscope", count: 1, weight: 1 }, // ?
-            { name: "15xscope", count: 1, weight: 0.02 }, // ?
+            { name: "15xscope", count: 1, weight: 5 }, // ?
+            { name: "30xscope", count: 1, weight: 1 }, // ?
         ],
         tier_mansion_floor: [{ name: "outfitCasanova", count: 1, weight: 1 }],
         tier_vault_floor: [{ name: "outfitJester", count: 1, weight: 1 }],
@@ -144,10 +141,9 @@ const mapDef = {
         tier_chrys_01: [{ name: "outfitImperial", count: 1, weight: 1 }],
         tier_chrys_02: [{ name: "katana", count: 1, weight: 1 }],
         tier_chrys_03: [
-            { name: "2xscope", count: 1, weight: 5 }, // ?
-            { name: "4xscope", count: 1, weight: 5 }, // ?
             { name: "8xscope", count: 1, weight: 5 }, // ?
-            { name: "15xscope", count: 1, weight: 0.1 }, // ?
+            { name: "15xscope", count: 1, weight: 5 }, // ?
+            { name: "30xscope", count: 1, weight: 5 }, // ?
         ],
         tier_chrys_case: [
             { name: "", count: 1, weight: 5 }, // ?
@@ -240,8 +236,8 @@ const mapDef = {
             { name: "helmet03", count: 1, weight: 0.25 },
             { name: "chest02", count: 1, weight: 1 },
             { name: "chest03", count: 1, weight: 0.25 },
-            { name: "4xscope", count: 1, weight: 0.5 },
-            { name: "8xscope", count: 1, weight: 0.25 },
+            { name: "15xscope", count: 1, weight: 0.5 },
+            { name: "30xscope", count: 1, weight: 0.25 },
         ],
         tier_conch: [
             { name: "outfitAqua", count: 1, weight: 1 },
@@ -356,9 +352,8 @@ const mapDef = {
         ],
         tier_airdrop_scopes: [
             { name: "", count: 1, weight: 24 }, // ?
-            { name: "4xscope", count: 1, weight: 5 }, // ?
-            { name: "8xscope", count: 1, weight: 1 }, // ?
-            { name: "15xscope", count: 1, weight: 0.02 }, // ?
+            { name: "15xscope", count: 1, weight: 5 }, // ?
+            { name: "30xscope", count: 1, weight: 1 }, // ?
         ],
         tier_katanas: [
             { name: "katana", count: 1, weight: 4 }, // ?
