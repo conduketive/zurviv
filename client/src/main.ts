@@ -149,17 +149,17 @@ class Application {
 
                 $(document).ready(() => {
                     const modeOptions: Record<string, number> = {
-                        "Play Gamerio": 0,
-                        "Play Main": 4,
-                        "Play Spring": 8,
-                        "Play Faction": 12,
+                        "Gamerio": 0,
+                        "Main": 4,
+                        "Spring": 8,
+                        "Faction": 12,
                     };
                 
                     const teamOptions: Record<string, number> = {
-                        "Play Solo": 0,
-                        "Play Duo": 1,
-                        "Play Trio": 2,
-                        "Play Squad": 3,
+                        "Solo": 0,
+                        "Duo": 1,
+                        "Trio": 2,
+                        "Squad": 3,
                     };
                 
                     function updateButtonText(buttonId: string, selectedButton: HTMLElement): void {
@@ -171,7 +171,18 @@ class Application {
                         if (selectedButton.style.backgroundImage) {
                             button.style.backgroundImage = selectedButton.style.backgroundImage;
                         }
-                        button.innerHTML = `${selectedButton.innerText} | ▼`;
+                        if (button.id === "dropdown-main-button-1") {
+                            button.innerHTML = `Game Mode: ${selectedButton.innerText} | ▼`;
+                
+
+                            if (selectedButton.innerText.trim() === "Faction") {
+                                blockTeamMode();
+                            } else {
+                                unblockTeamMode();
+                            }
+                        } else {
+                            button.innerHTML = `Team Mode: ${selectedButton.innerText} | ▼`;
+                        }
                     }
                 
                     function setupDropdown(mainButtonId: string, dropdownClass: string, containerId: string): void {
@@ -180,9 +191,7 @@ class Application {
                 
                         mainButton.click((event) => {
                             event.stopPropagation();
-                
                             $(".dropdown-menu").not(dropdown).hide();
-                
                             dropdown.toggle();
                         });
                 
@@ -203,19 +212,37 @@ class Application {
                     }
                 
                     function getSelectedValue(buttonId: string, options: Record<string, number>): number {
-                        const selectedText = $(`#${buttonId}`).text().trim().split(" |")[0];
+                        const selectedText = $(`#${buttonId}`).text().trim().split(" ")[2];
                         return options[selectedText] || 0;
+                    }
+                
+                    function blockTeamMode(): void {
+                        $("#dropdown-main-button-2").css({ 
+                            opacity: "0.5", 
+                            pointerEvents: "none"
+                        }).text("Team Mode: Disabled | ▼");
+                
+                        $("#dropdown-container-2").hide();
+                    }
+                
+                    function unblockTeamMode(): void {
+                        $("#dropdown-main-button-2").css({ 
+                            opacity: "1", 
+                            pointerEvents: "auto"
+                        }).text("Team Mode: Select | ▼");
+                
+                        $("#dropdown-container-2").show();
                     }
                 
                     setupDropdown("dropdown-main-button-1", "dropdown-buttons-1", "dropdown-container-1");
                     setupDropdown("dropdown-main-button-2", "dropdown-buttons-2", "dropdown-container-2");
                 
                     $("#play-button-menu").click(() => {
-                        const selectedMode = getSelectedValue("dropdown-main-button-1", modeOptions);
-                        const selectedTeam = getSelectedValue("dropdown-main-button-2", teamOptions);
-                        const totalValue = selectedMode + selectedTeam;
+                        const selectedMode: number = getSelectedValue("dropdown-main-button-1", modeOptions);
+                        const selectedTeam: number = getSelectedValue("dropdown-main-button-2", teamOptions);
+                        const totalValue: number = selectedMode + selectedTeam;
                 
-                        this.tryQuickStartGame(totalValue);
+                        (this as any).tryQuickStartGame(totalValue);
                     });
                 });
                 

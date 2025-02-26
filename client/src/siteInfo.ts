@@ -76,7 +76,6 @@ export class SiteInfo {
 
         const availableModes = [];
         const modes = this.info.modes || [];
-        console.log(modes)
         for (let i = 0; i < modes.length; i++) {
             const button = document.getElementById(`btn-start-mode-${i}`);
             if (button) {
@@ -85,7 +84,7 @@ export class SiteInfo {
                     ? mapNameParts[1].charAt(0).toUpperCase() + mapNameParts[1].slice(1) 
                     : modes[i].mapName.substring(0,1).toUpperCase()+modes[i].mapName.substring(1);
 
-                button.innerHTML = `Play ${formattedMapName}`;
+                button.innerHTML = `${formattedMapName}`;
             }
             const mode = modes[i];
             const mapDef = (MapDefs[mode.mapName as keyof typeof MapDefs] || MapDefs.main)
