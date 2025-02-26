@@ -221,7 +221,8 @@ export class TeamMenu {
      */
     modifyRoom(newRoomData: RoomData, room: Room): void {
         room.roomData.gameModeIdx = newRoomData.gameModeIdx;
-        room.roomData.maxPlayers = math.clamp(room.roomData.gameModeIdx * 2, 2, 4);
+        room.roomData.maxPlayers = (room.roomData.gameModeIdx % 4 === 1) ? 2 :
+                                   (room.roomData.gameModeIdx % 4 === 2) ? 3 : 4;
         room.roomData.autoFill = newRoomData.autoFill;
         room.roomData.region = newRoomData.region;
     }
