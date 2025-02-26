@@ -149,9 +149,12 @@ export class TeamMenu {
 
     addRoom(roomUrl: string, initialRoomData: RoomData, roomLeader: RoomPlayer) {
         const enabledGameModeIdxs = Config.modes
-            .slice(1)
-            .filter((m) => m.enabled)
-            .map((m) => m.teamMode / 2);
+        .slice(1)
+        .filter((m) => m.enabled)
+        .map((_, index) => index)
+        //12 = faction
+        .filter((index) => index % 4 !== 0);
+        console.log(enabledGameModeIdxs)
         const gameModeIdx = enabledGameModeIdxs.includes(initialRoomData.gameModeIdx)
             ? initialRoomData.gameModeIdx
             : 3 - initialRoomData.gameModeIdx;

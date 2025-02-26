@@ -7043,19 +7043,19 @@ input [type="image"]:focus {
   }
 }
 
-.dropdown-container {
+.dropdown-container, .dropdown-container-team {
   width: 100%;
   position: relative;
   display: inline-block;
 }
 
-#dropdown-main-button-1 {
+#dropdown-main-button-1, #dropdown-main-button-team-1 {
   cursor: pointer;
   position: relative;
   z-index: 2;
 }
 
-.dropdown-buttons-1 {
+.dropdown-buttons-1, .dropdown-buttons-team-1{
   display: none;
   position: absolute;
   top: 100%;
@@ -7067,7 +7067,7 @@ input [type="image"]:focus {
   z-index: 1000;
 }
 
-.dropdown-buttons-2 {
+.dropdown-buttons-2, .dropdown-buttons-team-2{
   display: none;
   position: absolute;
   top: 100%;
