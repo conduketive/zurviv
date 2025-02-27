@@ -151,9 +151,9 @@ export class TeamMenu {
         const enabledGameModeIdxs = Config.modes
         .slice(1)
         .filter((m) => m.enabled)
-        .map((_, index) => index)
-        //12 = faction
-        .filter((index) => index % 4 !== 0);
+        .map((_, index) => index + 1) // idk if this breaks anything but it makes faction work
+        //48 = faction
+        .filter((index) => index % 4 !== 0 || index === 48)
         console.log(enabledGameModeIdxs)
         const gameModeIdx = enabledGameModeIdxs.includes(initialRoomData.gameModeIdx)
             ? initialRoomData.gameModeIdx
