@@ -369,6 +369,7 @@ export class GameMod {
             playerOptions.parentNode !== teamMenuContents
         ) {
             teamMenuContents.appendChild(playerOptions);
+            playerOptions.style.marginTop = "45px";
         } else if (
             !isSpecialUrl &&
             startMenuContainer &&
@@ -376,6 +377,7 @@ export class GameMod {
         ) {
             const firstChild = startMenuContainer.firstChild;
             startMenuContainer.insertBefore(playerOptions, firstChild);
+            playerOptions.style.marginTop = "";
         }
     }
 

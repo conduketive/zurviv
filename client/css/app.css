@@ -1170,7 +1170,7 @@ a:active {
 
 #team-menu {
   display: none;
-  height: 375px;
+  height: 415px;
   padding: 12px;
   position: relative;
   width: 625px;
@@ -7063,6 +7063,9 @@ input [type="image"]:focus {
   width: 100%;
   background-color: #a3c082;
   border: 2px solid #ccc;
+  max-height: 300px;
+  overflow-y: auto; 
+  padding-right: 10px;
   border-radius: 5px;
   z-index: 1000;
 }
