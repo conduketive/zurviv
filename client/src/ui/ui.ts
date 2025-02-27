@@ -1333,6 +1333,7 @@ export class UiManager {
             unknown: "game-rank",
             [TeamMode.Solo]: "game-solo-rank",
             [TeamMode.Duo]: "game-duo-rank",
+            [TeamMode.Trio]: "game-trio-rank",
             [TeamMode.Squad]: "game-squad-rank",
         };
         const val = l10nMap[teamMode] || l10nMap.unknown;
