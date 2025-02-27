@@ -168,7 +168,9 @@ export class TeamMenu {
                 autoFill: initialRoomData.autoFill,
                 findingGame: initialRoomData.findingGame,
                 lastError: initialRoomData.lastError,
-                maxPlayers: math.clamp(gameModeIdx * 2, 2, 4),
+                maxPlayers: (gameModeIdx % 4 === 1) ? 2 :
+                (gameModeIdx % 4 === 2) ? 3 :
+                (gameModeIdx % 4 === 2) ? 3 : 4   
             },
             players: [roomLeader],
         };

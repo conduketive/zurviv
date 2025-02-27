@@ -102,7 +102,7 @@ class Application {
             this.loadoutMenu,
             this.errorModal,
         );
-        this.siteInfo = new SiteInfo(this.config, this.localization);
+        this.siteInfo = new SiteInfo(false, this.config, this.localization, );
 
         this.teamMenu = new TeamMenu(
             this.config,
@@ -148,12 +148,18 @@ class Application {
                 net.Constants.PlayerNameMaxLen;
 
                 $(document).ready(() => {
-                    const modeOptions: Record<string, number> = {
-                        "Gamerio": 0,
-                        "Main": 4,
-                        "Spring": 8,
-                        "Faction": 12,
-                    };
+                    let modes = this.siteInfo.info.modes;
+                    const modeOptions: Record<string, number> = {};
+                    for (let i = 0; i < modes.length; i++) {
+                        if (i % 4 === 0) {
+                            const mapNameParts = modes[i].mapName.split("_");
+                            const formattedMapName = mapNameParts.length > 1 
+                                ? mapNameParts[1].charAt(0).toUpperCase() + mapNameParts[1].slice(1) 
+                                : modes[i].mapName.substring(0,1).toUpperCase() + modes[i].mapName.substring(1);
+
+                            modeOptions[formattedMapName] = i;
+                        }
+                    }
                 
                     const teamOptions: Record<string, number> = {
                         "Solo": 0,

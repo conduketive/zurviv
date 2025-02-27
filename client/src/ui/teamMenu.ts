@@ -70,12 +70,7 @@ export class TeamMenu {
     displayedInvalidProtocolModal = false;
     hideUrl!: boolean;
 
-    modeOptions: Record<string, number> = {
-        "Gamerio": 0,
-        "Main": 4,
-        "Spring": 8,
-        "Faction": 12
-    };
+    modeOptions: Record<string, number> = {};
 
     teamOptionsMap: Record<string, number> = {
         "Duo": 1,
@@ -83,8 +78,8 @@ export class TeamMenu {
         "Squad": 3
     };
 
-    selectedMode: number = 0;
-    selectedTeam: number = 0;
+    selectedMode: number = this.roomData.gameModeIdx || 0;
+    selectedTeam: number = this.roomData.maxPlayers || 1;
 
     constructor(
         public config: ConfigManager,
@@ -110,11 +105,46 @@ export class TeamMenu {
 
         this.fillAuto.click(() => this.setRoomProperty("autoFill", true));
         this.fillNone.click(() => this.setRoomProperty("autoFill", false));
+        const waitForRoomData = setInterval(() => {
+            
+            if (this.roomData.maxPlayers !== undefined) {
+                    let modes = this.siteInfo.info.modes;
+                    this.modeOptions = {};  
+                    for (let i = 0; i < modes.length; i++) {
+                        if (i % 4 === 0) {
+                            const mapNameParts = modes[i].mapName.split("_");
+                            const formattedMapName = mapNameParts.length > 1 
+                                ? mapNameParts[1].charAt(0).toUpperCase() + mapNameParts[1].slice(1) 
+                                : modes[i].mapName.substring(0,1).toUpperCase() + modes[i].mapName.substring(1);
+    
+                            this.modeOptions[formattedMapName] = i;
+                        }
+                    }
+                const teamMode = Object.keys(this.teamOptionsMap).find(
+                    key => this.teamOptionsMap[key] === this.roomData.maxPlayers-1
+                );
+    
+                if (teamMode) {
+                    this.queueMode2.text(`Team Mode: ${teamMode} | ▼`);
+                } else {
+                    this.queueMode2.text(`Team Mode: Unknown`);
+                }
         
-        this.teamSelection.on("click", () => this.getMode());
-        this.playBtn.on("click", () => {
-            this.tryStartGame();
-        });
+                clearInterval(waitForRoomData);
+            }
+        }, 100);
+        
+        
+
+        if (this.isLeader) {
+            this.teamSelection.on("click", () => this.getMode())
+            this.queueMode1.on("click", () => this.getMode())
+            this.queueMode2.on("click", () => this.getMode())
+            this.playBtn.on("click", () => {
+                this.tryStartGame();
+            });
+        }
+
         $("#team-copy-url, #team-desc-text").click((e) => {
             const t = $("<div/>", {
                 class: "copy-toast",
@@ -171,52 +201,61 @@ export class TeamMenu {
     }
 
     setupDropdown(mainButtonId: string, dropdownClass: string, containerId: string): void {
-        const mainButton = $(`#${mainButtonId}`);
-        const dropdown = $(`.${dropdownClass}`);
-        
-        mainButton.click((event) => {
-            event.stopPropagation();
-            $(".dropdown-menu").not(dropdown).hide();
-            dropdown.toggle();
-        });
-        
-        $(document).click((event) => {
-            if (!$(event.target).closest(`#${containerId}`).length) {
-                dropdown.hide();
-            }
-        });
-        
-        dropdown.find("a").click((event) => {
-            if (event.target instanceof HTMLElement) {
-                this.updateButtonText(mainButtonId, event.target);
-                dropdown.hide();
-            }
-        });
-        
-        dropdown.addClass("dropdown-menu");
+        if (this.isLeader) {
+            const mainButton = $(`#${mainButtonId}`);
+            const dropdown = $(`.${dropdownClass}`);
+            
+            mainButton.click((event) => {
+                event.stopPropagation();
+                $(".dropdown-menu").not(dropdown).hide();
+                dropdown.toggle();
+            });
+            
+            $(document).on("click", `#${containerId} .menu-option`, (event) => {
+                if (event.target instanceof HTMLElement) {
+                    this.updateButtonText(mainButtonId, event.target);
+                    dropdown.hide();
+                }
+            });
+   
+            $(document).click((event) => {
+                if (!$(event.target).closest(`#${containerId}`).length) {
+                    dropdown.hide();
+                }
+            });
+   
+            dropdown.addClass("dropdown-menu");
+        }
     }
+   
 
     updateButtonText(buttonId: string, selectedButton: HTMLElement): void {
-        const button = document.getElementById(buttonId);
-        if (!button) return;
-
-        button.className = selectedButton.className;
-        if (selectedButton.style.backgroundImage) {
-            button.style.backgroundImage = selectedButton.style.backgroundImage;
-        }
-        
-        if (button.id === "dropdown-main-button-team-1") {
-            button.innerHTML = `Game Mode: ${selectedButton.innerText} | ▼`;
-            this.selectedMode = this.modeOptions[selectedButton.innerText.trim()] || 0;
-            
-            if (selectedButton.innerText.trim() === "Faction") {
-                this.blockTeamMode();
-            } else {
-                this.unblockTeamMode();
+        if (this.isLeader) {
+            const button = document.getElementById(buttonId);
+            if (!button) return;
+    
+            button.className = selectedButton.className;
+            if (selectedButton.style.backgroundImage) {
+                button.style.backgroundImage = selectedButton.style.backgroundImage;
             }
-        } else {
-            button.innerHTML = `Team Mode: ${selectedButton.innerText} | ▼`;
-            this.selectedTeam = this.teamOptionsMap[selectedButton.innerText.trim()] || 0;
+    
+            if (button.id === "dropdown-main-button-team-1") {
+                button.innerHTML = `Game Mode: ${selectedButton.innerText} | ▼`;
+                this.selectedMode = this.modeOptions[selectedButton.innerText.trim()] || 0;
+    
+                if (selectedButton.innerText.trim() === "Faction") {
+                    this.blockTeamMode();
+                    this.selectedTeam = 0;
+                } else {
+                    this.unblockTeamMode();
+                }
+            } else {
+                button.innerHTML = `Team Mode: ${selectedButton.innerText} | ▼`;
+                this.selectedTeam = this.teamOptionsMap[selectedButton.innerText.trim()] || 0;
+            }
+    
+            // **Llamar a getMode() aquí para aplicar los cambios inmediatamente**
+            this.getMode();
         }
     }
 
@@ -234,15 +273,24 @@ export class TeamMenu {
         $("#dropdown-main-button-team-2").css({ 
             opacity: "1", 
             pointerEvents: "auto"
-        }).text("Team Mode: Select | ▼");
-        
+        });
+    
         $("#dropdown-container-team-2").show();
+    
+        if ($("#dropdown-main-button-team-2").text().includes("Select")) {
+            $("#dropdown-main-button-team-2").text("Team Mode: Select | ▼");
+        }
     }
 
     getMode(): void {
-        const totalValue = this.selectedMode + this.selectedTeam;
-        this.setRoomProperty("gameModeIdx", totalValue);
+        if (this.isLeader) {
+            console.log("Updating mode:", this.selectedMode, "team:", this.selectedTeam);
+            const totalValue = this.selectedMode + this.selectedTeam;
+            this.setRoomProperty("gameModeIdx", totalValue);
+            this.setRoomProperty("maxPlayers", this.selectedTeam);
+        }
     }
+    
 
     getPlayerById(playerId: number) {
         return this.players.find((x) => {
@@ -515,18 +563,6 @@ export class TeamMenu {
             this.serverSelect.find("option").each((_idx, ele) => {
                 ele.selected = ele.value == this.roomData.region;
             });
-
-            // Modes btns
-            setButtonState(
-                this.queueMode1,
-                this.roomData.gameModeIdx == 1,
-                this.isLeader && this.roomData.enabledGameModeIdxs.includes(1),
-            );
-            setButtonState(
-                this.queueMode2,
-                this.roomData.gameModeIdx == 2,
-                this.isLeader && this.roomData.enabledGameModeIdxs.includes(2),
-            );
 
             // Fill mode
             setButtonState(this.fillAuto, this.roomData.autoFill, this.isLeader);

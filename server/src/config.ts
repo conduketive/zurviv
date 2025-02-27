@@ -48,23 +48,21 @@ export const Config = {
         { mapName: "main_spring", teamMode: TeamMode.Duo, enabled: true },
         { mapName: "main_spring", teamMode: TeamMode.Trio, enabled: true },
         { mapName: "main_spring", teamMode: TeamMode.Squad, enabled: true },
-    
-        { mapName: "faction", teamMode: TeamMode.Squad, enabled: true },
-    
-        { mapName: "main_summer", teamMode: TeamMode.Solo, enabled: true },
-        { mapName: "main_summer", teamMode: TeamMode.Duo, enabled: true },
-        { mapName: "main_summer", teamMode: TeamMode.Trio, enabled: true },
-        { mapName: "main_summer", teamMode: TeamMode.Squad, enabled: true },
+        
+        { mapName: "halloween", teamMode: TeamMode.Solo, enabled: true },
+        { mapName: "halloween", teamMode: TeamMode.Duo, enabled: true },
+        { mapName: "halloween", teamMode: TeamMode.Trio, enabled: true },
+        { mapName: "halloween", teamMode: TeamMode.Squad, enabled: true },
     
         { mapName: "desert", teamMode: TeamMode.Solo, enabled: true },
         { mapName: "desert", teamMode: TeamMode.Duo, enabled: true },
         { mapName: "desert", teamMode: TeamMode.Trio, enabled: true },
         { mapName: "desert", teamMode: TeamMode.Squad, enabled: true },
     
-        { mapName: "halloween", teamMode: TeamMode.Solo, enabled: true },
-        { mapName: "halloween", teamMode: TeamMode.Duo, enabled: true },
-        { mapName: "halloween", teamMode: TeamMode.Trio, enabled: true },
-        { mapName: "halloween", teamMode: TeamMode.Squad, enabled: true },
+        { mapName: "main_summer", teamMode: TeamMode.Solo, enabled: true },
+        { mapName: "main_summer", teamMode: TeamMode.Duo, enabled: true },
+        { mapName: "main_summer", teamMode: TeamMode.Trio, enabled: true },
+        { mapName: "main_summer", teamMode: TeamMode.Squad, enabled: true },
     
         { mapName: "potato", teamMode: TeamMode.Solo, enabled: true },
         { mapName: "potato", teamMode: TeamMode.Duo, enabled: true },
@@ -94,7 +92,9 @@ export const Config = {
         { mapName: "turkey", teamMode: TeamMode.Solo, enabled: true },
         { mapName: "turkey", teamMode: TeamMode.Duo, enabled: true },
         { mapName: "turkey", teamMode: TeamMode.Trio, enabled: true },
-        { mapName: "turkey", teamMode: TeamMode.Squad, enabled: true }
+        { mapName: "turkey", teamMode: TeamMode.Squad, enabled: true },
+
+        { mapName: "faction", teamMode: TeamMode.Squad, enabled: true },
     ],
 
     regions: {},
