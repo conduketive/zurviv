@@ -254,7 +254,6 @@ export class TeamMenu {
                 this.selectedTeam = this.teamOptionsMap[selectedButton.innerText.trim()] || 0;
             }
     
-            // **Llamar a getMode() aquí para aplicar los cambios inmediatamente**
             this.getMode();
         }
     }
