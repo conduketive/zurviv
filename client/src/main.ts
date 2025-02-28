@@ -150,17 +150,18 @@ class Application {
                 $(document).ready(() => {
                     let modes = this.siteInfo.info.modes;
                     const modeOptions: Record<string, number> = {};
-                    for (let i = 0; i < modes.length; i++) {
-                        if (i % 4 === 0) {
-                            const mapNameParts = modes[i].mapName.split("_");
-                            const formattedMapName = mapNameParts.length > 1 
-                                ? mapNameParts[1].charAt(0).toUpperCase() + mapNameParts[1].slice(1) 
-                                : modes[i].mapName.substring(0,1).toUpperCase() + modes[i].mapName.substring(1);
-
-                            modeOptions[formattedMapName] = i;
+                    if (modes) {
+                        for (let i = 0; i < modes.length; i++) {
+                            if (i % 4 === 0) {
+                                const mapNameParts = modes[i].mapName.split("_");
+                                const formattedMapName = mapNameParts.length > 1 
+                                    ? mapNameParts[1].charAt(0).toUpperCase() + mapNameParts[1].slice(1) 
+                                    : modes[i].mapName.substring(0,1).toUpperCase() + modes[i].mapName.substring(1);
+    
+                                modeOptions[formattedMapName] = i;
+                            }
                         }
-                    }
-                
+                    } 
                     const teamOptions: Record<string, number> = {
                         "Solo": 0,
                         "Duo": 1,
@@ -242,14 +243,15 @@ class Application {
                 
                     setupDropdown("dropdown-main-button-1", "dropdown-buttons-1", "dropdown-container-1");
                     setupDropdown("dropdown-main-button-2", "dropdown-buttons-2", "dropdown-container-2");
-                
-                    $("#play-button-menu").click(() => {
-                        const selectedMode: number = getSelectedValue("dropdown-main-button-1", modeOptions);
-                        const selectedTeam: number = getSelectedValue("dropdown-main-button-2", teamOptions);
-                        const totalValue: number = selectedMode + selectedTeam;
-                
-                        (this as any).tryQuickStartGame(totalValue);
-                    });
+                    if (modeOptions) {
+                        $("#play-button-menu").click(() => {
+                            const selectedMode: number = getSelectedValue("dropdown-main-button-1", modeOptions);
+                            const selectedTeam: number = getSelectedValue("dropdown-main-button-2", teamOptions);
+                            const totalValue: number = selectedMode + selectedTeam;
+                    
+                            (this as any).tryQuickStartGame(totalValue);
+                        });
+                    }
                 });
                 
             this.serverSelect.change(() => {

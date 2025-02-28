@@ -106,6 +106,9 @@ export class TeamMenu {
         this.fillAuto.click(() => this.setRoomProperty("autoFill", true));
         this.fillNone.click(() => this.setRoomProperty("autoFill", false));
         const waitForRoomData = setInterval(() => {
+            this.selectedTeam = this.roomData.maxPlayers - 1;
+            this.selectedMode = this.roomData.gameModeIdx - (this.roomData.maxPlayers - 1);
+            
             
             if (this.roomData.maxPlayers !== undefined) {
                     let modes = this.siteInfo.info.modes;
@@ -269,16 +272,16 @@ export class TeamMenu {
     }
 
     unblockTeamMode(): void {
+        this.selectedTeam = 3;
         $("#dropdown-main-button-team-2").css({ 
             opacity: "1", 
             pointerEvents: "auto"
         });
-    
         $("#dropdown-container-team-2").show();
     
-        if ($("#dropdown-main-button-team-2").text().includes("Select")) {
-            $("#dropdown-main-button-team-2").text("Team Mode: Select | ▼");
-        }
+        
+        $("#dropdown-main-button-team-2").text("Team Mode: Squad | ▼");
+        
     }
 
     getMode(): void {

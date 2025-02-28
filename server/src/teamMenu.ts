@@ -153,7 +153,6 @@ export class TeamMenu {
         .filter((m) => m.enabled)
         .map((_, index) => index + 1)
         .filter((index) => index % 4 !== 0 || Config.modes[index].mapName === "faction")
-
         const gameModeIdx = enabledGameModeIdxs.includes(initialRoomData.gameModeIdx)
             ? initialRoomData.gameModeIdx
             : 3 - initialRoomData.gameModeIdx;
