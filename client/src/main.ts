@@ -389,7 +389,7 @@ class Application {
                 this.audioManager,
                 this.config,
             );
-            this.resourceManager.loadMapAssets();
+            this.resourceManager.loadMapAssets("halloween");
             this.input = new InputHandler(document.getElementById("game-touch-area")!);
             this.inputBinds = new InputBinds(this.input, this.config);
             this.inputBindUi = new InputBindUi(this.input, this.inputBinds);
