@@ -7052,7 +7052,7 @@ input [type="image"]:focus {
 #dropdown-main-button-1, #dropdown-main-button-team-1 {
   cursor: pointer;
   position: relative;
-  z-index: 2;
+  z-index: 1;
 }
 
 .dropdown-buttons-1, .dropdown-buttons-team-1{
@@ -7067,7 +7067,7 @@ input [type="image"]:focus {
   overflow-y: auto; 
   padding-right: 10px;
   border-radius: 5px;
-  z-index: 1000;
+  z-index: 1;
 }
 
 .dropdown-buttons-2, .dropdown-buttons-team-2{
@@ -7079,5 +7079,5 @@ input [type="image"]:focus {
   background-color: #a3c082;
   border: 2px solid #ccc;
   border-radius: 5px;
-  z-index: 1000;
+  z-index: 1;
 }
