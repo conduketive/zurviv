@@ -38,7 +38,7 @@ export const Config = {
         { mapName: "gamerio", teamMode: TeamMode.Duo, enabled: true },
         { mapName: "gamerio", teamMode: TeamMode.Trio, enabled: true },
         { mapName: "gamerio", teamMode: TeamMode.Squad, enabled: true },
-
+/*
         { mapName: "main", teamMode: TeamMode.Solo, enabled: true },
         { mapName: "main", teamMode: TeamMode.Duo, enabled: true },
         { mapName: "main", teamMode: TeamMode.Trio, enabled: true },
@@ -94,7 +94,7 @@ export const Config = {
         { mapName: "turkey", teamMode: TeamMode.Trio, enabled: true },
         { mapName: "turkey", teamMode: TeamMode.Squad, enabled: true },
 
-        { mapName: "faction", teamMode: TeamMode.Squad, enabled: true },
+        { mapName: "faction", teamMode: TeamMode.Squad, enabled: true },*/
     ],
 
     regions: {},
