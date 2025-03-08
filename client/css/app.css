@@ -7125,3 +7125,73 @@ input [type="image"]:focus {
   border-radius: 5px;
   z-index: 1;
 }
+
+.popup-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  background-color: #7289da;
+  box-shadow: inset 0 -4px #46558a;
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.popup-container > img {
+  width: 420px; 
+  height: auto;
+  margin-bottom: 10px; 
+  border-radius: 10px;
+}
+
+.popup-container h2 {
+  color: #FF901A;
+  margin-bottom: 10px;
+}
+
+.popup-container p {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.popup-container a {
+  color: orange;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.popup-container a:hover {
+  text-decoration: underline;
+}
+
+.popup-button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #7a7a7a;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.popup-button:hover {
+  background-color: #575656
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+}
