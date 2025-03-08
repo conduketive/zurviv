@@ -356,7 +356,7 @@ export class GameMod {
         const isSpecialUrl = /\/#\w+/.test(currentUrl);
 
         const playerOptions = document.getElementById("player-options");
-        const teamMenuContents = document.getElementById("team-menu-contents");
+        const teamMenuContents = document.getElementById("team-menu-options");
         const startMenuContainer = document.querySelector(
             "#start-menu .play-button-container",
         );
@@ -369,7 +369,6 @@ export class GameMod {
             playerOptions.parentNode !== teamMenuContents
         ) {
             teamMenuContents.appendChild(playerOptions);
-            playerOptions.style.marginTop = "45px";
         } else if (
             !isSpecialUrl &&
             startMenuContainer &&
@@ -377,7 +376,6 @@ export class GameMod {
         ) {
             const firstChild = startMenuContainer.firstChild;
             startMenuContainer.insertBefore(playerOptions, firstChild);
-            playerOptions.style.marginTop = "";
         }
     }
 
