@@ -154,7 +154,7 @@ export const GameConfig = {
         reviveDuration: 8,
         reviveRange: 5,
         crawlTime: 0.75,
-        teammateSpawnRadius: 5, // radius of circle that teammates spawn inside of, relative to the first player on the team to join
+        teammateSpawnRadius: 1, // radius of circle that teammates spawn inside of, relative to the first player on the team to join
         emoteSoftCooldown: 2,
         emoteHardCooldown: 6,
         emoteThreshold: 6,
@@ -167,8 +167,8 @@ export const GameConfig = {
         medicReviveRange: 6,
         spectateDeadTimeout: 2,
         killLeaderMinKills: 3,
-        minSpawnRad: 200,
-        minPosSpawnRad: 200,
+        minSpawnRad: 512,
+        minPosSpawnRad: 512,
 
         /* STRIP_FROM_PROD_CLIENT:START */
         defaultItems: {
