@@ -479,7 +479,8 @@ export const Main: MapDef = {
         map: {
             baseWidth: 512,
             baseHeight: 512,
-            scale: { small: 1.4, large: 1.6 },
+            scale: { small: 1.125, large: 1.25 },
+            extension: 128,
             shoreInset: 48,
             grassInset: 16,
             rivers: {
