@@ -207,9 +207,9 @@ class Application {
                             dropdown.hide();
                         }
                     });
-            
-                    dropdown.find("a").click((event) => {
-                        if (event.target instanceof HTMLElement) {
+
+                    dropdown.on("click", (event) => {
+                        if (event.target.tagName === "A") {
                             updateButtonText(mainButtonId, event.target);
                             dropdown.hide();
                         }
