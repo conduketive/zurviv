@@ -5,6 +5,7 @@ import type { ConfigManager } from "./config";
 import { device } from "./device";
 import fullResAtlasDefs from "./fullResAtlasDefs.json";
 import lowResAtlasDefs from "./lowResAtlasDefs.json";
+import SoundDefs from "./soundDefs";
 
 type AtlasDef = Record<Atlas, PIXI.ISpritesheetData[]>;
 
@@ -107,12 +108,6 @@ export class ResourceManager {
         this.textureRes = selectTextureRes(this.renderer, this.config);
         // @ts-expect-error private field L
         renderer.prepare.limiter.maxItemsPerFrame = 1;
-
-        // TODO REMOVE THIS
-        PIXI.Assets.load({
-            src: "./img/map/map-plane-01x.svg",
-            alias: "map-plane-01x.img"
-        });
     }
 
     isAtlasLoaded(name: Atlas) {
@@ -178,45 +173,83 @@ export class ResourceManager {
         atlas.spritesheets = [];
     }
 
-    loadMapAssets() {
-        console.log("Load all atlases");
+    loadMapAssets(mapName: string) {
+        
+        console.log("Load map", mapName);
+        if (mapName == "main_spring") {
+            mapName = "halloween";
+        }
 
-        const atlasKeys = Object.keys(spritesheetDefs[this.textureRes]) as Atlas[];
-        const loadedKeys = Object.keys(this.atlases) as Atlas[];
+        const mapDef = MapDefs[mapName as keyof typeof MapDefs];
+        if (!mapDef) {
+            throw new Error(`Failed loading mapDef ${this.mapName}`);
+        }
 
-        for (let i = 0; i < loadedKeys.length; i++) {
-            const key = loadedKeys[i];
-            if (!atlasKeys.includes(key)) {
+        //
+        // Textures
+        //
+        const atlasList = mapDef.assets.atlases;
+
+        // Unload all atlases that aren't in the new list
+        const keys = Object.keys(this.atlases) as Atlas[];
+        for (let i = 0; i < keys.length; i++) {
+            const key = keys[i];
+            if (!atlasList.includes(key)) {
                 this.unloadAtlas(key);
             }
         }
 
-        for (let i = 0; i < atlasKeys.length; i++) {
-            const atlas = atlasKeys[i];
+        // Load all new atlases
+        for (let i = 0; i < atlasList.length; i++) {
+            const atlas = atlasList[i];
             if (!this.isAtlasLoaded(atlas)) {
-                console.log("Load atlas", atlas);
-
-                this.atlases[atlas] = this.atlases[atlas] || {
-                    loaded: false,
-                    spritesheets: [],
-                };
-
-                const atlasDef = spritesheetDefs[this.textureRes][atlas];
-                for (let j = 0; j < atlasDef.length; j++) {
-                    const spritesheet = loadSpritesheet(this.renderer, atlasDef[j]);
-                    this.atlases[atlas].spritesheets.push(spritesheet);
-                }
-                this.atlases[atlas].loaded = true;
+                this.loadAtlas(atlas);
             }
         }
 
+        //
+        // Audio
+        //
+        // PIXI spritesheets internally defer loading textures if the spritesheet
+        // has more than 1000 images as a part of its internal batching process.
+        //
+        // Because we want images to load before audio, we'll also defer loading
+        // audio in a similar fashion.
         setTimeout(() => {
-            console.log("Load audio");
+            // Load shared audio
             this.audioManager.preloadSounds();
-        }, 0);
 
-        this.loaded = true;
-        console.log("Assets loaded");
+            // Load audio specific to the map
+            const soundList = mapDef.assets.audio;
+            for (let i = 0; i < soundList.length; i++) {
+                const sound = soundList[i];
+
+                // @HACK: Sometimes the channel doesn't correspond to where
+                // the sound is defined in sound-defs.js; this is the case
+                // with "players" sounds. Use an alternate method for looking
+                // up the sound def.
+                let soundsList = SoundDefs.Sounds[sound.channel];
+                if (!soundsList) {
+                    const channelDef = SoundDefs.Channels[sound.channel];
+                    soundsList = SoundDefs.Sounds[channelDef.list];
+                }
+
+                const soundDef = soundsList[sound.name];
+
+                const options = {
+                    canCoalesce: soundDef.canCoalesce!,
+                    channels: soundDef.maxInstances,
+                    volume: soundDef.volume,
+                };
+
+                this.audioManager.loadSound({
+                    name: sound.name,
+                    channel: sound.channel,
+                    path: soundDef.path,
+                    options,
+                });
+            }
+        }, 0);
     }
 
     update(dt: number) {

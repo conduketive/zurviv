@@ -240,7 +240,7 @@ export class TeamMenu {
             button.className = selectedButton.className;
             if (selectedButton.style.backgroundImage) {
                 button.style.backgroundImage = selectedButton.style.backgroundImage;
-            }
+            } else button.style.backgroundImage = "";
     
             if (button.id === "dropdown-main-button-team-1") {
                 button.innerHTML = `Game Mode: ${selectedButton.innerText} | ▼`;

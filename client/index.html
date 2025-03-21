@@ -793,10 +793,14 @@
             <div id='left-column' class='menu-column'>
               <div id='ad-block-left'>
                 <div class="ad-block-med-rect">
-                  <h3 class="news-header">About Survev League</h3>
-                    <p>Survev League is a clan war server. Join the 
-                      <a href="https://discord.com/invite/7YPU4rNkSd" target="_blank">DISCORD</a> to participate in the clan war.</p>
-                    </div>
+                  <div class="discord-message">
+                    <img src="./public/img/duke_image.jpg" alt="">
+                    <h2>c_duke</h2>
+                  </div>
+                  <h3 class="news-header">CASTLE</h3>
+                  <p>CASTLE - <span style="color: green;">$400</span> PRIZE POOL SURVEV LEAGUE</p>
+                  <a href="https://discord.gg/castle-community" target="_blank" class="btn-discord-news"></a>
+                </div>
                   <!-- <div class='surviv-shirts'>
                     <a href='https://ko-fi.com/survev' target="_blank"></a>
                   </div> -->
@@ -818,8 +822,8 @@
                     <a href='https://twitter.com/survevleague' target='_blank' class='btn-social btn-darken btn-twitter'></a>
                     <a href='https://www.instagram.com/survevleague/' target='_blank' class='btn-social btn-darken btn-instagram'></a>
                     -->
-                    <a href='https://discord.com/invite/7YPU4rNkSd' target='_blank' class='btn-social btn-darken btn-discord'></a>
-                    <a href='https://github.com/conduketive/survevleague' target='_blank' class='btn-social btn-darken btn-github'></a>
+                    <!--a href='https://discord.com/invite/7YPU4rNkSd' target='_blank' class='btn-social btn-darken btn-discord'></a>-->
+                    <a href='https://github.com/conduketive/survev' target='_blank' class='btn-social btn-darken btn-github'></a>
                     <!-- <a href='https://ko-fi.com/survevleague' target='_blank' class='btn-social btn-darken btn-kofi'></a> -->
                     <a href='https://www.youtube.com/@conduketive?sub_confirmation=1' target='_blank' class='btn-social btn-darkn btn-youtube'></a>
                   </div>
@@ -1437,5 +1441,42 @@
         </div>
       </div>
     </div>
+    <div class="overlay" id="overlay" style="display: none;"></div>
+
+<div class="popup-container" id="popup" style="display: none;">
+    <img src="https://cdn.discordapp.com/splashes/1007749611122855977/7f546b2b6a6e26a874d00b7df4dd1aa1.jpg?size=2048" alt="">
+    <p>Welcome to <strong>CASTLE</strong>, the best <strong>Surviv.io/Survev.io</strong> server around, and the host of the private <strong>Zurviv.io</strong> servers!</p>
+    <p>Our community is full of opportunities to discover and create content, post advertisements and find clans, check out statistics of and play scrims with the best players and teams, join teams to compete, play in league matches, and hop into our amazing events!</p>
+    <p>Our league hosts the largest prize pool of any <strong>Surviv.io/Survev.io</strong> server EVER, with over <strong style="color: green;">$400 USD</strong> in prizes!</p>
+    <p>Not only that, we also have the smoothest custom servers all around the world for practicing, scrims, wars, events, and other activities! Come check us out and join in on the fun!</p>
+    <p><a href="https://discord.gg/castle-community" target="_blank">Join our Discord!</a></p>
+    
+    <div style="display: flex; align-items: center; gap: 8px; margin-top: 10px;">
+        <input type="checkbox" id="dontShowAgain">
+        <label for="dontShowAgain" style="font-size: 14px;">Don't show again</label>
+    </div>
+
+    <button class="popup-button" onclick="closePopup()">Got it!</button>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        if (!localStorage.getItem("popupHidden")) {
+            setTimeout(() => {
+                document.getElementById("popup").style.display = "flex";
+                document.getElementById("overlay").style.display = "block";
+            }, 1000);
+        }
+    });
+
+    function closePopup() {
+        if (document.getElementById("dontShowAgain").checked) {
+            localStorage.setItem("popupHidden", "true");
+        }
+        document.getElementById("popup").style.display = "none";
+        document.getElementById("overlay").style.display = "none";
+    }
+</script>
+    
     <script type="module" src="src/main.ts"></script>
 </html>
