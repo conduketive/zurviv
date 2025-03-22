@@ -1020,7 +1020,9 @@ export class GameMap {
 
             if (type.includes("hut")) {
                 dist -= 16;
-            } else if (type === "warehouse_complex_01" || "warehouse_complex_02") {
+            } else if (type === "warehouse_complex_01") {
+                dist -= this.shoreInset - 6.5;
+            } else if (type === "warehouse_complex_02") {
                 dist -= this.shoreInset - 6.5;
             } else if (type === "bunker_structure_04") {
                 dist -= 24;
