@@ -35,11 +35,6 @@ export const Config = {
 
     modes: [
 
-        { mapName: "gamerio", teamMode: TeamMode.Solo, enabled: true },
-        { mapName: "gamerio", teamMode: TeamMode.Duo, enabled: true },
-        { mapName: "gamerio", teamMode: TeamMode.Trio, enabled: true },
-        { mapName: "gamerio", teamMode: TeamMode.Squad, enabled: true },
-
         { mapName: "main", teamMode: TeamMode.Solo, enabled: true },
         { mapName: "main", teamMode: TeamMode.Duo, enabled: true },
         { mapName: "main", teamMode: TeamMode.Trio, enabled: true },
