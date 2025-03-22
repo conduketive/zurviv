@@ -474,15 +474,43 @@ export const Main: MapDef = {
             { name: "treat_762", count: 1, weight: 1 },
             { name: "treat_super", count: 1, weight: 0.1 },
         ],
+        tier_faction_outfits: [
+            { name: "outfitVerde", count: 1, weight: 1 },
+            { name: "outfitWoodland", count: 1, weight: 1 },
+            { name: "outfitKeyLime", count: 1, weight: 1 },
+            { name: "outfitCamo", count: 1, weight: 1 },
+        ],
+        tier_airdrop_faction_outfits: [{ name: "outfitGhillie", count: 1, weight: 1 }],
+        tier_airdrop_faction_melee: [{ name: "pan", count: 1, weight: 1 }],
+        tier_perks: [
+            { name: "firepower", count: 1, weight: 1 },
+            { name: "windwalk", count: 1, weight: 1 },
+            { name: "endless_ammo", count: 1, weight: 1 },
+            { name: "steelskin", count: 1, weight: 1 },
+            { name: "splinter", count: 1, weight: 1 },
+            { name: "small_arms", count: 1, weight: 1 },
+            { name: "takedown", count: 1, weight: 1 },
+            { name: "field_medic", count: 1, weight: 1 },
+            { name: "tree_climbing", count: 1, weight: 1 },
+            { name: "scavenger", count: 1, weight: 1 },
+            { name: "chambered", count: 1, weight: 1 },
+            { name: "martyrdom", count: 1, weight: 1 },
+            { name: "self_revive", count: 1, weight: 1 },
+            { name: "bonus_9mm", count: 1, weight: 1 },
+        ],
+        tier_potato_perks: [
+            { name: "", count: 1, weight: 25 },
+            { name: "tier_perks", count: 1, weight: 1 },
+        ],
     },
     mapGen: {
         map: {
             baseWidth: 512,
             baseHeight: 512,
-            scale: { small: 1.125, large: 1.25 },
-            extension: 128,
+            scale: { small: 1.1875, large: 1.28125 },
+            extension: 112,
             shoreInset: 48,
-            grassInset: 16,
+            grassInset: 18,
             rivers: {
                 lakes: [],
                 weights: [
@@ -498,6 +526,7 @@ export const Main: MapDef = {
                     },
                 ],
                 smoothness: 0.45,
+                spawnCabins: true,
                 masks: [],
             },
         },
@@ -622,3 +651,11 @@ export const Main: MapDef = {
     },
     /* STRIP_FROM_PROD_CLIENT:END */
 };
+
+type DeepPartial<T> = T extends object
+    ? {
+          [P in keyof T]?: DeepPartial<T[P]>;
+      }
+    : T;
+
+export type PartialMapDef = DeepPartial<MapDef>;
