@@ -526,7 +526,6 @@ export const Main: MapDef = {
                     },
                 ],
                 smoothness: 0.45,
-                spawnCabins: true,
                 masks: [],
             },
         },
