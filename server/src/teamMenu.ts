@@ -7,7 +7,6 @@ import type {
     TeamMenuPlayer,
     TeamStateMsg,
 } from "../../shared/net/team";
-import { math } from "../../shared/utils/math";
 import { assert } from "../../shared/utils/util";
 import type { ApiServer } from "./apiServer";
 import { Config } from "./config";
@@ -456,6 +455,14 @@ export class TeamMenu {
             case "playGame": {
                 // this message can only ever be sent by the leader
                 const room = this.rooms.get(localPlayerData.roomUrl)!;
+
+                if (room.roomData.findingGame) return;
+                room.roomData.findingGame = true;
+                setTimeout(() => {
+                    room.roomData.findingGame = false;
+                    this.sendRoomState(room);
+                }, 5000);
+
                 const player = room.players.find(
                     (p) => p.socketData === localPlayerData,
                 )!;
@@ -464,7 +471,6 @@ export class TeamMenu {
                     return;
                 }
 
-                room.roomData.findingGame = true;
                 this.sendRoomState(room);
 
                 const data = parsedMessage.data;
@@ -507,7 +513,6 @@ export class TeamMenu {
                     (p) => p.socketData === localPlayerData,
                 )!;
                 player.inGame = false;
-                room.roomData.findingGame = false;
 
                 this.sendRoomState(room);
                 break;

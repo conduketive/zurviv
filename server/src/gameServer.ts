@@ -25,6 +25,7 @@ export interface FindGameBody {
     autoFill: boolean;
     gameModeIdx: number;
 }
+import { checkIp } from "./ipChecker";
 import { isBanned } from "./utils/moderation";
 
 export type FindGameResponse = {
@@ -84,9 +85,13 @@ export class GameServer {
             async upgrade(res, req, context) {
                 res.onAborted((): void => {});
 
+                const key = req.getHeader("sec-websocket-key");
+                const protocol = req.getHeader("sec-websocket-protocol");
+                const extensions = req.getHeader("sec-websocket-extensions");
+
                 const ip = getIp(res, req);
 
-                if (await isBanned(ip)) {
+                if (isBanned(ip)) {
                     res.writeStatus("403 Forbidden");
                     res.write("403 Forbidden");
                     res.end();
@@ -113,19 +118,31 @@ export class GameServer {
                 gameWsRateLimit.ipConnected(ip);
 
                 const socketId = randomBytes(20).toString("hex");
-                res.upgrade(
-                    {
-                        gameId,
-                        id: socketId,
-                        closed: false,
-                        rateLimit: {},
-                        ip,
-                    },
-                    req.getHeader("sec-websocket-key"),
-                    req.getHeader("sec-websocket-protocol"),
-                    req.getHeader("sec-websocket-extensions"),
-                    context,
-                );
+
+                res.cork(async () => {
+                    const vpnCheck = await checkIp(ip);
+
+                    if (!vpnCheck) {
+                        res.writeStatus("403 Forbidden");
+                        res.write("403 Forbidden");
+                        res.end();
+                        return;
+                    }
+
+                    res.upgrade(
+                        {
+                            gameId,
+                            id: socketId,
+                            closed: false,
+                            rateLimit: {},
+                            ip,
+                        },
+                        key,
+                        protocol,
+                        extensions,
+                        context,
+                    );
+                });
             },
 
             /**
