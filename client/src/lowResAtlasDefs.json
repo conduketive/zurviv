@@ -4090,6 +4090,86 @@
             "h": 64
           }
         },
+        "loot-scope-06.img": {
+          "frame": {
+            "x": 1604,
+            "y": 76,
+            "w": 64,
+            "h": 64
+          },
+          "rotated": false,
+          "trimmed": false,
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          }
+        },
+        "loot-scope-07.img": {
+          "frame": {
+            "x": 1604,
+            "y": 150,
+            "w": 64,
+            "h": 64
+          },
+          "rotated": false,
+          "trimmed": false,
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          }
+        },
+        "loot-scope-08.img": {
+          "frame": {
+            "x": 1604,
+            "y": 224,
+            "w": 64,
+            "h": 64
+          },
+          "rotated": false,
+          "trimmed": false,
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          }
+        },
+        "loot-scope-09.img": {
+          "frame": {
+            "x": 1604,
+            "y": 298,
+            "w": 64,
+            "h": 64
+          },
+          "rotated": false,
+          "trimmed": false,
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 64,
+            "h": 64
+          },
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          }
+        },
         "loot-scope-01.img": {
           "frame": {
             "x": 206,

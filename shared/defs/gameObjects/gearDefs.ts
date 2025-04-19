@@ -698,6 +698,66 @@ const ScopeDefs: Record<string, ScopeDef> = {
             pickup: "scope_pickup_01",
         },
     },
+    "50xscope": {
+        name: "50x Scope",
+        type: "scope",
+        level: 50,
+        lootImg: {
+            sprite: "loot-scope-06.img",
+            tint: 0xffffff,
+            border: "loot-circle-outer-01.img",
+            borderTint: 0,
+            scale: 0.2,
+        },
+        sound: {
+            pickup: "scope_pickup_01",
+        },
+    },
+    "100xscope": {
+        name: "100x Scope",
+        type: "scope",
+        level: 100,
+        lootImg: {
+            sprite: "loot-scope-07.img",
+            tint: 0xffffff,
+            border: "loot-circle-outer-01.img",
+            borderTint: 0,
+            scale: 0.2,
+        },
+        sound: {
+            pickup: "scope_pickup_01",
+        },
+    },
+    "200xscope": {
+        name: "200x Scope",
+        type: "scope",
+        level: 200,
+        lootImg: {
+            sprite: "loot-scope-08.img",
+            tint: 0xffffff,
+            border: "loot-circle-outer-01.img",
+            borderTint: 0,
+            scale: 0.2,
+        },
+        sound: {
+            pickup: "scope_pickup_01",
+        },
+    },
+    "400xscope": {
+        name: "400x Scope",
+        type: "scope",
+        level: 400,
+        lootImg: {
+            sprite: "loot-scope-09.img",
+            tint: 0xffffff,
+            border: "loot-circle-outer-01.img",
+            borderTint: 0,
+            scale: 0.2,
+        },
+        sound: {
+            pickup: "scope_pickup_01",
+        },
+    },
 };
 
 const SkinDefs = {

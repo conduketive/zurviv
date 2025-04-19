@@ -2010,6 +2010,86 @@
             "h": 128
           }
         },
+        "loot-scope-06.img": {
+          "frame": {
+            "x": 3060,
+            "y": 144,
+            "w": 128,
+            "h": 128
+          },
+          "rotated": false,
+          "trimmed": false,
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 128,
+            "h": 128
+          },
+          "sourceSize": {
+            "w": 128,
+            "h": 128
+          }
+        },
+        "loot-scope-07.img": {
+          "frame": {
+            "x": 3060,
+            "y": 292,
+            "w": 128,
+            "h": 128
+          },
+          "rotated": false,
+          "trimmed": false,
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 128,
+            "h": 128
+          },
+          "sourceSize": {
+            "w": 128,
+            "h": 128
+          }
+        },
+        "loot-scope-08.img": {
+          "frame": {
+            "x": 3060,
+            "y": 440,
+            "w": 128,
+            "h": 128
+          },
+          "rotated": false,
+          "trimmed": false,
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 128,
+            "h": 128
+          },
+          "sourceSize": {
+            "w": 128,
+            "h": 128
+          }
+        },
+        "loot-scope-09.img": {
+          "frame": {
+            "x": 3060,
+            "y": 580,
+            "w": 128,
+            "h": 128
+          },
+          "rotated": false,
+          "trimmed": false,
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 128,
+            "h": 128
+          },
+          "sourceSize": {
+            "w": 128,
+            "h": 128
+          }
+        },
         "flag-hungary.img": {
           "frame": {
             "x": 530,

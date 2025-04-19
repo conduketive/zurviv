@@ -215,6 +215,10 @@ export const GameConfig = {
                 "8xscope": 0,
                 "15xscope": 0,
                 "30xscope": 0,
+                "50xscope": 0,
+                "100xscope": 0,
+                "200xscope": 0,
+                "400xscope": 0,
             } as Record<string, number>,
         },
         /* STRIP_FROM_PROD_CLIENT:END */
@@ -338,6 +342,10 @@ export const GameConfig = {
             "8xscope": 68,
             "15xscope": 104,
             "30xscope": 144,
+            "50xscope": 164,
+            "100xscope": 250,
+            "200xscope": 357,
+            "400xscope": 500,
         } as Record<string, number>,
         mobile: {
             "1xscope": 32,
@@ -346,6 +354,10 @@ export const GameConfig = {
             "8xscope": 64,
             "15xscope": 88,
             "30xscope": 113,
+            "50xscope": 134,
+            "100xscope": 249,
+            "200xscope": 314,
+            "400xscope": 414,
         } as Record<string, number>,
     },
     bagSizes: {
@@ -373,6 +385,10 @@ export const GameConfig = {
         "8xscope": [1, 1, 1, 1],
         "15xscope": [1, 1, 1, 1],
         "30xscope": [1, 1, 1, 1],
+        "50xscope": [1, 1, 1, 1],
+        "100xscope": [1, 1, 1, 1],
+        "200xscope": [1, 1, 1, 1],
+        "400xscope": [1, 1, 1, 1],
     } as Record<string, number[]>,
     lootRadius: {
         outfit: 1,
