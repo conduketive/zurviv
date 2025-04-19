@@ -83,10 +83,10 @@ const mapDef = {
             { name: "tier_outfits", count: 1, weight: 0.025 }, // !
         ],
         tier_scopes: [
-            { name: "2xscope", count: 1, weight: 24 },
-            { name: "4xscope", count: 1, weight: 5 },
-            { name: "8xscope", count: 1, weight: 1 }, // ?
-            { name: "15xscope", count: 1, weight: 0.02 }, // ?
+            { name: "50xscope", count: 1, weight: 24 },
+            { name: "100xscope", count: 1, weight: 5 },
+            { name: "200xscope", count: 1, weight: 1 }, // ?
+            { name: "400xscope", count: 1, weight: 0.02 }, // ?
         ],
         tier_armor: [
             { name: "helmet01", count: 1, weight: 9 }, // !
@@ -133,9 +133,9 @@ const mapDef = {
         ],
         tier_sv98: [{ name: "sv98", count: 1, weight: 1 }],
         tier_scopes_sniper: [
-            { name: "4xscope", count: 1, weight: 5 }, // ?
-            { name: "8xscope", count: 1, weight: 1 }, // ?
-            { name: "15xscope", count: 1, weight: 0.02 }, // ?
+            { name: "100xscope", count: 1, weight: 15 }, // ?
+            { name: "200xscope", count: 1, weight: 5 }, // ?
+            { name: "400xscope", count: 1, weight: 1 }, // ?
         ],
         tier_mansion_floor: [{ name: "outfitCasanova", count: 1, weight: 1 }],
         tier_vault_floor: [{ name: "outfitJester", count: 1, weight: 1 }],
@@ -143,10 +143,10 @@ const mapDef = {
         tier_chrys_01: [{ name: "outfitImperial", count: 1, weight: 1 }],
         tier_chrys_02: [{ name: "katana", count: 1, weight: 1 }],
         tier_chrys_03: [
-            { name: "2xscope", count: 1, weight: 5 }, // ?
-            { name: "4xscope", count: 1, weight: 5 }, // ?
-            { name: "8xscope", count: 1, weight: 5 }, // ?
-            { name: "15xscope", count: 1, weight: 0.1 }, // ?
+            { name: "50xscope", count: 1, weight: 5 },
+            { name: "100xscope", count: 1, weight: 5 },
+            { name: "200xscope", count: 1, weight: 5 }, // ?
+            { name: "400xscope", count: 1, weight: 5 }, // ?
         ],
         tier_chrys_case: [
             { name: "", count: 1, weight: 5 }, // ?
@@ -239,8 +239,10 @@ const mapDef = {
             { name: "helmet03", count: 1, weight: 0.25 },
             { name: "chest02", count: 1, weight: 1 },
             { name: "chest03", count: 1, weight: 0.25 },
-            { name: "4xscope", count: 1, weight: 0.5 },
-            { name: "8xscope", count: 1, weight: 0.25 },
+            { name: "50xscope", count: 1, weight: 1 },
+            { name: "100xscope", count: 1, weight: 0.5 },
+            { name: "200xscope", count: 1, weight: 0.25 }, // ?
+            { name: "400xscope", count: 1, weight: 0.2 }, // ?
         ],
         tier_conch: [
             { name: "outfitAqua", count: 1, weight: 1 },
@@ -325,11 +327,8 @@ const mapDef = {
         ],
         tier_airdrop_mythic: [
             { name: "scarssr", count: 1, weight: 1 }, // ?
-            { name: "usas", count: 1, weight: 0.5 }, // ?
+            { name: "usas", count: 1, weight: 1 }, // ?
             { name: "p30l_dual", count: 1, weight: 1 }, // ?
-            { name: "awc", count: 1, weight: 0.1 }, // ?
-            { name: "pkp", count: 1, weight: 0.3 }, // ?
-            { name: "m249", count: 1, weight: 0.3 }, // ?
         ],
         tier_airdrop_ammo: [
             { name: "9mm", count: 30, weight: 3 },
@@ -358,9 +357,9 @@ const mapDef = {
         ],
         tier_airdrop_scopes: [
             { name: "", count: 1, weight: 24 }, // ?
-            { name: "4xscope", count: 1, weight: 5 }, // ?
-            { name: "8xscope", count: 1, weight: 1 }, // ?
-            { name: "15xscope", count: 1, weight: 0.02 }, // ?
+            { name: "100xscope", count: 1, weight: 15 }, // ?
+            { name: "200xscope", count: 1, weight: 5 }, // ?
+            { name: "400xscope", count: 1, weight: 1 }, // ?
         ],
         tier_katanas: [
             { name: "katana", count: 1, weight: 4 }, // ?
@@ -371,13 +370,6 @@ const mapDef = {
         tier_saloon: [
             { name: "vector45", count: 1, weight: 1 },
             { name: "mkg45", count: 1, weight: 1 },
-        ],
-        tier_cattle_crate: [
-            { name: "m1a1", count: 1, weight: 1 },
-            { name: "model94", count: 1, weight: 1 },
-            { name: "colt45", count: 1, weight: 1 },
-            { name: "outfitVerde", count: 1, weight: 0.1 },
-            { name: "outfitDesertCamo", count: 1, weight: 0.1 },
         ],
         tier_pumpkin_perks: [{ name: "halloween_mystery", count: 1, weight: 1 }],
         tier_xp_uncommon: [
@@ -425,34 +417,6 @@ const mapDef = {
             { name: "treat_762", count: 1, weight: 1 },
             { name: "treat_super", count: 1, weight: 0.1 },
         ],
-        tier_faction_outfits: [
-            { name: "outfitVerde", count: 1, weight: 1 },
-            { name: "outfitWoodland", count: 1, weight: 1 },
-            { name: "outfitKeyLime", count: 1, weight: 1 },
-            { name: "outfitCamo", count: 1, weight: 1 },
-        ],
-        tier_airdrop_faction_outfits: [{ name: "outfitGhillie", count: 1, weight: 1 }],
-        tier_airdrop_faction_melee: [{ name: "pan", count: 1, weight: 1 }],
-        tier_perks: [
-            { name: "firepower", count: 1, weight: 1 },
-            { name: "windwalk", count: 1, weight: 1 },
-            { name: "endless_ammo", count: 1, weight: 1 },
-            { name: "steelskin", count: 1, weight: 1 },
-            { name: "splinter", count: 1, weight: 1 },
-            { name: "small_arms", count: 1, weight: 1 },
-            { name: "takedown", count: 1, weight: 1 },
-            { name: "field_medic", count: 1, weight: 1 },
-            { name: "tree_climbing", count: 1, weight: 1 },
-            { name: "scavenger", count: 1, weight: 1 },
-            { name: "chambered", count: 1, weight: 1 },
-            { name: "martyrdom", count: 1, weight: 1 },
-            { name: "self_revive", count: 1, weight: 1 },
-            { name: "bonus_9mm", count: 1, weight: 1 },
-        ],
-        tier_potato_perks: [
-            { name: "", count: 1, weight: 25 },
-            { name: "tier_perks", count: 1, weight: 1 },
-        ],
     },
     /* STRIP_FROM_PROD_CLIENT:START */
     mapGen: {
@@ -468,7 +432,10 @@ const mapDef = {
                 cache_06: 12,
                 tree_01: 320,
                 hedgehog_01: 24,
-                container_06: 20,
+                container_01: 5,
+                container_02: 5,
+                container_03: 5,
+                container_04: 5,
                 shack_01: 7,
                 outhouse_01: 5,
                 loot_tier_1: 24,
@@ -498,7 +465,7 @@ const mapDef = {
                 bunker_structure_03: 1,
                 bunker_structure_04: 1,
                 bunker_structure_05: 1,
-                warehouse_complex_02: 1,
+                warehouse_complex_01: 1,
                 chest_01: 1,
                 chest_03: { odds: 0.2 },
                 mil_crate_02: { odds: 0.25 },
@@ -513,4 +480,3 @@ const mapDef = {
 };
 
 export const Gamerio = util.mergeDeep({}, Main, mapDef) as MapDef;
-
