@@ -627,7 +627,7 @@ export const Main: MapDef = {
                 bunker_structure_04: 1,
                 bunker_structure_05: 1,
                 warehouse_complex_01: 1,
-                chest_01: 32,
+                chest_01: 4,
                 chest_03: { odds: 0.2 },
                 mil_crate_02: { odds: 0.25 },
                 tree_02: 3,
