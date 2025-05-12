@@ -45,7 +45,7 @@ const ChestDefs: Record<string, ChestDef> = {
         name: "Level 2 Vest",
         type: "chest",
         level: 2,
-        damageReduction: 0.38,
+        damageReduction: 0.40,
         skinImg: {
             baseTint: 4934475,
             baseSprite: "player-armor-base-01.img",
@@ -65,7 +65,7 @@ const ChestDefs: Record<string, ChestDef> = {
         name: "Level 3 Vest",
         type: "chest",
         level: 3,
-        damageReduction: 0.45,
+        damageReduction: 0.55,
         skinImg: {
             baseTint: 0,
             baseSprite: "player-armor-base-01.img",
@@ -86,7 +86,7 @@ const ChestDefs: Record<string, ChestDef> = {
         type: "chest",
         noDrop: true,
         level: 4,
-        damageReduction: 0.6,
+        damageReduction: 0.7,
         skinImg: {
             baseTint: 1846790,
             baseSprite: "player-armor-base-01.img",
