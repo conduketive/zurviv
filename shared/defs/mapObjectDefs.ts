@@ -13703,7 +13703,7 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
                     container_02: 1,
                     container_03: 1,
                     container_05: 2,
-                    container_05: 0.05,
+                    container_06: 0.05,
                     "": 0.75,
                 }),
                 pos: v2.create(86.425, 27.5),
