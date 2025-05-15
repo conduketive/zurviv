@@ -13949,6 +13949,7 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
         ],
         teamId: 2,
     },
+    /*
     warehouse_complex_02: {
         type: "building",
         map: {
@@ -14625,6 +14626,7 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
         ],
         teamId: 2,
     },
+    */
     logging_complex_01: createLoggingComplex({}),
     logging_complex_01sp: createLoggingComplex({
         groundTintLt: 3361294,
