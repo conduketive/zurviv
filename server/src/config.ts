@@ -43,6 +43,11 @@ export const Config = {
         { mapName: "main", teamMode: TeamMode.Duo, enabled: true },
         { mapName: "main", teamMode: TeamMode.Trio, enabled: true },
         { mapName: "main", teamMode: TeamMode.Squad, enabled: true },
+
+        { mapName: "GG", teamMode: TeamMode.Solo, enabled: true },
+        { mapName: "GG", teamMode: TeamMode.Duo, enabled: true },
+        { mapName: "GG", teamMode: TeamMode.Trio, enabled: true },
+        { mapName: "GG", teamMode: TeamMode.Squad, enabled: true },
     
         { mapName: "main_spring", teamMode: TeamMode.Solo, enabled: true },
         { mapName: "main_spring", teamMode: TeamMode.Duo, enabled: true },

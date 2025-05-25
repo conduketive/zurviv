@@ -4,6 +4,7 @@ import { Cobalt } from "./maps/cobaltDefs";
 import { Desert } from "./maps/desertDefs";
 import { Faction } from "./maps/factionDefs";
 import { Gamerio } from "./maps/gamerio";
+import { GG } from "./maps/gg";
 import { Halloween } from "./maps/halloweenDefs";
 import { MainSpring } from "./maps/mainSpringDefs";
 import { MainSummer } from "./maps/mainSummerDefs";
@@ -21,6 +22,7 @@ export const MapDefs = {
     main: Main,
     main_spring: MainSpring,
     gamerio: Gamerio,
+    GG: GG,
     main_summer: MainSummer,
     desert: Desert,
     faction: Faction,
