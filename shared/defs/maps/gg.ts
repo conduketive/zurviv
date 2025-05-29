@@ -371,6 +371,7 @@ const mapDef = {
                 gun_mount_02: "gg_peacemaker_rack",
                 gun_mount_05: "gg_peacemaker_rack",
                 gun_mount_03: "gg_flare_gun_rack",
+                locker_03: "gg_m93r_locker",
             },
         ],
         fixedSpawns: [

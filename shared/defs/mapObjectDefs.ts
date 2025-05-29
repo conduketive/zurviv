@@ -30029,4 +30029,9 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
         loot: [autoLoot("flare_gun", 1)],
         img: { sprite: "map-gun-mount-03.img" },
     }),
+    // replaces locker_03 (ak47 locker in katana bunker)
+    gg_m93r_locker: createLocker({
+        img: { sprite: "map-locker-03.img" },
+        loot: [autoLoot("m93r_dual", 1, 1), autoLoot("backpack02", 1, 1)],
+    }),
 };
