@@ -1,6 +1,7 @@
 import type { Vec2 } from "../utils/v2";
 import { Main } from "./maps/baseDefs";
 import { Cobalt } from "./maps/cobaltDefs";
+import { Castle } from "./maps/castle";
 import { Desert } from "./maps/desertDefs";
 import { Faction } from "./maps/factionDefs";
 import { Gamerio } from "./maps/gamerio";
@@ -21,6 +22,7 @@ export const MapDefs = {
     main: Main,
     main_spring: MainSpring,
     gamerio: Gamerio,
+    castle: Castle,
     main_summer: MainSummer,
     desert: Desert,
     faction: Faction,
