@@ -33,6 +33,6 @@ export async function checkIp(ip: string): Promise<boolean> {
         } else {
             console.error("An unknown error occurred while checking the IP.");
         }
-        return true;
+        return false;
     }
 }
