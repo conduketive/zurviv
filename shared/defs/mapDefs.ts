@@ -5,6 +5,7 @@ import { Castle } from "./maps/castle";
 import { Desert } from "./maps/desertDefs";
 import { Faction } from "./maps/factionDefs";
 import { Gamerio } from "./maps/gamerio";
+import { GG } from "./maps/gg";
 import { Halloween } from "./maps/halloweenDefs";
 import { MainSpring } from "./maps/mainSpringDefs";
 import { MainSummer } from "./maps/mainSummerDefs";
@@ -22,6 +23,7 @@ export const MapDefs = {
     main: Main,
     main_spring: MainSpring,
     gamerio: Gamerio,
+    GG: GG,
     castle: Castle,
     main_summer: MainSummer,
     desert: Desert,

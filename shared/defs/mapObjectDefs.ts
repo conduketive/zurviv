@@ -29968,4 +29968,70 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
             zIdx: 4,
         },
     },
+
+    // GG MODE ADDITIONS:
+    // replaces pot_05 from scout hut
+    gg_p30l_pot: createBottle({
+        img: { sprite: "map-pot-05.img" },
+        loot: [autoLoot("p30l", 1), tierLoot("tier_islander_outfit", 1, 1)],
+    }),
+    // replaces pot_02 from spas hut
+    gg_peacemaker_pot: createBottle({
+        img: { sprite: "map-pot-02.img" },
+        loot: [autoLoot("colt45", 1)],
+    }),
+    // replaces crate_07 from ak bunker
+    gg_m93r_crate: createCrate({
+        health: 140,
+        loot: [
+            tierLoot("tier_surviv", 4, 5),
+            autoLoot("m93r_dual", 1),
+            autoLoot("m93r_dual", 1),
+            autoLoot("m93r_dual", 1),
+            autoLoot("m93r_dual", 1),
+            tierLoot("tier_khaki_outfit", 1, 1),
+            tierLoot("tier_khaki_outfit", 1, 1),
+            tierLoot("tier_khaki_outfit", 1, 1),
+            tierLoot("tier_khaki_outfit", 1, 1),
+        ],
+        img: { sprite: "map-crate-07.img" },
+        sound: { explode: "crate_break_01" },
+    }),
+
+    // replaces case_06 from teahouse
+    // case_06: createCase({
+    //     health: 140,
+    //     img: { sprite: "map-case-chrys-01.img" },
+    //     loot: [tierLoot("tier_chest", 2, 3), tierLoot("tier_chrys_case", 1, 1)],
+    //     hitParticle: "blackChip",
+    //     map: { display: false, color: 7025920, scale: 0.85 },
+    // }),
+    
+    // replaces tree_03 (mosin tree)
+    gg_ots_tree: createTree({
+        img: { tint: 11645361 },
+        loot: [tierLoot("tier_surviv", 2, 3), autoLoot("ots38_dual", 1)],
+    }),
+    // replaces stone_02 (loot rock)
+    gg_m93r_rock: createStone({
+        img: { tint: 15066597 },
+        loot: [tierLoot("tier_surviv", 2, 3), autoLoot("m93r_dual", 1)],
+    }),
+    // replaces gun_mount_01 (m870 rack)
+    // replaces gun_mount_02 (mp220 rack)
+    // replaces gun_mount_05 (turkey gun rack)
+    gg_peacemaker_rack: createGunMount({
+        loot: [autoLoot("colt45", 1)],
+        img: { sprite: "map-gun-mount-01.img" },
+    }),
+    // replaces gun_mount_03 (qbb rack)
+    gg_flare_gun_rack: createGunMount({
+        loot: [autoLoot("flare_gun", 1)],
+        img: { sprite: "map-gun-mount-03.img" },
+    }),
+    // replaces locker_03 (ak47 locker in katana bunker)
+    gg_m93r_locker: createLocker({
+        img: { sprite: "map-locker-03.img" },
+        loot: [autoLoot("m93r_dual", 1, 1), autoLoot("backpack02", 1, 1)],
+    }),
 };

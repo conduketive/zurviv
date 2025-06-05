@@ -3363,6 +3363,21 @@ a:active {
   }
 }
 
+@keyframes gg-pulse {
+  from {
+    background-color: #000000;
+    -webkit-box-shadow: 0 0 9px #000000;
+  }
+  50% {
+    background-color: #C020C0;
+    -webkit-box-shadow: 0 0 18px #C020C0;
+  }
+  to {
+    background-color: #000000;
+    -webkit-box-shadow: 0 0 9px #000000;
+  }
+}
+
 .btn-mode-faction {
   animation-name: faction-pulse;
   animation-duration: 4s;
@@ -3379,6 +3394,12 @@ a:active {
   animation-name: gamerio-pulse;
   animation-duration: 4s;
   border-bottom: 4px solid #325685;
+}
+
+.btn-mode-gg {
+  animation-name: gg-pulse;
+  animation-duration: 4s;
+  border-bottom: 4px solid #7000D0;
 }
 
 @media (max-width: 850px), (max-width: 900px) and (min-resolution: 3dppx) {
