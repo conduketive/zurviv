@@ -87,8 +87,6 @@ const mapDef: PartialMapDef = {
             { name: "potato_01", channel: "sfx" },
             { name: "potato_02", channel: "sfx" },
             { name: "potato_pickup_01", channel: "ui" },
-            { name: "club_music_01", channel: "ambient" },
-            { name: "club_music_02", channel: "ambient" },
             {
                 name: "ambient_steam_01",
                 channel: "ambient",
@@ -209,7 +207,7 @@ const mapDef: PartialMapDef = {
             ],
             crates: [
                 { name: "airdrop_crate_03po", weight: 1 },
-                { name: "airdrop_crate_04po", weight: 0.05 },
+                { name: "airdrop_crate_04po", weight: 0.05 }, // up for debate honestly
             ],
         },
         roles: {
@@ -260,61 +258,6 @@ const mapDef: PartialMapDef = {
                     circleIdx: 0,
                     wait: 74,
                 },
-                /*{
-                    role: "bugler",
-                    circleIdx: 0,
-                    wait: 50,
-                },
-                {
-                    role: "bugler",
-                    circleIdx: 0,
-                    wait: 50,
-                },
-                {
-                    role: "bugler",
-                    circleIdx: 0,
-                    wait: 50,
-                },
-                {
-                    role: "bugler",
-                    circleIdx: 0,
-                    wait: 50,
-                },
-                {
-                    role: "bugler",
-                    circleIdx: 0,
-                    wait: 50,
-                },
-                {
-                    role: "bugler",
-                    circleIdx: 0,
-                    wait: 50,
-                },
-                {
-                    role: "bugler",
-                    circleIdx: 0,
-                    wait: 50,
-                },
-                {
-                    role: "bugler",
-                    circleIdx: 0,
-                    wait: 50,
-                },
-                {
-                    role: "bugler",
-                    circleIdx: 0,
-                    wait: 50,
-                },
-                {
-                    role: "bugler",
-                    circleIdx: 0,
-                    wait: 50,
-                },
-                {
-                    role: "bugler",
-                    circleIdx: 0,
-                    wait: 50,
-                },*/
             ],
         },
         bagSizes: {},
@@ -323,13 +266,13 @@ const mapDef: PartialMapDef = {
     },
     lootTable: {
         tier_world: [
-            { name: "tier_guns", count: 1, weight: 0.29 }, // TODO get more data on this from original
-            { name: "tier_ammo", count: 1, weight: 0.04 }, // ?
-            { name: "tier_scopes", count: 1, weight: 0.15 }, // ?
-            { name: "tier_armor", count: 1, weight: 0.1 }, // ?
-            { name: "tier_medical", count: 1, weight: 0.17 }, // ?
-            { name: "tier_throwables", count: 1, weight: 0.05 }, // ?
-            { name: "tier_packs", count: 1, weight: 0.09 }, // ?
+            { name: "tier_guns", count: 1, weight: 0.29 }, 
+            { name: "tier_ammo", count: 1, weight: 0.04 }, 
+            { name: "tier_scopes", count: 1, weight: 0.15 }, 
+            { name: "tier_armor", count: 1, weight: 0.1 }, 
+            { name: "tier_medical", count: 1, weight: 0.17 }, 
+            { name: "tier_throwables", count: 1, weight: 0.05 }, 
+            { name: "tier_packs", count: 1, weight: 0.09 }, 
             { name: "rare_potato", count: 1, weight: 0.01 },
         ],
         tier_guns: [
@@ -460,6 +403,12 @@ const mapDef: PartialMapDef = {
         tier_airdrop_mythic: [
             { name: "potato_cannon", count: 1, weight: 1 },
             { name: "potato_smg", count: 1, weight: 0.5 },
+        ],
+        tier_throwables: [
+            { name: "frag", count: 2, weight: 1 },
+            { name: "smoke", count: 1, weight: 1 },
+            { name: "mirv", count: 2, weight: 0.05 },
+            { name: "potato", count: 5, weight: 2 },
         ],
     },
     mapGen: {
