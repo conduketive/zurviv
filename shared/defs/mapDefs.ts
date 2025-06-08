@@ -18,6 +18,7 @@ import { Woods } from "./maps/woodsDefs";
 import { WoodsSnow } from "./maps/woodsSnowDefs";
 import { WoodsSpring } from "./maps/woodsSpringDefs";
 import { WoodsSummer } from "./maps/woodsSummerDefs";
+import { PotatoFaction } from "./maps/potatoFactionDefs";
 
 export const MapDefs = {
     main: Main,
@@ -39,6 +40,7 @@ export const MapDefs = {
     savannah: Savannah,
     cobalt: Cobalt,
     turkey: Turkey,
+    potato_faction: PotatoFaction,
 } satisfies Record<string, MapDef>;
 
 export type Atlas = "gradient" | "loadout" | "shared" | "main";
