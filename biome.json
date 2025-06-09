@@ -1,5 +1,8 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "files": {
+    "ignore": ["client/atlas-builder/out/*.json"]
+  },
   "organizeImports": {
     "enabled": true
   },
@@ -8,6 +11,7 @@
     "rules": {
       "recommended": false,
       "complexity": {
+        "noUselessThisAlias": "error",
         "noStaticOnlyClass": "off"
       },
       "correctness": {
@@ -25,14 +29,17 @@
       "suspicious": {
         "noDoubleEquals": "off",
         "noExplicitAny": "off",
-        "noPrototypeBuiltins": "off"
+        "noPrototypeBuiltins": "off",
+        "useAwait": "warn"
       }
-    }
+    },
+    "ignore": ["drizzle/*"]
   },
   "formatter": {
     "indentWidth": 4,
     "indentStyle": "space",
-    "lineWidth": 90
+    "lineWidth": 90,
+    "ignore": ["package.json", "drizzle/*"]
   },
   "vcs": {
     "enabled": true,
