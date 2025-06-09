@@ -8860,7 +8860,7 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
         terrain: { grass: true, beach: false },
         img: { sprite: "map-crate-02f.img" },
         sound: { explode: "crate_break_01" },
-        teamId: 1
+        teamId: 1,
     } as unknown as Partial<ObstacleDef>),
     crate_02d: createCrate({
         health: 140,
@@ -9302,7 +9302,7 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
         terrain: { grass: true, beach: false },
         img: { sprite: "map-crate-22.img" },
         sound: { explode: "crate_break_01" },
-        teamId: 2
+        teamId: 2,
     }),
     crate_22d: createCrate({
         health: 140,
@@ -30006,7 +30006,7 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
     //     hitParticle: "blackChip",
     //     map: { display: false, color: 7025920, scale: 0.85 },
     // }),
-    
+
     // replaces tree_03 (mosin tree)
     gg_ots_tree: createTree({
         img: { tint: 11645361 },

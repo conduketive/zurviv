@@ -315,12 +315,12 @@ a:active {
   width: 300px;
 }
 
-.discord-message{
+.discord-message {
   display: flex;
   margin-bottom: 5px;
 }
 
-.discord-message > h2{
+.discord-message > h2 {
   margin-left: 10px;
   margin-top: 5px;
 }
@@ -331,7 +331,7 @@ a:active {
   border-radius: 50%;
 }
 
-.btn-discord-news{
+.btn-discord-news {
   background-image: url(/img/icon_discord_sm.png);
   background-color: #7289da;
   box-shadow: inset 0 -4px #46558a;
@@ -353,8 +353,7 @@ a:active {
   margin-left: 30%;
 }
 
-
-.ad-block-med-rect>p{
+.ad-block-med-rect > p {
   width: 80%;
 }
 
@@ -3369,8 +3368,8 @@ a:active {
     -webkit-box-shadow: 0 0 9px #000000;
   }
   50% {
-    background-color: #C020C0;
-    -webkit-box-shadow: 0 0 18px #C020C0;
+    background-color: #c020c0;
+    -webkit-box-shadow: 0 0 18px #c020c0;
   }
   to {
     background-color: #000000;
@@ -3399,7 +3398,7 @@ a:active {
 .btn-mode-gg {
   animation-name: gg-pulse;
   animation-duration: 4s;
-  border-bottom: 4px solid #7000D0;
+  border-bottom: 4px solid #7000d0;
 }
 
 @media (max-width: 850px), (max-width: 900px) and (min-resolution: 3dppx) {
@@ -6657,7 +6656,7 @@ input [type="image"]:focus {
   height: 395px;
   padding: 12px;
   position: relative;
-  width: 625px
+  width: 625px;
 }
 
 @media (max-width: 850px) and (max-width: 850px) and (max-height: 320px),
@@ -7108,19 +7107,22 @@ input [type="image"]:focus {
   }
 }
 
-.dropdown-container, .dropdown-container-team {
+.dropdown-container,
+.dropdown-container-team {
   width: 100%;
   position: relative;
   display: inline-block;
 }
 
-#dropdown-main-button-1, #dropdown-main-button-team-1 {
+#dropdown-main-button-1,
+#dropdown-main-button-team-1 {
   cursor: pointer;
   position: relative;
   z-index: 1;
 }
 
-.dropdown-buttons-1, .dropdown-buttons-team-1{
+.dropdown-buttons-1,
+.dropdown-buttons-team-1 {
   display: none;
   position: absolute;
   top: 100%;
@@ -7129,13 +7131,14 @@ input [type="image"]:focus {
   background-color: #a3c082;
   border: 2px solid #ccc;
   max-height: 300px;
-  overflow-y: auto; 
+  overflow-y: auto;
   padding-right: 10px;
   border-radius: 5px;
   z-index: 1;
 }
 
-.dropdown-buttons-2, .dropdown-buttons-team-2{
+.dropdown-buttons-2,
+.dropdown-buttons-team-2 {
   display: none;
   position: absolute;
   top: 100%;
@@ -7166,14 +7169,14 @@ input [type="image"]:focus {
 }
 
 .popup-container > img {
-  width: 420px; 
+  width: 420px;
   height: auto;
-  margin-bottom: 10px; 
+  margin-bottom: 10px;
   border-radius: 10px;
 }
 
 .popup-container h2 {
-  color: #FF901A;
+  color: #ff901a;
   margin-bottom: 10px;
 }
 
@@ -7204,7 +7207,7 @@ input [type="image"]:focus {
 }
 
 .popup-button:hover {
-  background-color: #575656
+  background-color: #575656;
 }
 
 .overlay {
@@ -7238,9 +7241,9 @@ input [type="image"]:focus {
   }
 
   .popup-container > img {
-    width: 220px; 
+    width: 220px;
     height: auto;
-    margin-bottom: 10px; 
+    margin-bottom: 10px;
     border-radius: 10px;
   }
 

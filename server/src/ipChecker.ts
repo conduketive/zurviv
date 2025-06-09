@@ -25,9 +25,7 @@ export async function checkIp(ip: string): Promise<boolean> {
         }
 
         return true;
-
     } catch (error) {
-
         if (error instanceof Error) {
             console.error(`Error checking IP with ProxyCheck: ${error.message}`);
         } else {

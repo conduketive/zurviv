@@ -10,9 +10,7 @@ import { Main } from "./baseDefs";
 // elements if that property is set.
 const mapDef = {
     mapId: 0,
-    desc: { name: "Castle",
-         icon: "",
-          buttonCss: "" },
+    desc: { name: "Castle", icon: "", buttonCss: "" },
     assets: {
         audio: [
             { name: "club_music_01", channel: "ambient" },
@@ -121,8 +119,8 @@ const mapDef = {
             { name: "painkiller", count: 1, weight: 2 },
         ],
         tier_soda: [
-            { name: "soda", count: 3, weight: 3},
-            { name: "soda", count: 1, weight: 1},
+            { name: "soda", count: 3, weight: 3 },
+            { name: "soda", count: 1, weight: 1 },
         ],
         tier_throwables: [
             { name: "frag", count: 2, weight: 3 }, // !
@@ -153,7 +151,7 @@ const mapDef = {
         tier_scopes_sniper: [
             { name: "4xscope", count: 1, weight: 5 }, // ?
             //{ name: "8xscope", count: 1, weight: 1 }, // ?
-           // { name: "15xscope", count: 1, weight: 0.02 }, // ?
+            // { name: "15xscope", count: 1, weight: 0.02 }, // ?
         ],
         tier_mansion_floor: [{ name: "outfitCasanova", count: 1, weight: 1 }],
         tier_vault_floor: [{ name: "outfitJester", count: 1, weight: 1 }],
@@ -268,7 +266,7 @@ const mapDef = {
             { name: "grozas", count: 1, weight: 1 },
             { name: "blr", count: 1, weight: 2 },
             { name: "svd", count: 1, weight: 2 },
-            { name: "l86", count: 1, weight: 2},
+            { name: "l86", count: 1, weight: 2 },
             { name: "vector", count: 1, weight: 1 },
             { name: "sv98", count: 1, weight: 0.1 },
             { name: "spas12", count: 1, weight: 1 },

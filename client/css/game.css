@@ -3056,7 +3056,6 @@ span.ui-stats-header-value {
   color: lawngreen;
 }
 
-
 .ui-stats-restart {
   cursor: inherit;
   margin: auto;
@@ -4883,7 +4882,6 @@ span.ui-stats-header-value {
     color: lawngreen;
   }
 
-
   .ui-stats-restart {
     position: absolute;
     transform: translateX(-50%);
@@ -5501,9 +5499,9 @@ span.ui-stats-header-value {
   flex: 2;
   text-align: left;
   padding: 8px;
-  border-radius: 4px; 
-  margin: 0;  
-  margin-right: 8px;  
+  border-radius: 4px;
+  margin: 0;
+  margin-right: 8px;
   margin-left: 40px;
 }
 
@@ -5560,16 +5558,15 @@ span.ui-stats-header-value {
   z-index: 1;
 }
 
-
 @media screen and (max-width: 850px) {
   .ui-stats-title {
     font-size: 28px;
   }
 
   .ui-stats-table-container {
-    width: 70%; 
-    bottom: 20px; 
-    padding: 16px; 
+    width: 70%;
+    bottom: 20px;
+    padding: 16px;
   }
 
   .ui-stats-row {
@@ -5578,18 +5575,18 @@ span.ui-stats-header-value {
   }
 
   .ui-stats-col {
-    font-size: 18px; 
+    font-size: 18px;
   }
 
   .ui-stats-col.rank {
-    flex: 1; 
+    flex: 1;
   }
 
   .ui-stats-col.name {
-    flex: 2; 
+    flex: 2;
   }
 
   #ui-stats-options {
-    bottom: 40px; 
+    bottom: 40px;
   }
 }

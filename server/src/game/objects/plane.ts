@@ -358,7 +358,8 @@ export class PlaneBarn {
             posCopy,
             dirCopy,
             bombPositions,
-            playerId ?? 0);
+            playerId ?? 0,
+        );
         this.planes.push(plane);
     }
 }
@@ -498,14 +499,22 @@ class AirStrikePlane extends Plane {
     //drop a bomb every 2 ticks
     dropDelayCounter = 2;
 
-    constructor(game: Game, id: number, pos: Vec2, targetPos: Vec2, dir: Vec2, bombPositions: Vec2[], playerId?: number) {
+    constructor(
+        game: Game,
+        id: number,
+        pos: Vec2,
+        targetPos: Vec2,
+        dir: Vec2,
+        bombPositions: Vec2[],
+        playerId?: number,
+    ) {
         super(game, id, GameConfig.Plane.Airstrike, pos, targetPos, dir);
         this.playerId = playerId;
         this.startPos = v2.copy(pos);
         this.bombPositions = bombPositions;
     }
 
-    dropBomb(pos: Vec2) : void {
+    dropBomb(pos: Vec2): void {
         const config = this.config as typeof GameConfig.airstrike;
         if (this.bombCount >= config.bombCount) return;
         this.bombCount++;
@@ -545,6 +554,6 @@ class AirStrikePlane extends Plane {
             this.dropBomb(pos);
             this.dropDelayCounter = 0;
         }
-        this.dropDelayCounter++; 
+        this.dropDelayCounter++;
     }
 }

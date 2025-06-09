@@ -1,35 +1,40 @@
 export class GameMod {
-  lastFrameTime: number;
-  frameCount: number;
-  fps: number;
-  kills: number;
-  isLocalRotation: boolean;
-  isFpsUncapped: boolean;
-  isInterpolation: boolean;
-  isFpsVisible: boolean;
-  isPingVisible: boolean;
-  isKillsVisible: boolean;
-  pingCounter!: HTMLElement | null;
-  fpsCounter!: HTMLElement | null;
-  killsCounter!: HTMLElement | null;
-  localRotation!: HTMLElement | null;
-  currentServer!: string | null;
-  pingTest!: PingTest | null;
-  private hasInitialized: boolean = false;
-  animationFrameCallback: (callback: () => void) => void;
+    lastFrameTime: number;
+    frameCount: number;
+    fps: number;
+    kills: number;
+    isLocalRotation: boolean;
+    isFpsUncapped: boolean;
+    isInterpolation: boolean;
+    isFpsVisible: boolean;
+    isPingVisible: boolean;
+    isKillsVisible: boolean;
+    pingCounter!: HTMLElement | null;
+    fpsCounter!: HTMLElement | null;
+    killsCounter!: HTMLElement | null;
+    localRotation!: HTMLElement | null;
+    currentServer!: string | null;
+    pingTest!: PingTest | null;
+    private hasInitialized: boolean = false;
+    animationFrameCallback: (callback: () => void) => void;
 
-  constructor() {
-      const settings = JSON.parse(localStorage.getItem("gameSettings") || '{}');
-      this.lastFrameTime = performance.now();
-      this.frameCount = 0;
-      this.fps = 0;
-      this.kills = 0;
-      this.isLocalRotation = settings["local-rotation"] !== undefined ? settings["local-rotation"] : true;
-      this.isFpsUncapped = settings["fps-uncap"] !== undefined ? settings["fps-uncap"] : false;
-      this.isInterpolation = settings["movement-interpolation"] !== undefined ? settings["movement-interpolation"] : true;      
-      this.isFpsVisible = true;
-      this.isPingVisible = true;
-      this.isKillsVisible = true;
+    constructor() {
+        const settings = JSON.parse(localStorage.getItem("gameSettings") || "{}");
+        this.lastFrameTime = performance.now();
+        this.frameCount = 0;
+        this.fps = 0;
+        this.kills = 0;
+        this.isLocalRotation =
+            settings["local-rotation"] !== undefined ? settings["local-rotation"] : true;
+        this.isFpsUncapped =
+            settings["fps-uncap"] !== undefined ? settings["fps-uncap"] : false;
+        this.isInterpolation =
+            settings["movement-interpolation"] !== undefined
+                ? settings["movement-interpolation"]
+                : true;
+        this.isFpsVisible = true;
+        this.isPingVisible = true;
+        this.isKillsVisible = true;
 
         this.pingCounter = null;
         this.initPingCounter();
@@ -41,7 +46,7 @@ export class GameMod {
         this.startUpdateLoop();
         this.setupWeaponBorderHandler();
     }
-    
+
     initFpsCounter() {
         this.fpsCounter = document.createElement("div");
         this.fpsCounter.id = "fpsCounter";
@@ -119,10 +124,12 @@ export class GameMod {
     }
 
     updateFpsToggle() {
-        if (this.isFpsUncapped) { 
-            this.animationFrameCallback = (callback: () => void) => setTimeout(callback, 1);
+        if (this.isFpsUncapped) {
+            this.animationFrameCallback = (callback: () => void) =>
+                setTimeout(callback, 1);
         } else {
-            this.animationFrameCallback = (callback: () => void) => requestAnimationFrame(callback);
+            this.animationFrameCallback = (callback: () => void) =>
+                requestAnimationFrame(callback);
         }
     }
 
@@ -140,7 +147,6 @@ export class GameMod {
                 : "transparent";
         }
     }
-
 
     getKills(): number {
         const killElement = document.querySelector(
@@ -173,24 +179,24 @@ export class GameMod {
             "server-select-main",
         ) as HTMLSelectElement | null;
 
-    const region =
-        isSpecialUrl && teamSelectElement
-            ? teamSelectElement.value || teamSelectElement.getAttribute("value")
-            : mainSelectElement
-                ? mainSelectElement.value || mainSelectElement.getAttribute("value")
-                : null;
+        const region =
+            isSpecialUrl && teamSelectElement
+                ? teamSelectElement.value || teamSelectElement.getAttribute("value")
+                : mainSelectElement
+                  ? mainSelectElement.value || mainSelectElement.getAttribute("value")
+                  : null;
 
         if (region && region !== this.currentServer) {
             this.currentServer = region;
             this.resetPing();
 
-        const servers = [
-            { region: "NA", url: "na.zurviv.io" },
-            { region: "WA", url: "w.na.zurviv.io" },
-            { region: "EU", url: "eu.zurviv.io" },
-            { region: "AS", url: "as.zurviv.io" },
-            { region: "SA", url: "sa.zurviv.io" }
-        ];
+            const servers = [
+                { region: "NA", url: "na.zurviv.io" },
+                { region: "WA", url: "w.na.zurviv.io" },
+                { region: "EU", url: "eu.zurviv.io" },
+                { region: "AS", url: "as.zurviv.io" },
+                { region: "SA", url: "sa.zurviv.io" },
+            ];
 
             const selectedServer = servers.find(
                 (server) => region.toUpperCase() === server.region.toUpperCase(),
@@ -315,27 +321,101 @@ export class GameMod {
                 const weaponName = weaponNameElement.textContent?.trim() || "";
                 let border = "#FFFFFF";
 
-              switch (weaponName.toUpperCase()) {
-
-              //yellow
-              case "CZ-3A1": case "G18C": case "M9": case "M93R": case "MAC-10": case "MP5": case "P30L": case "DUAL P30L": case "UMP9": case "VECTOR": case "VSS": case "FLAMETHROWER": border = "#FFAE00"; break;
-              //blue 
-              case "AK-47": case "OT-38": case "OTS-38": case "M39 EMR": case "DP-28": case "MOSIN-NAGANT": case "SCAR-H": case "SV-98": case "M1 GARAND": case "PKP PECHENEG": case "AN-94": case "BAR M1918": case "BLR 81": case "SVD-63": case "M134": case "GROZA": case "GROZA-S": border = "#007FFF"; break;
-              //green
-              case "FAMAS": case "M416": case "M249": case "QBB-97": case "MK 12 SPR": case "M4A1-S": case "SCOUT ELITE": case "L86A2": border = "#0f690d"; break;
-              //red 
-              case "M870": case "MP220": case "SAIGA-12": case "SPAS-12": case "USAS-12": case "SUPER 90": case "LASR GUN": case "M1100": border = "#FF0000"; break;
-              //purple
-              case "MODEL 94": case "PEACEMAKER": case "VECTOR (.45 ACP)": case "M1911": case "M1A1": border = "#800080"; break;
-              //black
-              case "DEAGLE 50": case "RAINBOW BLASTER": border = "#000000"; break;
-              //olive
-              case "AWM-S": case "MK 20 SSR": border = "#808000"; break; 
-              //brown
-              case "POTATO CANNON": case "SPUD GUN": border = "#A52A2A"; break;
-              //other Guns
-              case "FLARE GUN": border = "#FF4500"; break; case "M79": border = "#008080"; break; case "HEART CANNON": border = "#FFC0CB"; break; 
-              default: border = "#FFFFFF"; break; }
+                switch (weaponName.toUpperCase()) {
+                    //yellow
+                    case "CZ-3A1":
+                    case "G18C":
+                    case "M9":
+                    case "M93R":
+                    case "MAC-10":
+                    case "MP5":
+                    case "P30L":
+                    case "DUAL P30L":
+                    case "UMP9":
+                    case "VECTOR":
+                    case "VSS":
+                    case "FLAMETHROWER":
+                        border = "#FFAE00";
+                        break;
+                    //blue
+                    case "AK-47":
+                    case "OT-38":
+                    case "OTS-38":
+                    case "M39 EMR":
+                    case "DP-28":
+                    case "MOSIN-NAGANT":
+                    case "SCAR-H":
+                    case "SV-98":
+                    case "M1 GARAND":
+                    case "PKP PECHENEG":
+                    case "AN-94":
+                    case "BAR M1918":
+                    case "BLR 81":
+                    case "SVD-63":
+                    case "M134":
+                    case "GROZA":
+                    case "GROZA-S":
+                        border = "#007FFF";
+                        break;
+                    //green
+                    case "FAMAS":
+                    case "M416":
+                    case "M249":
+                    case "QBB-97":
+                    case "MK 12 SPR":
+                    case "M4A1-S":
+                    case "SCOUT ELITE":
+                    case "L86A2":
+                        border = "#0f690d";
+                        break;
+                    //red
+                    case "M870":
+                    case "MP220":
+                    case "SAIGA-12":
+                    case "SPAS-12":
+                    case "USAS-12":
+                    case "SUPER 90":
+                    case "LASR GUN":
+                    case "M1100":
+                        border = "#FF0000";
+                        break;
+                    //purple
+                    case "MODEL 94":
+                    case "PEACEMAKER":
+                    case "VECTOR (.45 ACP)":
+                    case "M1911":
+                    case "M1A1":
+                        border = "#800080";
+                        break;
+                    //black
+                    case "DEAGLE 50":
+                    case "RAINBOW BLASTER":
+                        border = "#000000";
+                        break;
+                    //olive
+                    case "AWM-S":
+                    case "MK 20 SSR":
+                        border = "#808000";
+                        break;
+                    //brown
+                    case "POTATO CANNON":
+                    case "SPUD GUN":
+                        border = "#A52A2A";
+                        break;
+                    //other Guns
+                    case "FLARE GUN":
+                        border = "#FF4500";
+                        break;
+                    case "M79":
+                        border = "#008080";
+                        break;
+                    case "HEART CANNON":
+                        border = "#FFC0CB";
+                        break;
+                    default:
+                        border = "#FFFFFF";
+                        break;
+                }
 
                 if (weaponContainer.id !== "ui-weapon-id-4") {
                     weaponContainer.style.border = `3px solid ${border}`;
@@ -380,7 +460,7 @@ export class GameMod {
     }
 
     SettingsCheck() {
-        if (this.hasInitialized) return; 
+        if (this.hasInitialized) return;
         this.hasInitialized = true;
 
         const boxRotation = document.querySelector("#modal-settings-local-rotation");
@@ -424,7 +504,6 @@ export class GameMod {
             "movement-interpolation": this.isInterpolation,
         };
         localStorage.setItem("gameSettings", JSON.stringify(settings));
-    
     }
 
     startUpdateLoop() {
@@ -459,10 +538,9 @@ export class GameMod {
         this.updateUiElements();
         this.updateBoostBars();
         this.updateHealthBars();
-        this.updateFpsToggle()
+        this.updateFpsToggle();
         this.SettingsCheck();
     }
-    
 }
 
 export class PingTest {

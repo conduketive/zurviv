@@ -1,7 +1,7 @@
 import type { Vec2 } from "../utils/v2";
 import { Main } from "./maps/baseDefs";
-import { Cobalt } from "./maps/cobaltDefs";
 import { Castle } from "./maps/castle";
+import { Cobalt } from "./maps/cobaltDefs";
 import { Desert } from "./maps/desertDefs";
 import { Faction } from "./maps/factionDefs";
 import { Gamerio } from "./maps/gamerio";

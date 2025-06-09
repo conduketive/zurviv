@@ -105,7 +105,9 @@ const textDecoder = new TextDecoder();
 export function getIp(res: HttpResponse, req?: HttpRequest) {
     const ip = textDecoder.decode(res.getRemoteAddressAsText());
     const proxyIp = textDecoder.decode(res.getProxiedRemoteAddressAsText());
-    const headerIp = req ? req.getHeader("x-real-ip") || req.getHeader("x-forwarded-for") : "";
+    const headerIp = req
+        ? req.getHeader("x-real-ip") || req.getHeader("x-forwarded-for")
+        : "";
 
     // proxy ip should be an empty string when not proxied
     return headerIp || proxyIp || ip;

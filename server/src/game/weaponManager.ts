@@ -1122,8 +1122,8 @@ export class WeaponManager {
             projectile.strobe = {
                 strobeTicker: 4,
                 airstrikesLeft: airstrikesLeft,
-                airstrikeTicker: 0
-            }
+                airstrikeTicker: 0,
+            };
         }
 
         const animationDuration = GameConfig.player.throwTime;

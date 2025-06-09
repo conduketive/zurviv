@@ -37,7 +37,7 @@ export class TeamMenu {
     playBtn = $("#btn-start-team");
     serverWarning = $("#server-warning");
     teamOptions = $(
-        "#btn-team-queue-mode-1, #btn-team-queue-mode-2, #btn-team-fill-auto, #btn-team-fill-none"
+        "#btn-team-queue-mode-1, #btn-team-queue-mode-2, #btn-team-fill-auto, #btn-team-fill-none",
     );
     serverSelect = $("#team-server-select");
     queueMode1 = $("#dropdown-main-button-team-1");
@@ -73,9 +73,9 @@ export class TeamMenu {
     modeOptions: Record<string, number> = {};
 
     teamOptionsMap: Record<string, number> = {
-        "Duo": 1,
-        "Trio": 2,
-        "Squad": 3
+        Duo: 1,
+        Trio: 2,
+        Squad: 3,
     };
 
     selectedMode: number = this.roomData.gameModeIdx || 0;
@@ -88,15 +88,23 @@ export class TeamMenu {
         public localization: Localization,
         public audioManager: AudioManager,
         public joinGameCb: (data: MatchData) => void,
-        public leaveCb: (err: string) => void
+        public leaveCb: (err: string) => void,
     ) {
         this.initUI();
     }
 
     initUI() {
-        this.setupDropdown("dropdown-main-button-team-1", "dropdown-buttons-team-1", "dropdown-container-team-1");
-        this.setupDropdown("dropdown-main-button-team-2", "dropdown-buttons-team-2", "dropdown-container-team-2");
-        
+        this.setupDropdown(
+            "dropdown-main-button-team-1",
+            "dropdown-buttons-team-1",
+            "dropdown-container-team-1",
+        );
+        this.setupDropdown(
+            "dropdown-main-button-team-2",
+            "dropdown-buttons-team-2",
+            "dropdown-container-team-2",
+        );
+
         this.serverSelect.change(() => {
             const e = this.serverSelect.find(":selected").val() as string;
             this.pingTest.start([e]);
@@ -107,42 +115,43 @@ export class TeamMenu {
         this.fillNone.click(() => this.setRoomProperty("autoFill", false));
         const waitForRoomData = setInterval(() => {
             this.selectedTeam = this.roomData.maxPlayers - 1;
-            this.selectedMode = this.roomData.gameModeIdx - (this.roomData.maxPlayers - 1);
-            
-            
+            this.selectedMode =
+                this.roomData.gameModeIdx - (this.roomData.maxPlayers - 1);
+
             if (this.roomData.maxPlayers !== undefined) {
-                    let modes = this.siteInfo.info.modes;
-                    this.modeOptions = {};  
-                    for (let i = 0; i < modes.length; i++) {
-                        if (i % 4 === 0) {
-                            const mapNameParts = modes[i].mapName.split("_");
-                            const formattedMapName = mapNameParts.length > 1 
-                                ? mapNameParts[1].charAt(0).toUpperCase() + mapNameParts[1].slice(1) 
-                                : modes[i].mapName.substring(0,1).toUpperCase() + modes[i].mapName.substring(1);
-    
-                            this.modeOptions[formattedMapName] = i;
-                        }
+                let modes = this.siteInfo.info.modes;
+                this.modeOptions = {};
+                for (let i = 0; i < modes.length; i++) {
+                    if (i % 4 === 0) {
+                        const mapNameParts = modes[i].mapName.split("_");
+                        const formattedMapName =
+                            mapNameParts.length > 1
+                                ? mapNameParts[1].charAt(0).toUpperCase() +
+                                  mapNameParts[1].slice(1)
+                                : modes[i].mapName.substring(0, 1).toUpperCase() +
+                                  modes[i].mapName.substring(1);
+
+                        this.modeOptions[formattedMapName] = i;
                     }
+                }
                 const teamMode = Object.keys(this.teamOptionsMap).find(
-                    key => this.teamOptionsMap[key] === this.roomData.maxPlayers-1
+                    (key) => this.teamOptionsMap[key] === this.roomData.maxPlayers - 1,
                 );
-    
+
                 if (teamMode) {
                     this.queueMode2.text(`Team Mode: ${teamMode} | ▼`);
                 } else {
                     this.queueMode2.text(`Team Mode: Unknown`);
                 }
-        
+
                 clearInterval(waitForRoomData);
             }
         }, 100);
-        
-        
 
         if (this.isLeader) {
-            this.teamSelection.on("click", () => this.getMode())
-            this.queueMode1.on("click", () => this.getMode())
-            this.queueMode2.on("click", () => this.getMode())
+            this.teamSelection.on("click", () => this.getMode());
+            this.queueMode1.on("click", () => this.getMode());
+            this.queueMode2.on("click", () => this.getMode());
             this.playBtn.on("click", () => {
                 this.tryStartGame();
             });
@@ -203,49 +212,53 @@ export class TeamMenu {
         }
     }
 
-    setupDropdown(mainButtonId: string, dropdownClass: string, containerId: string): void {
+    setupDropdown(
+        mainButtonId: string,
+        dropdownClass: string,
+        containerId: string,
+    ): void {
         if (this.isLeader) {
             const mainButton = $(`#${mainButtonId}`);
             const dropdown = $(`.${dropdownClass}`);
-            
+
             mainButton.click((event) => {
                 event.stopPropagation();
                 $(".dropdown-menu").not(dropdown).hide();
                 dropdown.toggle();
             });
-            
+
             $(document).on("click", `#${containerId} .menu-option`, (event) => {
                 if (event.target instanceof HTMLElement) {
                     this.updateButtonText(mainButtonId, event.target);
                     dropdown.hide();
                 }
             });
-   
+
             $(document).click((event) => {
                 if (!$(event.target).closest(`#${containerId}`).length) {
                     dropdown.hide();
                 }
             });
-   
+
             dropdown.addClass("dropdown-menu");
         }
     }
-   
 
     updateButtonText(buttonId: string, selectedButton: HTMLElement): void {
         if (this.isLeader) {
             const button = document.getElementById(buttonId);
             if (!button) return;
-    
+
             button.className = selectedButton.className;
             if (selectedButton.style.backgroundImage) {
                 button.style.backgroundImage = selectedButton.style.backgroundImage;
             } else button.style.backgroundImage = "";
-    
+
             if (button.id === "dropdown-main-button-team-1") {
                 button.innerHTML = `Game Mode: ${selectedButton.innerText} | ▼`;
-                this.selectedMode = this.modeOptions[selectedButton.innerText.trim()] || 0;
-    
+                this.selectedMode =
+                    this.modeOptions[selectedButton.innerText.trim()] || 0;
+
                 if (selectedButton.innerText.trim() === "Faction") {
                     this.blockTeamMode();
                     this.selectedTeam = 0;
@@ -254,34 +267,35 @@ export class TeamMenu {
                 }
             } else {
                 button.innerHTML = `Team Mode: ${selectedButton.innerText} | ▼`;
-                this.selectedTeam = this.teamOptionsMap[selectedButton.innerText.trim()] || 0;
+                this.selectedTeam =
+                    this.teamOptionsMap[selectedButton.innerText.trim()] || 0;
             }
-    
+
             this.getMode();
         }
     }
 
     blockTeamMode(): void {
-        $("#dropdown-main-button-team-2").css({ 
-            opacity: "0.5", 
-            pointerEvents: "none"
-        }).text("Team Mode: Disabled | ▼");
-        
+        $("#dropdown-main-button-team-2")
+            .css({
+                opacity: "0.5",
+                pointerEvents: "none",
+            })
+            .text("Team Mode: Disabled | ▼");
+
         $("#dropdown-container-team-2").hide();
         this.selectedTeam = 0;
     }
 
     unblockTeamMode(): void {
         this.selectedTeam = 3;
-        $("#dropdown-main-button-team-2").css({ 
-            opacity: "1", 
-            pointerEvents: "auto"
+        $("#dropdown-main-button-team-2").css({
+            opacity: "1",
+            pointerEvents: "auto",
         });
         $("#dropdown-container-team-2").show();
-    
-        
+
         $("#dropdown-main-button-team-2").text("Team Mode: Squad | ▼");
-        
     }
 
     getMode(): void {
@@ -292,7 +306,6 @@ export class TeamMenu {
             this.setRoomProperty("maxPlayers", this.selectedTeam);
         }
     }
-    
 
     getPlayerById(playerId: number) {
         return this.players.find((x) => {
