@@ -1,10 +1,12 @@
 import $ from "jquery";
+import loadout from "../../../shared/utils/loadout";
 import type { Account } from "../account";
 import { api } from "../api";
 import { device } from "../device";
 import { helpers } from "../helpers";
+import { proxy } from "../proxy";
+import { SDK } from "../sdk";
 import type { LoadoutMenu } from "./loadoutMenu";
-import loadout from "./loadouts";
 import type { Localization } from "./localization";
 import { MenuModal } from "./menuModal";
 
@@ -66,12 +68,22 @@ function createLoginOptions(
     };
 
     // Define the available login methods
-    addLoginOption("twitch", account.profile.linkedTwitch, () => {
-        window.location.href = "/api/user/auth/twitch";
-    });
-    addLoginOption("discord", account.profile.linkedDiscord, () => {
-        window.location.href = "/api/user/auth/discord";
-    });
+    if (proxy.loginSupported("google")) {
+        addLoginOption("google", account.profile.linkedGoogle, () => {
+            window.location.href = api.resolveUrl("/api/auth/google");
+        });
+    }
+    if (proxy.loginSupported("discord")) {
+        addLoginOption("discord", account.profile.linkedDiscord, () => {
+            window.location.href = api.resolveUrl("/api/auth/discord");
+        });
+    }
+
+    if (proxy.loginSupported("mock")) {
+        addLoginOption("mock", false, () => {
+            window.location.href = api.resolveUrl("/api/auth/mock");
+        });
+    }
 }
 
 export class ProfileUi {
@@ -215,7 +227,7 @@ export class ProfileUi {
         });
 
         // Create account
-        this.createAccountModal = new MenuModal($("#modal-create-account-INVALID_ID"));
+        this.createAccountModal = new MenuModal($("#modal-create-account"));
         this.createAccountModal.onHide(() => {
             this.loadoutMenu.hide();
         });
@@ -238,7 +250,7 @@ export class ProfileUi {
 
         // Leaderboard
         $(".account-leaderboard-link").click((_e) => {
-            window.open(api.resolveUrl("/stats"), "_blank");
+            window.open("/stats", "_blank");
             return false;
         });
         $(".account-stats-link").click(() => {
@@ -246,7 +258,7 @@ export class ProfileUi {
                 if (this.account.loggedIn) {
                     if (this.account.profile.usernameSet) {
                         const slug = this.account.profile.slug || "";
-                        window.open(`/stats/${slug}`, "_blank");
+                        window.open(`/stats/?slug=${slug}`, "_blank");
                     } else {
                         this.setNameModal!.show(true);
                     }
@@ -260,13 +272,6 @@ export class ProfileUi {
         });
         $(".account-loadout-link, #btn-customize").click(() => {
             this.loadoutMenu.show();
-            this.waitOnLogin(() => {
-                if (!this.account.loggedIn) {
-                    this.showLoginMenu({
-                        modal: true,
-                    });
-                }
-            });
             return false;
         });
         $(".account-details-user").click(() => {
@@ -332,6 +337,10 @@ export class ProfileUi {
             });
             return false;
         });
+
+        const loginSupported = !SDK.isAnySDK && proxy.anyLoginSupported();
+
+        $(".account-block").toggle(loginSupported);
     }
 
     onError(type: string, data?: string) {
@@ -405,13 +414,14 @@ export class ProfileUi {
     }
 
     showLoginMenu(opts: { modal?: boolean; link?: boolean }) {
-        opts = Object.assign(
-            {
+        opts = {
+            ...{
                 modal: false,
                 link: false,
             },
-            opts,
-        );
+            ...opts,
+        };
+
         const modal = opts.modal
             ? this.createAccountModal
             : device.mobile

@@ -2531,9 +2531,24 @@ img {
 }
 
 .ui-perk-pulse {
-  -webkit-animation-name: perkPulse;
-  -webkit-animation-duration: 1.5s;
-  -webkit-animation-iteration-count: 2;
+  animation-name: perkPulse;
+  animation-duration: 1.5s;
+  animation-iteration-count: 2;
+}
+
+@keyframes perkPulse {
+  from {
+    background-color: rgba(0, 0, 0, 0.4);
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0);
+  }
+  50% {
+    background-color: rgba(255, 210, 0, 0.75);
+    box-shadow: 0px 0px 30px #ffd200;
+  }
+  to {
+    background-color: rgba(0, 0, 0, 0.4);
+    box-shadow: 0px 0px 30px rgba(0, 0, 0, 0);
+  }
 }
 
 /* Tooltip container */
@@ -3172,6 +3187,10 @@ span.ui-stats-header-value {
   font-size: 36px;
   margin-bottom: 8px;
   padding: 8px;
+  max-height: 500px;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: white transparent;
 }
 
 .ui-editor-list {
@@ -3179,13 +3198,17 @@ span.ui-stats-header-value {
   list-style: none;
 }
 
+.ui-editor-list ul {
+  padding-inline-start: 15px;
+}
+
 #ui-editor-info-list {
   padding: 0px;
 }
 
 /*
-     * Profiler
-     */
+* Profiler
+*/
 #ui-profiler-top-left {
   position: absolute;
   color: #fff;

@@ -46,7 +46,9 @@ type Shape = LineShape | RayShape | CircleShape | AabbShape;
 class DebugLines {
     shapes: Shape[] = [];
 
-    addLine(start: Vec2, end: Vec2, color: number, fill: number) {
+    addLine(start: Vec2, end: Vec2, color: number, fill = 0) {
+        if (!IS_DEV) return;
+
         this.shapes.push({
             type: kShapes.Line,
             start: v2.copy(start),
@@ -56,7 +58,9 @@ class DebugLines {
         });
     }
 
-    addRay(pos: Vec2, dir: Vec2, len: number, color: number, fill: number) {
+    addRay(pos: Vec2, dir: Vec2, len: number, color: number, fill = 0) {
+        if (!IS_DEV) return;
+
         this.shapes.push({
             type: kShapes.Ray,
             pos: v2.copy(pos),
@@ -68,6 +72,8 @@ class DebugLines {
     }
 
     addCircle(pos: Vec2, rad: number, color: number, fill: number) {
+        if (!IS_DEV) return;
+
         this.shapes.push({
             type: kShapes.Circle,
             pos: v2.copy(pos),
@@ -78,6 +84,8 @@ class DebugLines {
     }
 
     addAabb(min: Vec2, max: Vec2, color: number, fill: number) {
+        if (!IS_DEV) return;
+
         this.shapes.push({
             type: kShapes.Aabb,
             min: v2.copy(min),
@@ -88,6 +96,8 @@ class DebugLines {
     }
 
     addCollider(col: Collider, color: number, fill: number) {
+        if (!IS_DEV) return;
+
         if (col.type == collider.Type.Aabb) {
             this.addAabb(col.min, col.max, color, fill);
         } else {
@@ -95,9 +105,8 @@ class DebugLines {
         }
     }
 
-    render(camera: Camera, gfx: Graphics) {
-        /* STRIP_FROM_PROD_CLIENT:START */
-        gfx.clear();
+    m_render(camera: Camera, gfx: Graphics) {
+        if (!IS_DEV) return;
         for (let i = 0; i < this.shapes.length; i++) {
             const shape = this.shapes[i];
 
@@ -110,24 +119,24 @@ class DebugLines {
 
             switch (shape.type) {
                 case kShapes.Line: {
-                    const start = camera.pointToScreen(shape.start);
+                    const start = camera.m_pointToScreen(shape.start);
                     gfx.moveTo(start.x, start.y);
-                    const end = camera.pointToScreen(shape.end);
+                    const end = camera.m_pointToScreen(shape.end);
                     gfx.lineTo(end.x, end.y);
                     break;
                 }
                 case kShapes.Ray: {
-                    const start = camera.pointToScreen(shape.pos);
+                    const start = camera.m_pointToScreen(shape.pos);
                     gfx.moveTo(start.x, start.y);
-                    const end = camera.pointToScreen(
+                    const end = camera.m_pointToScreen(
                         v2.add(shape.pos, v2.mul(shape.dir, shape.len)),
                     );
                     gfx.lineTo(end.x, end.y);
                     break;
                 }
                 case kShapes.Aabb: {
-                    const min = camera.pointToScreen(shape.min);
-                    const max = camera.pointToScreen(shape.max);
+                    const min = camera.m_pointToScreen(shape.min);
+                    const max = camera.m_pointToScreen(shape.max);
                     gfx.moveTo(min.x, min.y)
                         .lineTo(max.x, min.y)
                         .lineTo(max.x, max.y)
@@ -136,15 +145,14 @@ class DebugLines {
                     break;
                 }
                 case kShapes.Circle: {
-                    const pos = camera.pointToScreen(shape.pos);
-                    const rad = camera.scaleToScreen(shape.rad);
+                    const pos = camera.m_pointToScreen(shape.pos);
+                    const rad = camera.m_scaleToScreen(shape.rad);
                     gfx.drawCircle(pos.x, pos.y, rad);
                     break;
                 }
             }
             gfx.closePath();
         }
-        /* STRIP_FROM_PROD_CLIENT:END */
     }
 
     flush() {

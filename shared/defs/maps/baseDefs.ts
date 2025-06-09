@@ -1,6 +1,7 @@
 import { GameConfig } from "../../gameConfig";
 import { v2 } from "../../utils/v2";
 import type { MapDef } from "../mapDefs";
+import { MapId } from "../types/misc";
 
 // @NOTE: Entries defined as single-element arrays, like fixedSpawns: [{ }],
 // are done this way so that util.mergeDeep(...) will function as expected
@@ -10,7 +11,7 @@ import type { MapDef } from "../mapDefs";
 // elements if that property is set.
 
 export const Main: MapDef = {
-    mapId: 0,
+    mapId: MapId.Main,
     desc: { name: "Normal", icon: "", buttonCss: "" },
     assets: {
         audio: [
@@ -24,15 +25,15 @@ export const Main: MapDef = {
     },
     biome: {
         colors: {
-            background: 2118510,
-            water: 3310251,
-            waterRipple: 11792639,
-            beach: 13480795,
-            riverbank: 9461284,
-            grass: 8433481,
-            underground: 1772803,
-            playerSubmerge: 2854052,
-            playerGhillie: 8630096,
+            background: 0x20536e,
+            water: 0x3282ab,
+            waterRipple: 0xb3f0ff,
+            beach: 0xcdb35b,
+            riverbank: 0x905e24,
+            grass: 0x80af49,
+            underground: 0x1b0d03,
+            playerSubmerge: 0x2b8ca4,
+            playerGhillie: 0x83af50,
         },
         valueAdjust: 1,
         sound: { riverShore: "sand" },
@@ -206,6 +207,18 @@ export const Main: MapDef = {
             { name: "awc", count: 1, weight: 1 },
             { name: "pkp", count: 1, weight: 1 },
         ],
+        tier_eye_stone: [
+            { name: "vector45", count: 1, weight: 1 },
+            { name: "45acp", count: 1, weight: 1 },
+            { name: "garand", count: 1, weight: 1 },
+            { name: "strobe", count: 1, weight: 1 },
+            { name: "healthkit", count: 1, weight: 1 },
+            { name: "painkiller", count: 1, weight: 1 },
+            { name: "m4a1", count: 1, weight: 0.7 },
+            { name: "m249", count: 1, weight: 0.2 },
+            { name: "awc", count: 1, weight: 0.1 },
+            { name: "pkp", count: 1, weight: 0.1 },
+        ],
         tier_sledgehammer: [{ name: "sledgehammer", count: 1, weight: 1 }],
         tier_chest_04: [
             { name: "p30l", count: 1, weight: 40 }, // ?
@@ -332,6 +345,22 @@ export const Main: MapDef = {
             { name: "outfitCamo", count: 1, weight: 0.1 }, // ?
             { name: "outfitGhillie", count: 1, weight: 0.01 }, // ?
         ],
+        tier_egg_outfits: [
+            { name: "outfitBarrel", count: 1, weight: 1 },
+            { name: "outfitWoodBarrel", count: 1, weight: 1 },
+            { name: "outfitStone", count: 1, weight: 1 },
+            { name: "outfitSpringTree", count: 1, weight: 1 },
+            { name: "outfitBush", count: 1, weight: 1 },
+            { name: "outfitCrate", count: 1, weight: 1 },
+            { name: "outfitTable", count: 1, weight: 1 },
+            { name: "outfitSoviet", count: 1, weight: 1 },
+            { name: "outfitOven", count: 1, weight: 1 },
+            { name: "outfitRefrigerator", count: 1, weight: 1 },
+            { name: "outfitVending", count: 1, weight: 1 },
+            { name: "outfitToilet", count: 1, weight: 1 },
+            { name: "outfitBushRiver", count: 1, weight: 1 },
+            { name: "outfitCrab", count: 1, weight: 1 },
+        ],
         tier_islander_outfit: [{ name: "outfitIslander", count: 1, weight: 1 }],
         tier_imperial_outfit: [{ name: "outfitImperial", count: 1, weight: 1 }],
         tier_pineapple_outfit: [{ name: "outfitPineapple", count: 1, weight: 1 }],
@@ -339,6 +368,99 @@ export const Main: MapDef = {
         tier_spetsnaz_outfit: [{ name: "outfitSpetsnaz", count: 1, weight: 1 }],
         tier_lumber_outfit: [{ name: "outfitLumber", count: 1, weight: 1 }],
         tier_verde_outfit: [{ name: "outfitVerde", count: 1, weight: 1 }],
+        //
+        // Cobalt class pods
+        //
+        tier_guns_common_scout: [
+            { name: "glock_dual", count: 1, weight: 1 },
+            { name: "ot38_dual", count: 1, weight: 1 },
+        ],
+        tier_guns_common_sniper: [
+            { name: "blr", count: 1, weight: 1 },
+            { name: "mosin", count: 1, weight: 0.1 },
+        ],
+        tier_guns_common_healer: [
+            { name: "mk12", count: 1, weight: 1 },
+            { name: "m39", count: 1, weight: 1 },
+        ],
+        tier_guns_common_demo: [
+            { name: "m870", count: 1, weight: 1 },
+            { name: "spas12", count: 1, weight: 0.5 },
+        ],
+        tier_guns_common_assault: [
+            { name: "hk416", count: 1, weight: 1 },
+            { name: "ak47", count: 1, weight: 1 },
+            { name: "groza", count: 1, weight: 1 },
+            { name: "famas", count: 1, weight: 1 },
+        ],
+        tier_guns_common_tank: [
+            { name: "dp28", count: 1, weight: 1 },
+            { name: "qbb97", count: 1, weight: 0.1 },
+        ],
+        tier_guns_rare_scout: [
+            { name: "ots38_dual", count: 1, weight: 1 },
+            { name: "p30l_dual", count: 1, weight: 0.5 },
+            { name: "deagle_dual", count: 1, weight: 0.5 },
+        ],
+        tier_guns_rare_sniper: [
+            { name: "mosin", count: 1, weight: 1 },
+            { name: "sv98", count: 1, weight: 0.1 },
+            { name: "awc", count: 1, weight: 0.05 },
+        ],
+        tier_guns_rare_demo: [
+            { name: "mp220", count: 1, weight: 1 },
+            { name: "saiga", count: 1, weight: 0.5 },
+            { name: "usas", count: 1, weight: 0.1 },
+        ],
+        tier_guns_rare_healer: [
+            { name: "svd", count: 1, weight: 1 },
+            { name: "l86", count: 1, weight: 1 },
+            { name: "garand", count: 1, weight: 0.5 },
+        ],
+        tier_guns_rare_assault: [
+            { name: "scar", count: 1, weight: 1 },
+            { name: "grozas", count: 1, weight: 1 },
+            { name: "m4a1", count: 1, weight: 1 },
+            { name: "an94", count: 1, weight: 0.5 },
+        ],
+        tier_guns_rare_tank: [
+            { name: "qbb97", count: 1, weight: 1 },
+            { name: "pkp", count: 1, weight: 0.1 },
+            { name: "m249", count: 1, weight: 0.05 },
+        ],
+        tier_class_crate_mythic: [
+            { name: "scavenger_adv", count: 1, weight: 1 },
+            { name: "explosive", count: 1, weight: 1 },
+            { name: "splinter", count: 1, weight: 1 },
+        ],
+        tier_scavenger_adv: [
+            { name: "m9", count: 1, weight: 1 },
+            { name: "ots38_dual", count: 1, weight: 1 },
+            { name: "p30l_dual", count: 1, weight: 1 },
+            { name: "saiga", count: 1, weight: 1 },
+            { name: "deagle_dual", count: 1, weight: 1 },
+            { name: "vector", count: 1, weight: 1 },
+            { name: "scorpion", count: 1, weight: 1 },
+            { name: "m4a1", count: 1, weight: 1 },
+            { name: "garand", count: 1, weight: 1 },
+            { name: "grozas", count: 1, weight: 1 },
+            { name: "flare_gun", count: 1, weight: 1 },
+            { name: "awc", count: 1, weight: 1 },
+            { name: "scarssr", count: 1, weight: 1 },
+            { name: "pkp", count: 1, weight: 1 },
+            { name: "m249", count: 1, weight: 1 },
+            { name: "sv98", count: 1, weight: 1 },
+            { name: "pan", count: 1, weight: 1 },
+            { name: "8xscope", count: 1, weight: 1 },
+            { name: "15xscope", count: 1, weight: 1 },
+            { name: "mirv", count: 4, weight: 1 },
+            { name: "outfitGhillie", count: 1, weight: 1 },
+            { name: "painkiller", count: 2, weight: 1 },
+            { name: "healthkit", count: 1, weight: 1 },
+            { name: "helmet03", count: 1, weight: 1 },
+            { name: "chest03", count: 1, weight: 1 },
+            { name: "backpack03", count: 1, weight: 1 },
+        ],
         tier_airdrop_uncommon: [
             { name: "mk12", count: 1, weight: 2.5 },
             { name: "scar", count: 1, weight: 0.75 },
@@ -365,8 +487,11 @@ export const Main: MapDef = {
         ],
         tier_airdrop_mythic: [
             { name: "scarssr", count: 1, weight: 1 }, // ?
-            { name: "usas", count: 1, weight: 1 }, // ?
+            { name: "usas", count: 1, weight: 0.5 }, // ?
             { name: "p30l_dual", count: 1, weight: 1 }, // ?
+            { name: "awc", count: 1, weight: 0.1 }, // ?
+            { name: "pkp", count: 1, weight: 0.3 }, // ?
+            { name: "m249", count: 1, weight: 0.3 }, // ?
         ],
         tier_airdrop_ammo: [
             { name: "9mm", count: 30, weight: 3 },
@@ -409,6 +534,15 @@ export const Main: MapDef = {
             { name: "vector45", count: 1, weight: 1 },
             { name: "mkg45", count: 1, weight: 1 },
         ],
+        tier_cattle_crate: [
+            { name: "m1a1", count: 1, weight: 1 },
+            { name: "model94", count: 1, weight: 1 },
+            { name: "colt45", count: 1, weight: 1 },
+            { name: "outfitVerde", count: 1, weight: 0.1 },
+            { name: "outfitDesertCamo", count: 1, weight: 0.1 },
+        ],
+        // seems to be unused? so adding this to suppress the warning
+        tier_pumpkin_candy: [{ name: "", weight: 1, count: 1 }],
         tier_pumpkin_perks: [{ name: "halloween_mystery", count: 1, weight: 1 }],
         tier_xp_uncommon: [
             { name: "xp_book_tallow", count: 1, weight: 1 },
@@ -455,6 +589,34 @@ export const Main: MapDef = {
             { name: "treat_762", count: 1, weight: 1 },
             { name: "treat_super", count: 1, weight: 0.1 },
         ],
+        tier_faction_outfits: [
+            { name: "outfitVerde", count: 1, weight: 1 },
+            { name: "outfitWoodland", count: 1, weight: 1 },
+            { name: "outfitKeyLime", count: 1, weight: 1 },
+            { name: "outfitCamo", count: 1, weight: 1 },
+        ],
+        tier_airdrop_faction_outfits: [{ name: "outfitGhillie", count: 1, weight: 1 }],
+        tier_airdrop_faction_melee: [{ name: "pan", count: 1, weight: 1 }],
+        tier_perks: [
+            { name: "firepower", count: 1, weight: 1 },
+            { name: "windwalk", count: 1, weight: 1 },
+            { name: "endless_ammo", count: 1, weight: 1 },
+            { name: "steelskin", count: 1, weight: 1 },
+            { name: "splinter", count: 1, weight: 1 },
+            { name: "small_arms", count: 1, weight: 1 },
+            { name: "takedown", count: 1, weight: 1 },
+            { name: "field_medic", count: 1, weight: 1 },
+            { name: "tree_climbing", count: 1, weight: 1 },
+            { name: "scavenger", count: 1, weight: 1 },
+            { name: "chambered", count: 1, weight: 1 },
+            { name: "martyrdom", count: 1, weight: 1 },
+            { name: "self_revive", count: 1, weight: 1 },
+            { name: "bonus_9mm", count: 1, weight: 1 },
+        ],
+        tier_potato_perks: [
+            { name: "", count: 1, weight: 25 },
+            { name: "tier_perks", count: 1, weight: 1 },
+        ],
     },
     mapGen: {
         map: {
@@ -479,6 +641,7 @@ export const Main: MapDef = {
                     },
                 ],
                 smoothness: 0.45,
+                spawnCabins: true,
                 masks: [],
             },
         },
@@ -520,9 +683,6 @@ export const Main: MapDef = {
             medium: "bridge_md_structure_01",
             large: "bridge_lg_structure_01",
             xlarge: "",
-        },
-        riverCabins: {
-            cabin_01: 3,
         },
         customSpawnRules: {
             locationSpawns: [
@@ -603,3 +763,11 @@ export const Main: MapDef = {
     },
     /* STRIP_FROM_PROD_CLIENT:END */
 };
+
+type DeepPartial<T> = T extends object
+    ? {
+          [P in keyof T]?: DeepPartial<T[P]>;
+      }
+    : T;
+
+export type PartialMapDef = DeepPartial<MapDef>;

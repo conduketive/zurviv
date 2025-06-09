@@ -4,6 +4,7 @@ import { GameConfig } from "../../shared/gameConfig";
 import { math } from "../../shared/utils/math";
 import { assert } from "../../shared/utils/util";
 import { type Vec2, v2 } from "../../shared/utils/v2";
+import type { AnimCtx, Player } from "./objects/player";
 
 function frame(time: number, bones: Partial<Record<Bones, Pose>>) {
     return {
@@ -11,7 +12,22 @@ function frame(time: number, bones: Partial<Record<Bones, Pose>>) {
         bones,
     };
 }
-function effect(time: number, fn: string, args?: Record<string, unknown>) {
+
+type AnimKeys = {
+    [K in keyof Player]: ((
+        this: Player,
+        ctx: AnimCtx,
+        arg: Record<string, unknown>,
+    ) => void) extends Player[K]
+        ? K
+        : never;
+}[keyof Player];
+
+function effect<K extends AnimKeys>(
+    time: number,
+    fn: K,
+    args?: Parameters<Player[K]>[1],
+) {
     return {
         time,
         fn,
@@ -48,12 +64,12 @@ export class Pose {
 
     static identity = new Pose(v2.create(0, 0));
 
-    static lerp(e: number, t: Pose, r: Pose) {
-        const a: Pose = new Pose();
-        a.pos = v2.lerp(e, t.pos, r.pos);
-        a.rot = math.lerp(e, t.rot, r.rot);
-        a.pivot = v2.lerp(e, t.pivot, r.pivot);
-        return a;
+    static lerp(t: number, poseA: Pose, poseB: Pose) {
+        const result: Pose = new Pose();
+        result.pos = v2.lerp(t, poseA.pos, poseB.pos);
+        result.rot = math.lerp(t, poseA.rot, poseB.rot);
+        result.pivot = v2.lerp(t, poseA.pivot, poseB.pivot);
+        return result;
     }
 }
 
@@ -128,6 +144,12 @@ export const IdlePoses: Record<string, Partial<Record<Bones, Pose>>> = {
 
 const def = GameObjectDefs as unknown as Record<string, MeleeDef>;
 
+interface Effect<K extends AnimKeys = AnimKeys> {
+    time: number;
+    fn: K;
+    args?: Parameters<Player[K]>[1];
+}
+
 export const Animations: Record<
     string,
     {
@@ -135,11 +157,7 @@ export const Animations: Record<
             time: number;
             bones: Partial<Record<Bones, Pose>>;
         }>;
-        effects: Array<{
-            time: number;
-            fn: string;
-            args?: Record<string, unknown>;
-        }>;
+        effects: Effect[];
     }
 > = {
     none: {
@@ -370,10 +388,10 @@ export const Animations: Record<
             }),
         ],
         effects: [
-            effect(def.woodaxe.attack.damageTimes[0], "animPlaySound", {
+            effect(def.naginata.attack.damageTimes[0], "animPlaySound", {
                 sound: "swing",
             }),
-            effect(def.woodaxe.attack.damageTimes[0], "animMeleeCollision", {}),
+            effect(def.naginata.attack.damageTimes[0], "animMeleeCollision", {}),
         ],
     },
     sawSwing: {

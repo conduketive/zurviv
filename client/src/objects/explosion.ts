@@ -1,10 +1,16 @@
-import { ExplosionDefs } from "../../../shared/defs/gameObjects/explosionsDefs";
+import { GameObjectDefs } from "../../../shared/defs/gameObjectDefs";
+import {
+    type ExplosionDef,
+    ExplosionDefs,
+} from "../../../shared/defs/gameObjects/explosionsDefs";
 import { collider } from "../../../shared/utils/collider";
 import { math } from "../../../shared/utils/math";
 import { util } from "../../../shared/utils/util";
 import { type Vec2, v2 } from "../../../shared/utils/v2";
 import type { AudioManager } from "../audioManager";
 import type { Camera } from "../camera";
+import type { DebugOptions } from "../config";
+import { debugLines } from "../debugLines";
 import type { SoundHandle } from "../lib/createJS";
 import type { Map } from "../map";
 import type { Particle, ParticleBarn } from "./particles";
@@ -41,7 +47,7 @@ class PhysicsParticle {
 
         // Gather colliders
         const colliders = [];
-        const obstacles = map.obstaclePool.getPool();
+        const obstacles = map.m_obstaclePool.m_getPool();
         for (let i = 0; i < obstacles.length; i++) {
             const obstacle = obstacles[i];
             if (
@@ -53,7 +59,7 @@ class PhysicsParticle {
             }
         }
 
-        const players = playerBarn.playerPool.getPool();
+        const players = playerBarn.playerPool.m_getPool();
         for (let i = 0; i < players.length; i++) {
             const player = players[i];
             if (
@@ -61,7 +67,7 @@ class PhysicsParticle {
                 !player.dead &&
                 util.sameLayer(this.layer, player.layer)
             ) {
-                colliders.push(collider.createCircle(player.pos, player.rad, 0));
+                colliders.push(collider.createCircle(player.m_pos, player.m_rad, 0));
             }
         }
 
@@ -249,7 +255,7 @@ class Explosion {
         this.ticker += dt;
         const shakeT = math.min(this.ticker / def.shakeDur, 1);
         const shakeInt = math.lerp(shakeT, def.shakeStr, 0);
-        camera.addShake(this.pos, shakeInt);
+        camera.m_addShake(this.pos, shakeInt);
         if (this.ticker >= this.lifetime) {
             this.active = false;
         }
@@ -295,14 +301,14 @@ export class ExplosionBarn {
         return p;
     }
 
-    update(
+    m_update(
         dt: number,
         map: Map,
         playerBarn: PlayerBarn,
         camera: Camera,
         particleBarn: ParticleBarn,
         audioManager: AudioManager,
-        _debug: unknown,
+        debug: DebugOptions,
     ) {
         for (let i = 0; i < this.explosions.length; i++) {
             const e = this.explosions[i];
@@ -310,6 +316,12 @@ export class ExplosionBarn {
                 e.update(dt, this, particleBarn, audioManager, map, camera);
                 if (!e.active) {
                     e.free();
+                }
+
+                if (IS_DEV && debug.render.explosions) {
+                    const def = GameObjectDefs[e.type] as ExplosionDef;
+                    debugLines.addCircle(e.pos, def.rad.min, 0xff0000, 0);
+                    debugLines.addCircle(e.pos, def.rad.max, 0xff9900, 0);
                 }
             }
         }

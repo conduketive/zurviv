@@ -1,10 +1,12 @@
 import { GameConfig } from "../../gameConfig";
 import { util } from "../../utils/util";
 import type { MapDef } from "../mapDefs";
-import { Main } from "./baseDefs";
+import { MapId } from "../types/misc";
+import { Main, type PartialMapDef } from "./baseDefs";
 
-const mapDef = {
-    mapId: 6,
+const mapDef: PartialMapDef = {
+    mapId: MapId.Halloween,
+
     desc: {
         name: "Halloween",
         icon: "img/gui/pumpkin-play.svg",
@@ -81,14 +83,14 @@ const mapDef = {
     },
     biome: {
         colors: {
-            background: 1507328,
-            water: 2621440,
-            waterRipple: 1048833,
-            beach: 6570254,
-            riverbank: 3939077,
-            grass: 2171908,
-            underground: 1181697,
-            playerSubmerge: 1310720,
+            background: 0x170000,
+            water: 0x280000,
+            waterRipple: 0x100101,
+            beach: 0x64410e,
+            riverbank: 0x3c1b05,
+            grass: 0x212404,
+            underground: 0x120801,
+            playerSubmerge: 0x140000,
         },
         particles: {
             camera: "falling_leaf_halloween",
@@ -175,7 +177,7 @@ const mapDef = {
             { name: "outfitBarrel", count: 1, weight: 1 },
             { name: "outfitWoodBarrel", count: 1, weight: 1 },
             { name: "outfitStone", count: 1, weight: 1 },
-            { name: "outfitTree", count: 1, weight: 1 },
+            { name: "outfitHalloweenTree", count: 1, weight: 1 },
             { name: "outfitStump", count: 1, weight: 1 },
             { name: "outfitBush", count: 1, weight: 1 },
             { name: "outfitLeafPile", count: 1, weight: 1 },
@@ -192,8 +194,6 @@ const mapDef = {
             { name: "outfitCrab", count: 1, weight: 1 },
             { name: "outfitStumpAxe", count: 1, weight: 1 },
         ],
-        // seems to be unused? so adding this to suppress the warning
-        tier_pumpkin_candy: [{ name: "", weight: 1, count: 1 }],
     },
     mapGen: {
         map: {

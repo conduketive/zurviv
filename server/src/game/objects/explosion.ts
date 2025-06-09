@@ -1,13 +1,12 @@
 import { GameObjectDefs } from "../../../../shared/defs/gameObjectDefs";
 import type { ExplosionDef } from "../../../../shared/defs/gameObjects/explosionsDefs";
-import { GameConfig } from "../../../../shared/gameConfig";
 import { ObjectType } from "../../../../shared/net/objectSerializeFns";
 import { collider } from "../../../../shared/utils/collider";
 import { math } from "../../../../shared/utils/math";
 import { assert, util } from "../../../../shared/utils/util";
 import { type Vec2, v2 } from "../../../../shared/utils/v2";
 import type { Game } from "../game";
-import type { GameObject } from "./gameObject";
+import type { DamageParams, GameObject } from "./gameObject";
 import { EXPLOSION_LOOT_PUSH_FORCE } from "./loot";
 
 interface LineCollision {
@@ -100,7 +99,12 @@ export class ExplosionBarn {
                     this.damageObject(explosion, collision);
                 }
 
-                if (obj.__type === ObjectType.Obstacle && obj.collidable) break;
+                if (
+                    obj.__type === ObjectType.Obstacle &&
+                    obj.collidable &&
+                    obj.__id !== explosion.ignoreObstacleId
+                )
+                    break;
             }
         }
 
@@ -111,13 +115,13 @@ export class ExplosionBarn {
                     bulletType: def.shrapnelType,
                     pos: explosion.pos,
                     layer: explosion.layer,
-                    damageType: explosion.damageType,
-                    playerId: explosion.source?.__id ?? 0,
+                    damageType: explosion.damageParams.damageType,
+                    playerId: explosion.damageParams.source?.__id ?? 0,
                     shotFx: false,
                     damageMult: 1,
                     varianceT: Math.random(),
-                    gameSourceType: explosion.gameSourceType,
-                    mapSourceType: explosion.mapSourceType,
+                    gameSourceType: explosion.damageParams.gameSourceType!,
+                    mapSourceType: explosion.damageParams.mapSourceType,
                     dir: v2.randomUnit(),
                 });
             }
@@ -144,18 +148,16 @@ export class ExplosionBarn {
         let damage = def.damage;
 
         if (dist > def.rad.min) {
-            damage = math.remap(dist, def.rad.min, def.rad.max, damage, 0);
+            damage = math.remap(dist, 0, def.rad.max, damage, 0);
         }
 
         if (obj.__type == ObjectType.Player) {
-            if (def.freezeAmount && def.freezeDuration) {
-                const isSourceTeammate =
-                    explosion.source &&
-                    explosion.source.__type == ObjectType.Player &&
-                    explosion.source.teamId == obj.teamId;
-                if (!isSourceTeammate) {
-                    obj.dropRandomLoot();
-
+            const isSourceTeammate =
+                explosion.damageParams.source &&
+                explosion.damageParams.source.__type == ObjectType.Player &&
+                explosion.damageParams.source.teamId == obj.teamId;
+            if (!isSourceTeammate) {
+                if (def.freezeAmount && def.freezeDuration) {
                     const playerRot = Math.atan2(obj.dir.y, obj.dir.x);
                     const collRot = -Math.atan2(collision.dir.y, collision.dir.x);
 
@@ -164,6 +166,13 @@ export class ExplosionBarn {
 
                     obj.freeze(ori, def.freezeDuration);
                 }
+                if (def.dropRandomLoot) {
+                    obj.dropRandomLoot();
+                }
+            }
+
+            if (explosion.type === "explosion_potato_smgshot") {
+                obj.incrementFat();
             }
         }
 
@@ -172,11 +181,8 @@ export class ExplosionBarn {
         }
 
         obj.damage({
+            ...explosion.damageParams,
             amount: damage,
-            gameSourceType: explosion.gameSourceType,
-            mapSourceType: explosion.mapSourceType,
-            source: explosion.source,
-            damageType: explosion.damageType,
             dir: collision.dir,
             isExplosion: true,
         });
@@ -190,10 +196,8 @@ export class ExplosionBarn {
         type: string,
         pos: Vec2,
         layer: number,
-        gameSourceType = "",
-        mapSourceType = "",
-        damageType: number = GameConfig.DamageType.Player,
-        source?: GameObject,
+        damageParams: Omit<DamageParams, "damage" | "dir">,
+        ignoreObstacleId?: number,
     ) {
         const def = GameObjectDefs[type];
         assert(def.type === "explosion", `Invalid explosion with type ${type}`);
@@ -203,10 +207,8 @@ export class ExplosionBarn {
             type,
             pos,
             layer,
-            gameSourceType,
-            mapSourceType,
-            damageType,
-            source,
+            damageParams,
+            ignoreObstacleId,
         };
         this.explosions.push(explosion);
         this.newExplosions.push(explosion);
@@ -218,8 +220,6 @@ interface Explosion {
     type: string;
     pos: Vec2;
     layer: number;
-    gameSourceType: string;
-    mapSourceType: string;
-    damageType: number;
-    source?: GameObject;
+    damageParams: Omit<DamageParams, "damage" | "dir">;
+    ignoreObstacleId?: number;
 }

@@ -1,4 +1,4 @@
-import { GameObjectDefs } from "../../../../shared/defs/gameObjectDefs";
+import { GameObjectDefs, type LootDef } from "../../../../shared/defs/gameObjectDefs";
 import type { MapDef } from "../../../../shared/defs/mapDefs";
 import { GameConfig } from "../../../../shared/gameConfig";
 import { ObjectType } from "../../../../shared/net/objectSerializeFns";
@@ -9,13 +9,16 @@ import type { River } from "../../../../shared/utils/river";
 import { assert, util } from "../../../../shared/utils/util";
 import { type Vec2, v2 } from "../../../../shared/utils/v2";
 import type { Game } from "../game";
+import { HashGrid } from "../grid";
 import { BaseGameObject } from "./gameObject";
+import type { MapIndicator } from "./mapIndicator";
 import type { Player } from "./player";
+import type { Structure } from "./structure";
 
 // velocity drag applied every tick
 const LOOT_DRAG = 3;
 // how much loot pushes each other every tick
-const LOOT_PUSH_FORCE = 6;
+const LOOT_PUSH_FORCE = 3;
 // explosion push force multiplier
 export const EXPLOSION_LOOT_PUSH_FORCE = 6;
 
@@ -26,13 +29,40 @@ type LootTierItem = MapDef["lootTable"][string][number];
 
 export class LootBarn {
     loots: Loot[] = [];
+    newLoots: Loot[] = [];
 
     private _cachedTiers: Record<string, () => LootTierItem> = {};
 
-    constructor(public game: Game) {}
+    grid: HashGrid;
+
+    constructor(public game: Game) {
+        this.grid = new HashGrid(this.game.map.width, this.game.map.height, 16);
+    }
 
     update(dt: number) {
-        const collisions: Record<string, boolean> = {};
+        // check for loot to loot collision on the hashgrid
+        this.grid.check(
+            this.loots,
+            (a, b) => {
+                return (
+                    (util.sameLayer(a.layer, b.layer) as boolean) &&
+                    coldet.testCircleCircle(a.pos, a.lootRad, b.pos, b.lootRad)
+                );
+            },
+            (a, b) => {
+                const res = coldet.intersectCircleCircle(
+                    a.pos,
+                    a.lootRad,
+                    b.pos,
+                    b.lootRad,
+                );
+                if (!res) return;
+
+                const force = math.max(res.pen, 0.1) * LOOT_PUSH_FORCE * dt;
+                a.vel = v2.sub(a.vel, v2.mul(res.dir, force));
+                b.vel = v2.add(b.vel, v2.mul(res.dir, force));
+            },
+        );
 
         for (let i = 0; i < this.loots.length; i++) {
             const loot = this.loots[i];
@@ -41,8 +71,16 @@ export class LootBarn {
                 i--;
                 continue;
             }
-            loot.update(dt, collisions);
+            loot.update(dt);
         }
+    }
+
+    flush() {
+        for (let i = 0; i < this.newLoots.length; i++) {
+            this.newLoots[i].isOld = false;
+            this.newLoots[i].serializeFull();
+        }
+        this.newLoots.length = 0;
     }
 
     splitUpLoot(player: Player, item: string, amount: number, dir: Vec2) {
@@ -65,6 +103,13 @@ export class LootBarn {
         pushSpeed?: number,
         dir?: Vec2,
     ) {
+        const def = GameObjectDefs[type];
+
+        if (!def || !("lootImg" in def)) {
+            this.game.logger.warn("Invalid loot type:", type);
+            return;
+        }
+
         const loot = new Loot(this.game, type, pos, layer, count, pushSpeed, dir);
         this._addLoot(loot);
     }
@@ -79,6 +124,13 @@ export class LootBarn {
         dir?: Vec2,
         preloadGun?: boolean,
     ) {
+        const def = GameObjectDefs[type];
+
+        if (!def || !("lootImg" in def)) {
+            this.game.logger.warn("Invalid loot type:", type);
+            return;
+        }
+
         const loot = new Loot(this.game, type, pos, layer, count, pushSpeed, dir);
         this._addLoot(loot);
 
@@ -86,7 +138,6 @@ export class LootBarn {
             loot.isPreloadedGun = true;
         }
 
-        const def = GameObjectDefs[type];
         if (def.type === "gun" && GameObjectDefs[def.ammo] && !preloadGun) {
             const ammoCount = useCountForAmmo ? count : def.ammoSpawnCount;
             if (ammoCount <= 0) return;
@@ -121,6 +172,7 @@ export class LootBarn {
     private _addLoot(loot: Loot) {
         this.game.objectRegister.register(loot);
         this.loots.push(loot);
+        this.newLoots.push(loot);
     }
 
     private _getLootTable(tier: string): LootTierItem {
@@ -174,6 +226,8 @@ export class Loot extends BaseGameObject {
     ownerId = 0;
     isOld = false;
 
+    forceUpdateTicker = 1;
+
     layer: number;
     type: string;
     count: number;
@@ -183,9 +237,12 @@ export class Loot extends BaseGameObject {
 
     collider: Circle;
     rad: number;
-    ticks = 0;
 
     bellowBridge = false;
+
+    mapIndicator?: MapIndicator;
+
+    lootRad: number;
 
     constructor(
         game: Game,
@@ -198,7 +255,7 @@ export class Loot extends BaseGameObject {
     ) {
         super(game, pos);
 
-        const def = GameObjectDefs[type];
+        const def = GameObjectDefs[type] as LootDef;
         assert("lootImg" in def, `Invalid loot type ${type}`);
 
         this.layer = layer;
@@ -209,93 +266,170 @@ export class Loot extends BaseGameObject {
         this.collider.pos = this.pos;
 
         this.rad = this.collider.rad;
+        // apparently original surviv loots had an extended hitbox
+        // that was only used for loot to loot collision...
+        // this seems to match it from the recorded packets
+        this.lootRad = this.rad * 1.25;
 
         this.bounds = collider.createAabbExtents(
             v2.create(0, 0),
             v2.create(this.rad, this.rad),
         );
 
+        if ("mapIndicator" in def) {
+            this.mapIndicator = this.game.mapIndicatorBarn.allocIndicator(
+                this.type,
+                false,
+            );
+            this.mapIndicator?.updatePosition(this.pos);
+        }
+
         this.push(dir ?? v2.randomUnit(), pushSpeed);
     }
 
-    update(dt: number, collisions: Record<string, boolean>): void {
-        if (this.ticks > 2 && !this.isOld) {
-            this.isOld = true;
-            this.ticks = 0;
-            this.setDirty();
-        } else this.ticks++;
-        const moving =
-            !this.isOld ||
+    updatePos(newPos: Vec2): void {
+        this.pos = v2.copy(newPos);
+        this.game.map.clampToMapBounds(this.pos, this.rad);
+        this.setPartDirty();
+    }
+
+    refresh(): void {
+        this.collider.pos = this.pos;
+        this.game.grid.updateObject(this);
+    }
+
+    update(dt: number): void {
+        const shouldUpdate =
+            this.forceUpdateTicker > 0.3 ||
             Math.abs(this.vel.x) > 0.001 ||
             Math.abs(this.vel.y) > 0.001 ||
             !v2.eq(this.oldPos, this.pos);
 
-        if (!moving) return;
+        if (!shouldUpdate) {
+            // force a loot update few ms to make sure if e.g an obstacle spawned on top of the loot (airdrop, potato respawning etc)
+            // it will still resolve collision instead of sleeping forever
+            this.forceUpdateTicker += dt;
+            return;
+        }
+        this.forceUpdateTicker = 0;
 
         this.oldPos = v2.copy(this.pos);
 
         v2.set(this.pos, v2.add(this.pos, v2.mul(this.vel, dt)));
         this.vel = v2.mul(this.vel, 1 / (1 + dt * LOOT_DRAG));
 
-        let objs = this.game.grid.intersectCollider(this.collider);
-
-        for (let i = 0; i < objs.length; i++) {
-            const obj = objs[i];
-            if (obj.__type === ObjectType.Obstacle) {
-                if (!obj.collidable) continue;
-                if (!util.sameLayer(obj.layer, this.layer)) continue;
-                if (obj.dead) continue;
-
-                const collision = collider.intersectCircle(
-                    obj.collider,
-                    this.pos,
-                    this.rad,
-                );
-                if (collision) {
-                    v2.set(
-                        this.pos,
-                        v2.add(this.pos, v2.mul(collision.dir, collision.pen + 0.001)),
-                    );
-                }
-            } else if (obj.__type === ObjectType.Loot && obj.__id !== this.__id) {
-                const hash1 = `${this.__id} ${obj.__id}`;
-                const hash2 = `${obj.__id} ${this.__id}`;
-                if (collisions[hash1] || collisions[hash2]) continue;
-                if (!util.sameLayer(obj.layer, this.layer)) continue;
-
-                const res = coldet.intersectCircleCircle(
-                    this.pos,
-                    this.collider.rad * 1.25,
-                    obj.pos,
-                    obj.collider.rad * 1.25,
-                );
-                if (!res) continue;
-                collisions[hash1] = collisions[hash2] = true;
-
-                const force = (res.pen / 2) * LOOT_PUSH_FORCE * dt;
-                this.vel = v2.sub(this.vel, v2.mul(res.dir, force));
-                obj.vel = v2.add(obj.vel, v2.mul(res.dir, force));
-            }
+        // cap speed to 100
+        const sqrLen = v2.lengthSqr(this.vel);
+        if (sqrLen > 100 * 100) {
+            const len = Math.sqrt(sqrLen);
+            const thisDir = v2.div(this.vel, len > 0.000001 ? len : 1);
+            this.vel = v2.mul(thisDir, 100);
         }
 
         const originalLayer = this.layer;
-        const stair = this.checkStairs(objs, this.rad);
-        if (this.layer !== originalLayer) {
-            this.setDirty();
+
+        let finalStair: Structure["stairs"][0] | undefined;
+
+        // find a ground surface
+        // used to check if e.g we are above a bridge
+        // to ignore rivers
+        // most of this logic was copied from map.getGroundSurface
+        // but optimized for loot and to only do a single loop
+        let surface = {
+            type: "",
+            zIdx: 0,
+        };
+
+        const onStairs = this.layer & 0x2;
+
+        let objs = this.game.grid.intersectGameObject(this);
+        for (let i = 0; i < objs.length; i++) {
+            const obj = objs[i];
+
+            switch (obj.__type) {
+                case ObjectType.Obstacle: {
+                    if (!obj.collidable) continue;
+                    if (!util.sameLayer(obj.layer, this.layer)) continue;
+                    if (obj.dead) continue;
+
+                    const collision = collider.intersectCircle(
+                        obj.collider,
+                        this.pos,
+                        this.rad,
+                    );
+                    if (collision) {
+                        v2.set(
+                            this.pos,
+                            v2.add(
+                                this.pos,
+                                v2.mul(collision.dir, collision.pen + 0.001),
+                            ),
+                        );
+                    }
+                    break;
+                }
+                case ObjectType.Building: {
+                    // if we are bellow a bridge we need to ignore surfaces
+                    // so the loot keeps flowing on the river
+                    if (this.bellowBridge) continue;
+                    // Prioritize layer0 building surfaces when on stairs
+                    if (
+                        (obj.layer !== this.layer && !onStairs) ||
+                        (obj.layer === 1 && onStairs)
+                    ) {
+                        continue;
+                    }
+                    if (surface.zIdx > obj.zIdx) continue;
+
+                    for (let j = 0; j < obj.surfaces.length; j++) {
+                        const objSurf = obj.surfaces[j];
+                        for (let k = 0; k < objSurf.colliders.length; k++) {
+                            if (coldet.test(objSurf.colliders[k], this.collider)) {
+                                surface = {
+                                    type: objSurf.type,
+                                    zIdx: obj.zIdx,
+                                };
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+                case ObjectType.Decal: {
+                    if (this.bellowBridge) continue;
+                    if (!obj.collider || !obj.surface) continue;
+                    if (!util.sameLayer(obj.layer, this.layer)) continue;
+                    if (!coldet.test(obj.collider, this.collider)) continue;
+                    // decal surfaces have priority
+                    surface = {
+                        type: obj.surface,
+                        zIdx: 9999999,
+                    };
+                    break;
+                }
+                case ObjectType.Structure: {
+                    finalStair = this.checkStructureStairs(obj, this.rad);
+                    break;
+                }
+            }
         }
 
         if (this.layer === 0) {
             this.bellowBridge = false;
         }
 
-        if (stair?.lootOnly) {
+        if (finalStair?.lootOnly) {
             this.bellowBridge = true;
         }
 
-        const surface = this.game.map.getGroundSurface(this.pos, this.layer);
         let finalRiver: River | undefined;
-        if ((this.layer === 0 && surface.river) || this.bellowBridge) {
-            const rivers = this.game.map.terrain.rivers;
+        // ignore rivers if we are in the ocean
+        const beachAABB = this.game.map.beachBounds;
+        if (
+            !surface.type &&
+            coldet.testPointAabb(this.pos, beachAABB.min, beachAABB.max)
+        ) {
+            const rivers = this.game.map.normalRivers;
             for (let i = 0; i < rivers.length; i++) {
                 const river = rivers[i];
                 if (
@@ -307,6 +441,7 @@ export class Loot extends BaseGameObject {
                 }
             }
         }
+
         if (finalRiver) {
             const tangent = finalRiver.spline.getTangent(
                 finalRiver.spline.getClosestTtoPoint(this.pos),
@@ -314,9 +449,14 @@ export class Loot extends BaseGameObject {
             this.push(tangent, 0.5 * dt);
         }
 
+        if (this.layer !== originalLayer) {
+            this.setDirty();
+        }
+
         if (!v2.eq(this.oldPos, this.pos)) {
             this.setPartDirty();
             this.game.grid.updateObject(this);
+            this.mapIndicator?.updatePosition(this.pos);
         }
 
         this.game.map.clampToMapBounds(this.pos, this.rad);
@@ -324,5 +464,10 @@ export class Loot extends BaseGameObject {
 
     push(dir: Vec2, velocity: number): void {
         this.vel = v2.add(this.vel, v2.mul(dir, velocity));
+    }
+
+    override destroy() {
+        super.destroy();
+        this.mapIndicator?.kill();
     }
 }

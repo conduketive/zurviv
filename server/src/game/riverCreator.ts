@@ -1,5 +1,7 @@
+import type { MapDef } from "../../../shared/defs/mapDefs";
 import { coldet } from "../../../shared/utils/coldet";
 import { math } from "../../../shared/utils/math";
+import { util } from "../../../shared/utils/util";
 import { type Vec2, v2 } from "../../../shared/utils/v2";
 import { GameMap } from "./map";
 
@@ -140,6 +142,28 @@ export class RiverCreator {
             }
         }
 
+        // if too many points are inside the ocean
+        // discard the river because its most likely "sliding" along the map boundaries
+        let maxPointsOutside = math.max(
+            (this.map.shoreInset + this.map.grassInset) / 9,
+            3,
+        );
+        if (isFactionRiver) maxPointsOutside *= 2;
+        for (let i = 0, pointsOutsideGrass = 0; i < riverPoints.length; i++) {
+            if (
+                !coldet.testPointAabb(
+                    riverPoints[i],
+                    this.map.grassBounds.min,
+                    this.map.grassBounds.max,
+                )
+            ) {
+                pointsOutsideGrass++;
+                if (pointsOutsideGrass > maxPointsOutside) {
+                    return [];
+                }
+            }
+        }
+
         for (let i = 0; i < this.map.riverMasks.length; i++) {
             const mask = this.map.riverMasks[i];
             for (let j = 0; j < riverPoints.length; j++) {
@@ -153,5 +177,57 @@ export class RiverCreator {
         this.handleIntersection(riverPoints);
 
         return riverPoints;
+    }
+
+    pushNodes(center: Vec2, points: Vec2[], position: Vec2) {
+        for (let i = 0; i < points.length; i++) {
+            const point = points[i];
+            const dist = v2.distance(point, position);
+
+            if (dist > 32) continue;
+            const force = (32 - dist) * 0.8;
+            const dir = v2.normalize(v2.sub(position, center));
+            v2.set(point, v2.add(point, v2.mul(dir, force)));
+        }
+    }
+
+    createLake(lake: MapDef["mapGen"]["map"]["rivers"]["lakes"][number]) {
+        const points: Vec2[] = [];
+
+        const center = v2.add(
+            v2.mulElems(v2.create(this.map.width, this.map.height), lake.spawnBound.pos),
+            util.randomPointInCircle(lake.spawnBound.rad, this.randomGenerator),
+        );
+
+        const variationPushDistance = 10;
+        const width = (lake.outerRad - lake.innerRad) / 2;
+
+        const len = lake.innerRad + width - variationPushDistance * 2;
+
+        const step = (Math.PI * 2) / (width + 1);
+        const max = Math.PI * 2 - step;
+        for (let i = 0; i < max; i += step) {
+            const dir = v2.create(Math.cos(i), Math.sin(i));
+            points.push(v2.add(center, v2.mul(dir, len)));
+        }
+
+        const start = this.randomGenerator(0, Math.PI * 2);
+        const end = start + Math.PI * 2;
+        for (let i = start; i < end; i += this.randomGenerator(0.5, 1.1)) {
+            let pushDist = this.randomGenerator(0, variationPushDistance);
+            if (this.randomGenerator() < 0.5) pushDist *= -1;
+            pushDist += len;
+
+            const dir = v2.create(Math.cos(i) * pushDist, Math.sin(i) * pushDist);
+            this.pushNodes(center, points, v2.add(center, dir));
+        }
+        points.push(v2.copy(points[0]));
+
+        return {
+            width,
+            points,
+            looped: true,
+            center,
+        };
     }
 }

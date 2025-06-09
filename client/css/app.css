@@ -169,7 +169,8 @@ a:active {
   background-position: center;
   height: 140px;
   margin: auto;
-  margin-bottom: 32px;
+  margin-top: -10px;
+  margin-bottom: 42px;
   position: relative;
   /* In case of logo change, update this value to width divided by 2 ceiled  */
   width: 396px;
@@ -216,7 +217,6 @@ a:active {
 
 #start-main-center {
   position: relative;
-  width: 960px;
 }
 
 @media (min-width: 851px) and (max-height: 768px), (max-width: 1200px) {
@@ -245,12 +245,14 @@ a:active {
 #start-row-top {
   height: 360px;
   position: relative;
+  display: flex;
+  justify-content: center;
 }
 
 .menu-column {
   display: block;
   float: left;
-  margin: 10px auto;
+  margin: 0;
 }
 
 .menu-block {
@@ -292,9 +294,11 @@ a:active {
   opacity: 1;
   border-radius: 10px;
   box-sizing: border-box;
-  height: 250px;
+  --height: 250px;
+  --width: 300px;
   margin-right: 30px;
-  width: 300px;
+  height: var(--height);
+  width: var(--width);
 }
 
 @media (max-width: 850px), (max-width: 900px) and (-webkit-min-device-pixel-ratio: 3),
@@ -304,8 +308,8 @@ a:active {
     opacity: 1;
     margin-top: 40px;
     margin-right: 18px;
-    height: 165px;
-    width: 200px;
+    --height: 165px;
+    --width: 200px;
   }
 }
 
@@ -361,9 +365,7 @@ a:active {
   (max-width: 900px) and (min-resolution: 3dppx) {
   .ad-block-med-rect {
     position: absolute;
-    -webkit-transform: scale(0.67);
     transform: scale(0.67);
-    -webkit-transform-origin: left top;
     transform-origin: left top;
   }
 }
@@ -372,19 +374,15 @@ a:active {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  display: block;
-  height: 250px;
-  width: 300px;
+  display: flex;
+  height: 100%;
+  width: 100%;
 }
 
 .surviv-shirts a {
-  height: 250px;
+  height: var(--height);
+  width: var(--width);
   position: absolute;
-  width: 300px;
-}
-
-.surviv-shirts {
-  background-image: url(/img/survev-kofi.png);
 }
 
 /*
@@ -413,24 +411,21 @@ a:active {
 }
 
 .ad-block-leaderboard-bottom {
+  position: absolute;
   left: 0;
   margin-left: auto;
   margin-right: auto;
   pointer-events: auto;
-  position: absolute;
+  transform-origin: bottom;
   right: 0;
   text-align: center;
-}
-
-@media (max-width: 1100px) {
-  .ad-block-leaderboard-bottom {
-    transform: scale(0.9);
-  }
+  bottom: 20px;
 }
 
 @media (max-width: 1100px) and (max-height: 720px) {
   .ad-block-leaderboard-bottom {
-    right: auto;
+    transform: scale(0.5);
+    bottom: 5px;
   }
 }
 
@@ -463,6 +458,11 @@ a:active {
   border-radius: 12px;
   -moz-border-radius: 12px;
   -webkit-border-radius: 12px;
+}
+
+#btn-discord-top-right {
+  margin-top: 7px;
+  margin-left: -3px;
 }
 
 .btn-twitter {
@@ -1559,6 +1559,14 @@ a:active {
   }
 }
 
+#start-turnstile-container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999999;
+}
+
 .ui-modal-keybind {
   display: none;
   position: absolute;
@@ -2188,6 +2196,7 @@ a:active {
   z-index: 1;
 }
 
+/*
 @media (max-width: 850px), (max-width: 900px) and (min-resolution: 3dppx) {
   .account-buttons-wrapper {
     background-color: transparent !important;
@@ -2195,6 +2204,7 @@ a:active {
     width: 60% !important;
   }
 }
+*/
 
 @media (max-width: 850px), (max-width: 900px) and (min-resolution: 3dppx) {
   #modal-account-avatar > .modal-content {
@@ -2515,6 +2525,12 @@ a:active {
 }
 
 .btn-login-facebook {
+  background-color: #3b579d;
+  border-bottom: 2px solid #253763;
+  box-shadow: inset 0 -2px #253763;
+}
+
+.btn-login-mock {
   background-color: #3b579d;
   border-bottom: 2px solid #253763;
   box-shadow: inset 0 -2px #253763;
@@ -4669,6 +4685,25 @@ input [type="image"]:focus {
   font-size: 18px;
 }
 
+#modal-ip-banned {
+  background-color: #000;
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+#modal-ip-banned .modal-content {
+  text-decoration: none;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 50%;
+  animation-name: fadeIn;
+  animation-duration: 0.2s;
+}
+
+#modal-ip-banned .modal-body {
+  background: #000;
+  color: #fff;
+}
+
 #modal-customize {
   overflow: hidden;
   z-index: 4;
@@ -6770,8 +6805,8 @@ input [type="image"]:focus {
 
   #ad-block-left {
     position: absolute;
-    width: 275px;
-    height: 230px;
+    --width: 275px;
+    --height: 230px;
     top: 292px;
     left: 50%;
     transform: translateX(-50%);

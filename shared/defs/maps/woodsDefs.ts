@@ -2,10 +2,11 @@ import { GameConfig } from "../../gameConfig";
 import { util } from "../../utils/util";
 import { v2 } from "../../utils/v2";
 import type { MapDef } from "../mapDefs";
-import { Main } from "./baseDefs";
+import { MapId } from "../types/misc";
+import { Main, type PartialMapDef } from "./baseDefs";
 
-const mapDef = {
-    mapId: 2,
+const mapDef: PartialMapDef = {
+    mapId: MapId.Woods,
     desc: {
         name: "Woods",
         icon: "img/gui/player-king-woods.svg",
@@ -14,23 +15,22 @@ const mapDef = {
     assets: {
         audio: [
             { name: "vault_change_02", channel: "sfx" },
-            { name: "log_01", channel: "sfx" },
-            { name: "log_02", channel: "sfx" },
             { name: "footstep_08", channel: "sfx" },
             { name: "footstep_09", channel: "sfx" },
+            { name: "helmet03_forest_pickup_01", channel: "ui" },
         ],
         atlases: ["gradient", "loadout", "shared", "woods"],
     },
     biome: {
         colors: {
-            background: 2118510,
-            water: 3310251,
-            waterRipple: 11792639,
-            beach: 15709019,
-            riverbank: 7812619,
-            grass: 9339690,
-            underground: 1772803,
-            playerSubmerge: 2854052,
+            background: 0x20536e,
+            water: 0x3282ab,
+            waterRipple: 0xb3f0ff,
+            beach: 0xefb35b,
+            riverbank: 0x77360b,
+            grass: 0x8e832a,
+            underground: 0x1b0d03,
+            playerSubmerge: 0x2b8ca4,
         },
         particles: { camera: "falling_leaf" },
     },
@@ -212,23 +212,28 @@ const mapDef = {
             {
                 logging_complex_01: 1,
                 logging_complex_02: 1,
+                logging_complex_03: 3,
                 teapavilion_01w: 1,
                 warehouse_01: 3,
                 house_red_01: 3,
                 barn_01: 3,
                 cache_03: 48,
                 cache_01: 1,
-                cache_02: 1,
+                cache_02w: 1,
                 bunker_structure_01b: 1,
                 bunker_structure_03: 1,
                 bunker_structure_07: 1,
+                teahouse_01: {
+                    small: 2,
+                    large: 3,
+                },
                 chest_03: { odds: 0.5 },
                 crate_19: 12,
                 stone_04: 6,
                 tree_02: 6,
-                tree_07: 1400,
-                tree_08: 1300,
-                tree_08b: 200,
+                tree_07: 1100,
+                tree_08: 1100,
+                tree_08b: 150,
                 tree_09: 84,
             },
         ],
@@ -239,6 +244,9 @@ const mapDef = {
                 crate_02: "crate_19",
                 crate_08: "crate_19",
                 crate_09: "crate_19",
+                // make eye bunkers have the proper woods recorders
+                recorder_01: "recorder_08",
+                recorder_02: "recorder_09",
             },
         ],
     },

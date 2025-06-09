@@ -15,8 +15,8 @@ export const PerkProperties = {
         scale: -0.25,
     },
     splinter: {
-        mainDamageMulti: 0.6,
-        splitsDamageMulti: 0.45,
+        mainDamageMult: 0.6,
+        splitsDamageMult: 0.45,
     },
     trick_size: {
         scale: 0.25,
@@ -28,7 +28,24 @@ export const PerkProperties = {
         bonusAirstrikes: 2,
     },
     fabricate: {
-        refillInterval: 12, //means refill every x seconds
+        refillInterval: 12, // means refill every x seconds
+        giveInterval: 0.08, // interval between each grenade being given until the backpack is full
+    },
+    gotw: {
+        scale: 0.25,
+        healthRegen: 0.5, // per second
+    },
+    field_medic: {
+        speedBoost: 1,
+    },
+    tree_climbing: {
+        waterSpeedBoost: 2,
+    },
+    bonus_9mm: {
+        spreadMul: 1.1,
+    },
+    rare_potato: {
+        quality: 1,
     },
     // map of ammo type to perk that boosts that ammo
     ammoBonuses: {
@@ -38,7 +55,7 @@ export const PerkProperties = {
         "12gauge": ["treat_12g"],
         "45acp": ["bonus_45"],
     } as Record<string, string[]>,
-    ammoBonusDamageMulti: 1.08,
+    ammoBonusDamageMult: 1.08,
 };
 
 export interface PerkDef {

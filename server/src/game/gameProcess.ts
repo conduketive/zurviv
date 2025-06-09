@@ -1,8 +1,9 @@
 import { platform } from "os";
 import NanoTimer from "nanotimer";
 import { Config } from "../config";
+import { logErrorToWebhook } from "../utils/serverHelpers";
+import { type ProcessMsg, ProcessMsgType } from "../utils/types";
 import { Game } from "./game";
-import { type ProcessMsg, ProcessMsgType } from "./gameProcessManager";
 
 let game: Game | undefined;
 
@@ -16,8 +17,8 @@ process.on("disconnect", () => {
 
 const socketMsgs: Array<{
     socketId: string;
-    data: ArrayBuffer;
-    ip?: string;
+    data: Uint8Array;
+    ip: string;
 }> = [];
 
 let lastMsgTime = Date.now();
@@ -35,12 +36,14 @@ process.on("message", async (msg: ProcessMsg) => {
                 socketMsgs.push({
                     socketId: id,
                     data,
+                    ip: "",
                 });
             },
-            (id) => {
+            (id, reason) => {
                 sendMsg({
                     type: ProcessMsgType.SocketClose,
                     socketId: id,
+                    reason,
                 });
             },
             (msg) => {
@@ -61,10 +64,11 @@ process.on("message", async (msg: ProcessMsg) => {
 
     switch (msg.type) {
         case ProcessMsgType.AddJoinToken:
-            game.addJoinToken(msg.token, msg.autoFill, msg.playerCount);
+            game.addJoinTokens(msg.tokens, msg.autoFill);
             break;
         case ProcessMsgType.SocketMsg:
-            game.handleMsg(msg.msgs[0].data, msg.msgs[0].socketId, msg.msgs[0].ip);
+            const sMsg = msg.msgs[0];
+            game.handleMsg(sMsg.data as ArrayBuffer, sMsg.socketId, sMsg.ip);
             break;
         case ProcessMsgType.SocketClose:
             game.handleSocketClose(msg.socketId);
@@ -124,3 +128,12 @@ if (platform() === "win32") {
         socketMsgs.length = 0;
     }, 1000 / Config.netSyncTps);
 }
+
+process.on("uncaughtException", async (err) => {
+    console.error(err);
+    game = undefined;
+
+    await logErrorToWebhook("server", "Game process error", err);
+
+    process.exit(1);
+});

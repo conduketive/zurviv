@@ -70,6 +70,7 @@ export const v2 = {
     manhattanDistance(p1: Vec2, p2: Vec2): number {
         return Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y);
     },
+
     midpoint(p1: Vec2, p2: Vec2): Vec2 {
         return v2.create((p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
     },
