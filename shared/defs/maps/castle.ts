@@ -1,5 +1,6 @@
 import { util } from "../../utils/util";
 import type { MapDef } from "../mapDefs";
+import { MapId } from "../types/misc";
 import { Main } from "./baseDefs";
 
 // @NOTE: Entries defined as single-element arrays, like fixedSpawns: [{ }],
@@ -9,7 +10,7 @@ import { Main } from "./baseDefs";
 // Arrays are not mergeable, so the derived map will always redefine all
 // elements if that property is set.
 const mapDef = {
-    mapId: 0,
+    mapId: MapId.Main,
     desc: { name: "Castle", icon: "", buttonCss: "" },
     assets: {
         audio: [

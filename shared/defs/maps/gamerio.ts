@@ -1,9 +1,10 @@
 import { util } from "../../utils/util";
 import type { MapDef } from "../mapDefs";
+import { MapId } from "../types/misc";
 import { Main } from "./baseDefs";
 
 const mapDef = {
-    mapId: 10,
+    mapId: MapId.Gamerio,
     desc: {
         name: "Gamerio",
         icon: "img/gamerio_logo.png",

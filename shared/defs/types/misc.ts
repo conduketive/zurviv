@@ -9,6 +9,9 @@ export enum MapId {
     Savannah = 5,
     Halloween = 6,
     Cobalt = 7,
+    // custom zurviv modes starts at 100+
+    GG = 100,
+    Gamerio = 101,
 }
 
 export const TeamModeToString = {

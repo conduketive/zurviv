@@ -1,10 +1,11 @@
 import { util } from "../../utils/util";
 import type { MapDef } from "../mapDefs";
+import { MapId } from "../types/misc";
 import { Main, type PartialMapDef } from "./baseDefs";
 
 const mapDef: PartialMapDef = {
     // !!! WRONG ID HERE?
-    mapId: 5,
+    mapId: MapId.Savannah,
     desc: {
         name: "Spring",
         icon: "img/particles/part-leaf-07.svg",

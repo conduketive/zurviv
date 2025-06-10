@@ -1,9 +1,10 @@
 import { util } from "../../utils/util";
 import type { MapDef } from "../mapDefs";
+import { MapId } from "../types/misc";
 import { Main } from "./baseDefs";
 
 const mapDef = {
-    mapId: 1221,
+    mapId: MapId.GG,
     desc: {
         name: "GG",
         icon: "img/gg_logo.png",
