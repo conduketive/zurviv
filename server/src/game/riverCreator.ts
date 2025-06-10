@@ -3,7 +3,7 @@ import { coldet } from "../../../shared/utils/coldet";
 import { math } from "../../../shared/utils/math";
 import { util } from "../../../shared/utils/util";
 import { type Vec2, v2 } from "../../../shared/utils/v2";
-import { GameMap } from "./map";
+import type { GameMap } from "./map";
 
 export class RiverCreator {
     randomGenerator: (min?: number, max?: number) => number;
@@ -53,7 +53,7 @@ export class RiverCreator {
             (c) => v2.manhattanDistance(c, start) < tileSize,
         );
         let attempts = 0;
-        while (attempts++ < GameMap.MaxSpawnAttempts) {
+        while (attempts++ < 1000) {
             const end = this.map.randomPointOnMapEdge(this.randomGenerator);
             if (v2.manhattanDistance(start, end) <= gridSize) continue;
             //if a river starts on corner, it can't end on a corner

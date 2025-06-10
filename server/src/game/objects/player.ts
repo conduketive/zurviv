@@ -61,10 +61,6 @@ interface Emote {
     playerId: number;
     pos: Vec2;
     type: string;
-    /**
-     * if type is "emote_loot", typestring of item goes here
-     * "m870", "mosin", "1xscope", "762mm", etc
-     */
     isPing: boolean;
     /**
      * if type is "emote_loot", typestring of item goes here
@@ -4350,7 +4346,7 @@ export class Player extends BaseGameObject {
 
         const affectedPlayers = this.game.modeManager.getNearbyAlivePlayersContext(
             this,
-            30,
+            60,
         );
 
         for (const player of affectedPlayers) {
