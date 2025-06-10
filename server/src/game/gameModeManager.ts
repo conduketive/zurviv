@@ -124,15 +124,11 @@ export class GameModeManager {
         switch (this.mode) {
             case GameMode.Solo: {
                 const winner = this.game.playerBarn.livingPlayers[0];
-                winner.rank = 1;
                 winner.addGameOverMsg(winner.teamId);
                 return true;
             }
             case GameMode.Team: {
                 const winner = this.game.playerBarn.getAliveGroups()[0];
-                for (const player of winner.getPlayers()) {
-                    player.rank = 1;
-                }
                 for (const player of winner.getAlivePlayers()) {
                     player.addGameOverMsg(winner.groupId);
                 }
@@ -369,10 +365,8 @@ export class GameModeManager {
 
     handlePlayerDeath(player: Player, params: DamageParams): void {
         switch (this.mode) {
-            case GameMode.Solo: {
-                player.rank = this.aliveCount();
+            case GameMode.Solo:
                 return player.kill(params);
-            }
             case GameMode.Team:
                 {
                     const sourceIsPlayer = params.source?.__type === ObjectType.Player;
@@ -390,7 +384,7 @@ export class GameModeManager {
                         if (finishedByTeammate || bledOut) {
                             params.source = player.downedBy;
                         }
-                        player.rank = 0;
+
                         player.kill(params);
                         // special case that only happens when the player has self_revive since the teammates wouldnt have previously been finished off
                         if (group.checkAllDowned(player) && !group.checkSelfRevive()) {
@@ -409,9 +403,6 @@ export class GameModeManager {
 
                     if (!groupHasSelfRevive && (allDeadOrDisconnected || allDowned)) {
                         group.allDeadOrDisconnected = true; // must set before any kill() calls so the gameovermsgs are accurate
-                        for (const player of group.getPlayers()) {
-                            player.rank = this.aliveCount();
-                        }
                         player.kill(params);
                         if (allDowned) {
                             group.killAllTeammates();

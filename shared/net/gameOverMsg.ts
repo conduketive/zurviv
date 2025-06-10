@@ -4,7 +4,6 @@ import { PlayerStatsMsg } from "./playerStatsMsg";
 export class GameOverMsg implements AbstractMsg {
     teamId = 0;
     teamRank = 0;
-    rank = 0;
     gameOver = false;
     winningTeamId = 0;
     playerStats: Array<PlayerStatsMsg["playerStats"]> = [];
@@ -12,7 +11,6 @@ export class GameOverMsg implements AbstractMsg {
     serialize(s: BitStream) {
         s.writeUint8(this.teamId);
         s.writeUint8(this.teamRank);
-        s.writeUint8(this.rank);
         s.writeUint8(+this.gameOver);
         s.writeUint8(this.winningTeamId);
 
@@ -28,7 +26,6 @@ export class GameOverMsg implements AbstractMsg {
     deserialize(s: BitStream) {
         this.teamId = s.readUint8();
         this.teamRank = s.readUint8();
-        this.rank = s.readUint8();
         this.gameOver = s.readUint8() as unknown as boolean;
         this.winningTeamId = s.readUint8();
         for (let count = s.readUint8(), i = 0; i < count; i++) {
