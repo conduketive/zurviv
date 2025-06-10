@@ -46,6 +46,78 @@ export class GameModeManager {
         }
     }
 
+    // so the game doesn't start when there's only 2 players and one can of them can despawn which would end the game
+    // instead it will await 10 seconds for the second player to not be able to despawn before starting
+    cantDespawnAliveCount(): number {
+        switch (this.mode) {
+            case GameMode.Solo:
+                return this.game.playerBarn.livingPlayers.filter((p) => !p.canDespawn())
+                    .length;
+            case GameMode.Team:
+                return this.game.playerBarn.getAliveGroups().filter((group) => {
+                    return group.players.filter((p) => !p.canDespawn()).length > 0;
+                }).length;
+            case GameMode.Faction:
+                return this.game.playerBarn.getAliveTeams().filter((team) => {
+                    return team.players.filter((p) => !p.canDespawn()).length;
+                }).length;
+        }
+    }
+
+    // used when saving the game match data
+    getPlayersSortedByRank(): Array<{ player: Player; rank: number }> {
+        const players = [...this.game.playerBarn.players];
+
+        switch (this.mode) {
+            case GameMode.Solo: {
+                return players
+                    .sort((a, b) => {
+                        return b.killedIndex - a.killedIndex;
+                    })
+                    .map((player, idx) => {
+                        return {
+                            player,
+                            rank: idx + 1,
+                        };
+                    });
+            }
+            case GameMode.Team:
+            case GameMode.Faction: {
+                // the logic is basically the exact same for both
+                // just uses team instead of group on faction...
+
+                const key = this.mode === GameMode.Faction ? "teams" : "groups";
+
+                // calculate each group killed index
+                // by basing it on the last player to die killed index
+                const groups = this.game.playerBarn[key].map((group) => {
+                    return {
+                        killedIndex:
+                            group.players.sort((a, b) => {
+                                return b.killedIndex - a.killedIndex;
+                            })[0].killedIndex ?? Infinity,
+                        players: group.players,
+                    };
+                });
+
+                groups.sort((a, b) => b.killedIndex - a.killedIndex);
+
+                let data: Array<{ player: Player; rank: number }> = [];
+
+                for (let i = 0; i < groups.length; i++) {
+                    for (const player of groups[i].players) {
+                        data.push({
+                            player,
+                            rank: i + 1,
+                        });
+                    }
+                }
+
+                return data;
+            }
+        }
+    }
+
     /** true if game needs to end */
     handleGameEnd(): boolean {
         if (!this.game.started || this.aliveCount() > 1) return false;
@@ -77,7 +149,7 @@ export class GameModeManager {
     }
 
     isGameStarted(): boolean {
-        return this.aliveCount() > 1;
+        return this.cantDespawnAliveCount() > 1;
     }
 
     updateAliveCounts(aliveCounts: number[]): void {
@@ -118,6 +190,7 @@ export class GameModeManager {
         if (this.getPlayerAlivePlayersContext(player).length != 0) {
             playerFilter = (p: Player) => !p.disconnected && p.teamId == player.teamId;
         } else {
+            // if no players left on group/team, player can spectate anyone
             playerFilter = (p: Player) => !p.disconnected;
         }
         // livingPlayers is used here instead of a more "efficient" option because its sorted while other options are not
@@ -161,7 +234,7 @@ export class GameModeManager {
     getNearbyAlivePlayersContext(player: Player, range: number): Player[] {
         const alivePlayersContext = this.getPlayerAlivePlayersContext(player);
 
-        //probably more efficient when there's 4 or less players in the context (untested)
+        // probably more efficient when there's 4 or less players in the context (untested)
         if (alivePlayersContext.length <= 4) {
             return alivePlayersContext.filter(
                 (p) =>
@@ -177,7 +250,7 @@ export class GameModeManager {
                 (obj): obj is Player =>
                     obj.__type == ObjectType.Player &&
                     playerIdContext == this.getIdContext(obj) &&
-                    !obj.dead && //necessary since player isnt deleted from grid on death
+                    !obj.dead && // necessary since player isnt deleted from grid on death
                     !!util.sameLayer(player.layer, obj.layer) &&
                     v2.lengthSqr(v2.sub(player.pos, obj.pos)) <= range * range,
             );
@@ -237,7 +310,7 @@ export class GameModeManager {
                     (highestKiller, p) =>
                         highestKiller.kills > p.kills ? highestKiller : p,
                 );
-                
+
                 //if game ends before leaders are promoted, just show the player by himself
                 return !redLeader || !blueLeader
                     ? [player]
@@ -253,40 +326,28 @@ export class GameModeManager {
         // This method doesn't use a mode switchcase like all the other methods in this class,
         // as the spectate logic is identitical with the sole exception of narrowing random players
         // in 50v50: random players spectated in 50v50 should be on the same team as the spectator.
+
         // If there are no spectators, we have no need to run any logic.
         if (player.spectatorCount === 0) return;
-        // Utility function to find a derivative of the original killer.
-        let attempts = 0;
-        const getAliveKiller = (
-            killer: Player | undefined,
-        ): Player | undefined => {
-            attempts++;
-            if (attempts > 80) return undefined;
-            if (!killer) return undefined;
-            if (!killer.dead) return killer;
-            if (
-                killer.killedBy &&
-                killer.killedBy !== player &&
-                killer.killedBy !== killer
-            ) {
-                return getAliveKiller(killer.killedBy);
-            }
-
-            return undefined;
-        };
 
         // Priority list of spectate targets.
         const spectateTargets = [
-            player.group?.randomPlayer(),
-            player.team?.randomPlayer(),
-            getAliveKiller(player.killedBy),
-            player.game.playerBarn.randomPlayer()
+            player.group?.randomPlayer(), // undefined if no player to choose
+            player.team?.randomPlayer(), // undefined if no player to choose
+            player.getAliveKiller(),
+            player.game.playerBarn.randomPlayer(),
         ];
 
-        const playerToSpec = spectateTargets.filter(x => x !== undefined).shift();
+        const playerToSpec = spectateTargets.filter((x) => x !== undefined).shift();
         for (const spectator of player.spectators) {
             // If all group members have died, they need to be sent a game over message instead.
-            if (player.group && player.group.allDeadOrDisconnected && player.group.players.includes(spectator)) continue;
+            if (
+                player.group &&
+                player.group.allDeadOrDisconnected &&
+                player.group.players.includes(spectator)
+            )
+                continue;
+
             // Set remaining spectators to new player.
             spectator.spectating = playerToSpec;
         }
@@ -308,7 +369,7 @@ export class GameModeManager {
 
     handlePlayerDeath(player: Player, params: DamageParams): void {
         switch (this.mode) {
-            case GameMode.Solo:{
+            case GameMode.Solo: {
                 player.rank = this.aliveCount();
                 return player.kill(params);
             }
@@ -331,8 +392,9 @@ export class GameModeManager {
                         }
                         player.rank = 0;
                         player.kill(params);
-                        //special case that only happens when the player has self_revive since the teammates wouldnt have previously been finished off
-                        if (group.checkAllDowned(player)) {
+                        // special case that only happens when the player has self_revive since the teammates wouldnt have previously been finished off
+                        if (group.checkAllDowned(player) && !group.checkSelfRevive()) {
+                            // don't kill teammates if any one has self revive
                             group.killAllTeammates();
                         }
                         return;
@@ -378,7 +440,7 @@ export class GameModeManager {
                         }
 
                         player.kill(params);
-                        //special case that only happens when the player has self_revive since the teammates wouldnt have previously been finished off
+                        // special case that only happens when the player has self_revive since the teammates wouldnt have previously been finished off
                         if (team.checkAllDowned(player)) {
                             team.killAllTeammates();
                         }

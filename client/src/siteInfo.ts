@@ -1,40 +1,14 @@
 import $ from "jquery";
 import { MapDefs } from "../../shared/defs/mapDefs";
-import { TeamMode } from "../../shared/gameConfig";
+import { TeamModeToString } from "../../shared/defs/types/misc";
+import type { Info } from "../../shared/types/api";
 import { api } from "./api";
 import type { ConfigManager } from "./config";
 import { device } from "./device";
 import type { Localization } from "./ui/localization";
 
-interface Info {
-    country: string;
-    gitRevision: string;
-    modes: Array<{
-        mapName: string;
-        teamMode: TeamMode;
-        enabled: boolean;
-    }>;
-    pops: Record<
-        string,
-        {
-            playerCount: string;
-            l10n: string;
-        }
-    >;
-    youtube: {
-        name: string;
-        link: string;
-    };
-    twitch: Array<{
-        name: string;
-        viewers: number;
-        url: string;
-        img: string;
-    }>;
-}
-
 export class SiteInfo {
-    info: Info = {} as Info;
+    info = {} as Info;
     loaded = false;
 
     constructor(
@@ -61,7 +35,7 @@ export class SiteInfo {
             teamSelector.append(elm);
         }
 
-        $.ajax(siteInfoUrl).done((data, _status) => {
+        $.ajax(siteInfoUrl).done((data: Info) => {
             this.info = data || {};
             this.loaded = true;
             this.updatePageFromInfo();
@@ -69,50 +43,49 @@ export class SiteInfo {
     }
 
     getGameModeStyles() {
-        const modeTypes = {
-            [TeamMode.Solo]: "solo",
-            [TeamMode.Duo]: "duo",
-            [TeamMode.Trio]: "trio",
-            [TeamMode.Squad]: "squad",
-        };
-
         const availableModes = [];
         const modes = this.info.modes || [];
         let dropdownContainer = document.querySelector(".dropdown-buttons-1");
         const dropdownContainerTeam = document.querySelector(".dropdown-buttons-team-1");
-        if (!this.buttonsCreated){
+        if (!this.buttonsCreated) {
             for (let i = 0; i < modes.length; i++) {
                 if (i % 4 === 0) {
                     const mapNameParts = modes[i].mapName.split("_");
-                    const formattedMapName = mapNameParts.length > 1 
-                        ? mapNameParts[1].charAt(0).toUpperCase() + mapNameParts[1].slice(1) 
-                        : modes[i].mapName.substring(0,1).toUpperCase() + modes[i].mapName.substring(1);
-            
+                    const formattedMapName =
+                        mapNameParts.length > 1
+                            ? mapNameParts[1].charAt(0).toUpperCase() +
+                              mapNameParts[1].slice(1)
+                            : modes[i].mapName.substring(0, 1).toUpperCase() +
+                              modes[i].mapName.substring(1);
+
                     const newButton = document.createElement("a");
                     newButton.className = "btn-green btn-darken menu-option";
                     newButton.id = `btn-start-mode-${i}`;
                     newButton.textContent = formattedMapName;
-            
+
                     dropdownContainer?.appendChild(newButton);
-            
+
                     const newButtonTeam = document.createElement("a");
-                    newButtonTeam.className = "btn-green btn-darken menu-option team-selection";
+                    newButtonTeam.className =
+                        "btn-green btn-darken menu-option team-selection";
                     newButtonTeam.id = `btn-start-mode-team-${i}`;
                     newButtonTeam.textContent = formattedMapName;
-            
+
                     dropdownContainerTeam?.appendChild(newButtonTeam);
                 }
             }
             this.buttonsCreated = true;
         }
         for (let i = 0; i < modes.length; i++) {
-
             let button = document.getElementById(`btn-start-mode-${i}`);
             if (button) {
                 const mapNameParts = modes[i].mapName.split("_");
-                const formattedMapName = mapNameParts.length > 1 
-                    ? mapNameParts[1].charAt(0).toUpperCase() + mapNameParts[1].slice(1) 
-                    : modes[i].mapName.substring(0,1).toUpperCase() + modes[i].mapName.substring(1);
+                const formattedMapName =
+                    mapNameParts.length > 1
+                        ? mapNameParts[1].charAt(0).toUpperCase() +
+                          mapNameParts[1].slice(1)
+                        : modes[i].mapName.substring(0, 1).toUpperCase() +
+                          modes[i].mapName.substring(1);
 
                 button.innerHTML = `${formattedMapName}`;
             }
@@ -120,17 +93,22 @@ export class SiteInfo {
             button = document.getElementById(`btn-start-mode-team-${i}`);
             if (button) {
                 const mapNameParts = modes[i].mapName.split("_");
-                const formattedMapName = mapNameParts.length > 1 
-                    ? mapNameParts[1].charAt(0).toUpperCase() + mapNameParts[1].slice(1) 
-                    : modes[i].mapName.substring(0,1).toUpperCase() + modes[i].mapName.substring(1);
+                const formattedMapName =
+                    mapNameParts.length > 1
+                        ? mapNameParts[1].charAt(0).toUpperCase() +
+                          mapNameParts[1].slice(1)
+                        : modes[i].mapName.substring(0, 1).toUpperCase() +
+                          modes[i].mapName.substring(1);
 
                 button.innerHTML = `${formattedMapName}`;
             }
 
             const mode = modes[i];
-            const mapDef = (MapDefs[mode.mapName as keyof typeof MapDefs] || MapDefs.main).desc;
-            const buttonText = mapDef.buttonText ? mapDef.buttonText : modeTypes[mode.teamMode];
-
+            const mapDef = (MapDefs[mode.mapName as keyof typeof MapDefs] || MapDefs.main)
+                .desc;
+            const buttonText = mapDef.buttonText
+                ? mapDef.buttonText
+                : TeamModeToString[mode.teamMode];
             availableModes.push({
                 icon: mapDef.icon,
                 buttonCss: mapDef.buttonCss,
@@ -184,10 +162,10 @@ export class SiteInfo {
                     }
                 }
 
-                if (!style.enabled) {
-                    btn.addClass("btn-disabled-main");
-                }
+                btn.toggle(style.enabled);
             }
+            const supportsTeam = this.info.modes.some((s) => s.enabled && s.teamMode > 1);
+            $("#btn-join-team, #btn-create-team").toggle(supportsTeam);
 
             // Region pops
             const pops = this.info.pops;

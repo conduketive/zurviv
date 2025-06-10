@@ -1,10 +1,15 @@
 import { util } from "../../utils/util";
 import type { MapDef } from "../mapDefs";
+import type { PartialMapDef } from "./baseDefs";
 import { Potato } from "./potatoDefs";
 
-const mapDef = {
+const mapDef: PartialMapDef = {
     assets: {
         audio: [
+            { name: "pumpkin_break_01", channel: "sfx" },
+            { name: "potato_01", channel: "sfx" },
+            { name: "potato_02", channel: "sfx" },
+            { name: "potato_pickup_01", channel: "ui" },
             { name: "club_music_01", channel: "ambient" },
             { name: "club_music_02", channel: "ambient" },
             {
@@ -13,20 +18,38 @@ const mapDef = {
             },
             { name: "log_11", channel: "sfx" },
             { name: "log_12", channel: "sfx" },
+            { name: "egg_hit_01", channel: "hits" },
+            { name: "egg_break_01", channel: "sfx" },
         ],
-        atlases: ["gradient", "loadout", "shared", "main"],
+        atlases: ["gradient", "loadout", "shared", "main", "potato"],
     },
     biome: {
         colors: {
-            background: 2118510,
-            water: 3310251,
-            waterRipple: 11792639,
-            beach: 14458408,
-            riverbank: 10711321,
-            grass: 6460706,
-            underground: 1772803,
-            playerSubmerge: 2854052,
+            background: 0x20536e,
+            water: 0x3282ab,
+            waterRipple: 0xb3f0ff,
+            beach: 0xf4ae48,
+            riverbank: 0x8a8a8a,
+            grass: 0x5c910a,
+            underground: 0x1b0d03,
+            playerSubmerge: 0x2b8ca4,
+            playerGhillie: 0x5b8e0a,
         },
+        particles: {
+            camera: "falling_leaf_potato",
+        },
+    },
+    lootTable: {
+        tier_chrys_case: [
+            { name: "", count: 1, weight: 2 }, // ?
+            { name: "helmet03_moon", count: 1, weight: 3 },
+            { name: "tier_katanas", count: 1, weight: 3 }, // ?
+            { name: "naginata", count: 1, weight: 1 }, // ?
+        ],
+        tier_airdrop_outfits: [
+            { name: "", count: 1, weight: 4 },
+            { name: "outfitAirdrop", count: 1, weight: 1 },
+        ],
     },
     /* STRIP_FROM_PROD_CLIENT:START */
     mapGen: {
@@ -40,8 +63,19 @@ const mapDef = {
                 crate_03: 8,
                 bush_01: 78,
                 cache_06: 12,
-                tree_01: 320,
+                tree_07sp: 300,
+                tree_08sp: 30,
+                tree_08spb: 30,
+                tree_07spr: 160,
+                tree_08spr: 80,
                 hedgehog_01: 24,
+                potato_01: 50,
+                potato_02: 50,
+                potato_03: 50,
+                egg_01: 15,
+                egg_02: 15,
+                egg_03: 15,
+                egg_04: 15,
                 container_01: 5,
                 container_02: 5,
                 container_03: 5,
@@ -54,39 +88,16 @@ const mapDef = {
         ],
         fixedSpawns: [
             {
-                warehouse_01: 2,
-                house_red_01: { small: 3, large: 4 },
-                house_red_02: { small: 3, large: 4 },
-                barn_01: { small: 1, large: 3 },
-                barn_02: 1,
-                hut_01: 3,
-                hut_02: 1,
-                hut_03: 1,
-                shack_03a: 2,
-                shack_03b: { small: 2, large: 3 },
-                greenhouse_01: 1,
-                cache_01: 1,
-                cache_02: 1,
-                cache_07: 1,
-                bunker_structure_01: { odds: 0.05 },
-                bunker_structure_02: 1,
-                bunker_structure_03: 1,
-                bunker_structure_04: 1,
-                bunker_structure_05: 1,
-                warehouse_complex_01: 1,
-                chest_01: 1,
-                chest_03: { odds: 0.2 },
-                mil_crate_02: { odds: 0.25 },
-                tree_02: 3,
-                teahouse_complex_01su: {
-                    small: 1,
-                    large: 2,
-                },
-                stone_04: 1,
-                club_complex_01: 1,
+                ...Potato.mapGen.fixedSpawns[0],
+                cache_02: 0,
+                cache_02sp: 1,
             },
         ],
-        spawnReplacements: [{ bush_01: "bush_01f", tree_01: "tree_08su" }],
+        spawnReplacements: [
+            {
+                tree_01: "tree_07sp",
+            },
+        ],
     },
     /* STRIP_FROM_PROD_CLIENT:END */
 };

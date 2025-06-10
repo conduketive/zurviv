@@ -5,7 +5,7 @@ export function isBanned(ip: string): boolean {
     const encodedIP = encodeIP(ip);
     console.log({
         ip,
-        encodedIP
-    })
+        encodedIP,
+    });
     return bannedIPs.includes(encodedIP);
-};
+}

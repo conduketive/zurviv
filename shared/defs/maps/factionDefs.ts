@@ -2,15 +2,21 @@ import { GameConfig } from "../../gameConfig";
 import { util } from "../../utils/util";
 import { v2 } from "../../utils/v2";
 import type { MapDef } from "../mapDefs";
-import { Main } from "./baseDefs";
+import { Main, type PartialMapDef } from "./baseDefs";
 
 export enum TeamColor {
-    // NONE = 0, //can be used ambiguously with code that runs the same regardless of team color
+    // NONE = 0, // can be used ambiguously with code that runs the same regardless of team color
     Red = 1,
     Blue = 2,
 }
 
-const mapDef = {
+export const SpecialAirdropConfig = {
+    startCircle: 1,
+    endCircle: 3,
+    aliveCountThreshold: 0.2,
+};
+
+const mapDef: PartialMapDef = {
     mapId: 3,
     desc: {
         name: "50v50",
@@ -81,15 +87,15 @@ const mapDef = {
     },
     biome: {
         colors: {
-            background: 333348,
-            water: 465718,
-            waterRipple: 11792639,
-            beach: 9328178,
-            riverbank: 6632211,
-            grass: 5136680,
-            underground: 1772803,
-            playerSubmerge: 1192009,
-            playerGhillie: 5005348,
+            background: 0x51624,
+            water: 0x71b36,
+            waterRipple: 0xb3f0ff,
+            beach: 0x8e5632,
+            riverbank: 0x653313,
+            grass: 0x4e6128,
+            underground: 0x1b0d03,
+            playerSubmerge: 0x123049,
+            playerGhillie: 0x4c6024,
         },
     },
     gameMode: {

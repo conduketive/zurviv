@@ -1,9 +1,13 @@
 import { util } from "../../utils/util";
 import { v2 } from "../../utils/v2";
 import type { MapDef } from "../mapDefs";
+import type { PartialMapDef } from "./baseDefs";
 import { Woods } from "./woodsDefs";
 
-const mapDef = {
+const mapDef: PartialMapDef = {
+    desc: {
+        buttonCss: "btn-woods-spring-mode",
+    },
     assets: {
         audio: [
             { name: "vault_change_02", channel: "sfx" },
@@ -20,23 +24,31 @@ const mapDef = {
     },
     biome: {
         colors: {
-            background: 2118510,
-            water: 3310251,
-            waterRipple: 11792639,
-            beach: 15709019,
-            riverbank: 9079434,
-            grass: 4351497,
-            underground: 1772803,
-            playerSubmerge: 2854052,
+            background: 0x20536e,
+            water: 0x3282ab,
+            waterRipple: 0xb3f0ff,
+            beach: 0xefb35b,
+            riverbank: 0x8a8a8a,
+            grass: 0x426609,
+            underground: 0x1b0d03,
+            playerSubmerge: 0x2b8ca4,
+            playerGhillie: 0x41630a,
         },
         sound: { riverShore: "stone" },
         particles: { camera: "falling_leaf_spring" },
     },
     /* STRIP_FROM_PROD_CLIENT:START */
     lootTable: {
+        // this override is not from the leak!
+        tier_chrys_case: [
+            { name: "", count: 1, weight: 2 }, // ?
+            { name: "helmet03_moon", count: 1, weight: 3 },
+            { name: "tier_katanas", count: 1, weight: 3 }, // ?
+            { name: "naginata", count: 1, weight: 1 }, // ?
+        ],
         tier_ghillie: [
             {
-                name: "outfitSpringGhillie",
+                name: "outfitGhillie",
                 count: 1,
                 weight: 1,
             },
@@ -71,9 +83,9 @@ const mapDef = {
                 outhouse_01: 3,
                 loot_tier_1: 36,
                 loot_tier_beach: 12,
-                tree_08sp: 408,
-                tree_08spb: 128,
-                tree_07sp: 1380,
+                tree_08sp: 350,
+                tree_08spb: 100,
+                tree_07sp: 1200,
                 tree_07spr: 106,
                 tree_08spr: 53,
                 tree_09: 60,
@@ -83,11 +95,13 @@ const mapDef = {
             {
                 logging_complex_01sp: 1,
                 logging_complex_02sp: 1,
+                logging_complex_03sp: 3,
+                teapavilion_01w: 1,
                 warehouse_01: { small: 3, large: 4 },
                 house_red_01: { small: 3, large: 4 },
                 barn_01: { small: 3, large: 4 },
                 cache_01: 1,
-                cache_02: 1,
+                cache_02sp: 1,
                 bunker_structure_01b: 1,
                 bunker_structure_03: 1,
                 bunker_structure_07: 1,
@@ -95,7 +109,6 @@ const mapDef = {
                 stone_04: { small: 6, large: 8 },
                 tree_02: { small: 6, large: 8 },
                 teahouse_01: { small: 2, large: 3 },
-                teapavilion_01w: 1,
             },
         ],
         spawnReplacements: [
@@ -106,6 +119,8 @@ const mapDef = {
                 crate_02: "crate_19",
                 crate_08: "crate_19",
                 crate_09: "crate_19",
+                recorder_01: "recorder_08",
+                recorder_02: "recorder_09",
             },
         ],
         importantSpawns: [

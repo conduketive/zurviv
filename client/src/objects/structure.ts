@@ -13,10 +13,15 @@ import { math } from "../../../shared/utils/math";
 import { type Vec2, v2 } from "../../../shared/utils/v2";
 import type { Ambiance } from "../ambiance";
 import type Camera from "../camera";
-import { renderBridge, renderMapBuildingBounds, renderWaterEdge } from "../debugHelpers";
+import type { DebugOptions } from "../config";
+import {
+    renderBridge,
+    renderMapBuildingBounds,
+    renderMapObstacleBounds,
+    renderWaterEdge,
+} from "../debugHelpers";
 import { debugLines } from "../debugLines";
-import { device } from "../device";
-import type { Ctx, DebugOptions } from "../game";
+import type { Ctx } from "../game";
 import type { Map } from "../map";
 import type { ObjectData, ObjectType } from "./../../../shared/net/objectSerializeFns";
 import type { AbstractObject, Player } from "./player";
@@ -59,13 +64,13 @@ export class Structure implements AbstractObject {
 
     mask!: AABBWithHeight[];
 
-    init() {
+    m_init() {
         this.soundTransitionT = 0;
     }
 
-    free() {}
+    m_free() {}
 
-    updateData(
+    m_updateData(
         data: ObjectData<ObjectType.Structure>,
         fullUpdate: boolean,
         isNew: boolean,
@@ -160,8 +165,8 @@ export class Structure implements AbstractObject {
 
     updateInteriorSounds(dt: number, map: Map, activePlayer: Player, ambience: Ambiance) {
         const def = MapObjectDefs[this.type] as StructureDef;
-        collider.createCircle(activePlayer.pos, 0.001);
-        map.buildingPool.getPool();
+        collider.createCircle(activePlayer.m_pos, 0.001);
+        map.m_buildingPool.m_getPool();
         const building0 =
             this.layers.length > 0 ? map.getBuildingById(this.layers[0].objId) : null;
         const building1 =
@@ -186,7 +191,7 @@ export class Structure implements AbstractObject {
             if (building0) {
                 // Play the filtered sound when we can't see inside the building,
                 // and reduce the volume based on distance from the building.
-                const dist = building0.getDistanceToBuilding(activePlayer.pos, maxDist);
+                const dist = building0.getDistanceToBuilding(activePlayer.m_pos, maxDist);
                 const weight = math.remap(dist, maxDist, 0, 0, 1);
                 const onStairs = activePlayer.layer & 2;
                 const visionT = building0.ceiling.fadeAlpha;
@@ -197,7 +202,7 @@ export class Structure implements AbstractObject {
             // Immediately play the filtered track at  full weight when
             // going underground; the filter and reverb effects delay the sound
             // slightly which ends up sounding okay without a crossfade.
-            const dist = building1.getDistanceToBuilding(activePlayer.pos, maxDist);
+            const dist = building1.getDistanceToBuilding(activePlayer.m_pos, maxDist);
             const weight = math.remap(dist, maxDist, 0, 0, 1);
             weight0 = 0;
             weight1 = weight * undergroundVol;
@@ -241,21 +246,24 @@ export class Structure implements AbstractObject {
     }
 
     render(_camera: Camera, debug: DebugOptions, _layer: number) {
-        if (device.debug) {
-            if (debug.structures?.bounds) {
-                renderMapBuildingBounds(this);
-            }
-            if (debug?.bridge) {
-                renderBridge(this);
-            }
-            if (debug.structures?.waterEdge) {
-                renderWaterEdge(this);
-            }
-            if (debug.structures?.stairs) {
-                for (let i = 0; i < this.stairs.length; i++) {
-                    debugLines.addCollider(this.stairs[i].downAabb, 0x0000ff, 0);
-                    debugLines.addCollider(this.stairs[i].upAabb, 0x00ff00, 0);
-                }
+        if (!IS_DEV) return; // only debug rendering code here
+
+        if (debug.render.structures.buildingBounds) {
+            renderMapBuildingBounds(this);
+        }
+        if (debug.render.structures.obstacleBounds) {
+            renderMapObstacleBounds(this);
+        }
+        if (debug.render.structures.bridge) {
+            renderBridge(this);
+        }
+        if (debug.render.structures.waterEdge) {
+            renderWaterEdge(this);
+        }
+        if (debug.render.structures.stairs) {
+            for (let i = 0; i < this.stairs.length; i++) {
+                debugLines.addCollider(this.stairs[i].downAabb, 0x0000ff, 0);
+                debugLines.addCollider(this.stairs[i].upAabb, 0x00ff00, 0);
             }
         }
     }

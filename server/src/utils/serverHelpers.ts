@@ -1,5 +1,17 @@
+import { isIP } from "net";
+import type { Context } from "hono";
+import {
+    DataSet,
+    RegExpMatcher,
+    englishDataset,
+    englishRecommendedTransformers,
+    pattern,
+} from "obscenity";
+import ProxyCheck, { type IPAddressInfo } from "proxycheck-ts";
 import type { HttpRequest, HttpResponse } from "uWebSockets.js";
+import { Constants } from "../../../shared/net/net";
 import { Config } from "../config";
+import { defaultLogger } from "./logger";
 
 /**
  * Apply CORS headers to a response.
@@ -16,8 +28,21 @@ export function cors(res: HttpResponse): void {
         .writeHeader("Access-Control-Max-Age", "3600");
 }
 
+export function getHonoIp(c: Context, proxyHeader?: string): string | undefined {
+    const ip = proxyHeader
+        ? c.req.header(proxyHeader)
+        : c.env?.incoming?.socket?.remoteAddress;
+
+    if (!ip || isIP(ip) == 0) return undefined;
+    if (ip.includes("::ffff:")) return ip.split("::ffff:")[1];
+    return ip;
+}
+
 export function forbidden(res: HttpResponse): void {
-    res.writeStatus("403 Forbidden").end("403 Forbidden");
+    res.cork(() => {
+        if (res.aborted) return;
+        res.writeStatus("403 Forbidden").end("403 Forbidden");
+    });
 }
 
 export function returnJson(res: HttpResponse, data: Record<string, unknown>): void {
@@ -79,22 +104,71 @@ export function readPostedJSON<T>(
     res.onAborted(err);
 }
 
-// credits: https://github.com/Blank-Cheque/Slurs
-const badWordsFilter = [
-    /(s[a4]nd)?n[ila4o10íĩî|!][gq]{1,2}(l[e3]t|[e3]r|[a4]|n[o0]g)?s?/,
-    /f[a@4](g{1,2}|qq)([e3i1líĩî|!o0]t{1,2}(ry|r[i1líĩî|!]e)?)?/,
-    /k[il1y]k[e3](ry|rie)?s?/,
-    /tr[a4]n{1,2}([i1líĩî|!][e3]|y|[e3]r)s?/,
-    /c[o0]{2}ns?/,
-    /ch[i1líĩî|!]nks?/,
-];
+const badWordsdataSet = new DataSet<{ originalWord: string }>()
+    .addAll(englishDataset)
+    .removePhrasesIf((phrase) => {
+        // if you really think "shit" is a bad word worth censoring i cant take you seriously
+        return phrase.metadata?.originalWord === "shit";
+    })
+    .addPhrase((phrase) =>
+        // https://github.com/jo3-l/obscenity/blob/9564653e9f8563e178cd0790ccf256dc2b610494/src/preset/english.ts#L269 only matches it without the "a"??
+        phrase
+            .setMetadata({ originalWord: "faggot" })
+            .addPattern(pattern`faggot`),
+    )
+    .addPhrase((phrase) =>
+        phrase.setMetadata({ originalWord: "hitler" }).addPattern(pattern`hitler`),
+    )
+    .addPhrase((phrase) =>
+        phrase
+            .setMetadata({ originalWord: "kill yourself" })
+            .addPattern(pattern`|kys|`)
+            .addPattern(pattern`kill yourself`)
+            .addPattern(pattern`hang yourself`)
+            .addPattern(pattern`unalive yourself`),
+    );
+
+const matcher = new RegExpMatcher({
+    ...badWordsdataSet.build(),
+    ...englishRecommendedTransformers,
+});
 
 export function checkForBadWords(name: string) {
-    name = name.toLowerCase();
-    for (const regex of badWordsFilter) {
-        if (name.match(regex)) return true;
-    }
-    return false;
+    return matcher.hasMatch(name);
+}
+
+const allowedCharsRegex =
+    /[^A-Za-z 0-9 \.,\?""!@#\$%\^&\*\(\)-_=\+;:<>\/\\\|\}\{\[\]`~]*/g;
+
+export function validateUserName(name: string): {
+    originalWasInvalid: boolean;
+    validName: string;
+} {
+    const defaultName = "Player";
+
+    if (!name || typeof name !== "string")
+        return {
+            originalWasInvalid: true,
+            validName: defaultName,
+        };
+
+    name = name
+        .trim()
+        .substring(0, Constants.PlayerNameMaxLen)
+        // remove extended ascii etc
+        .replace(allowedCharsRegex, "")
+        .trim();
+
+    if (!name.length || checkForBadWords(name))
+        return {
+            originalWasInvalid: true,
+            validName: defaultName,
+        };
+
+    return {
+        originalWasInvalid: false,
+        validName: name,
+    };
 }
 
 const textDecoder = new TextDecoder();
@@ -102,13 +176,13 @@ const textDecoder = new TextDecoder();
 /**
  * Get an IP from an uWebsockets HTTP response
  */
-export function getIp(res: HttpResponse, req?: HttpRequest) {
-    const ip = textDecoder.decode(res.getRemoteAddressAsText());
-    const proxyIp = textDecoder.decode(res.getProxiedRemoteAddressAsText());
-    const headerIp = req ? req.getHeader("x-real-ip") || req.getHeader("x-forwarded-for") : "";
+export function getIp(res: HttpResponse, req: HttpRequest, proxyHeader?: string) {
+    const ip = proxyHeader
+        ? req.getHeader(proxyHeader.toLowerCase())
+        : textDecoder.decode(res.getRemoteAddressAsText());
 
-    // proxy ip should be an empty string when not proxied
-    return headerIp || proxyIp || ip;
+    if (!ip || isIP(ip) == 0) return undefined;
+    return ip;
 }
 
 // modified version of https://github.com/uNetworking/uWebSockets.js/blob/master/examples/RateLimit.js
@@ -241,5 +315,151 @@ export class HTTPRateLimit {
         } else {
             return ++ipData.count > this.limit;
         }
+    }
+}
+
+const proxyCheck = Config.secrets.PROXYCHECK_KEY
+    ? new ProxyCheck({
+          api_key: Config.secrets.PROXYCHECK_KEY,
+      })
+    : undefined;
+
+const proxyCheckCache = new Map<
+    string,
+    {
+        info: IPAddressInfo;
+        expiresAt: number;
+    }
+>();
+
+export async function isBehindProxy(ip: string): Promise<boolean> {
+    if (!proxyCheck) return false;
+
+    let info: IPAddressInfo | undefined = undefined;
+    const cached = proxyCheckCache.get(ip);
+    if (cached && cached.expiresAt > Date.now()) {
+        info = cached.info;
+    }
+    if (!info) {
+        try {
+            const proxyRes = await proxyCheck.checkIP(ip);
+            switch (proxyRes.status) {
+                case "ok":
+                case "warning":
+                    info = proxyRes[ip];
+                    if (proxyRes.status === "warning") {
+                        defaultLogger.warn(`ProxyCheck warning, res:`, proxyRes);
+                    }
+                    break;
+                case "denied":
+                case "error":
+                    defaultLogger.error(`Failed to check for ip ${ip}:`, proxyRes);
+                    break;
+            }
+        } catch (error) {
+            defaultLogger.error(`Proxycheck error:`, error);
+            return true;
+        }
+    }
+    if (!info) {
+        return true;
+    }
+    proxyCheckCache.set(ip, {
+        info,
+        expiresAt: Date.now() + 60 * 60 * 24, // a day
+    });
+
+    return info.proxy === "yes" || info.vpn === "yes";
+}
+
+export async function verifyTurnsStile(token: string, ip: string): Promise<boolean> {
+    const url = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
+    const result = await fetch(url, {
+        body: JSON.stringify({
+            secret: Config.secrets.TURNSTILE_SECRET_KEY,
+            response: token,
+            remoteip: ip,
+        }),
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+
+    const outcome = await result.json();
+
+    if (!outcome.success) {
+        return false;
+    }
+    return true;
+}
+
+export async function fetchApiServer<
+    Body extends object = object,
+    Res extends object = object,
+>(route: string, body: Body): Promise<Res | undefined> {
+    const url = `${Config.gameServer.apiServerUrl}/${route}`;
+
+    try {
+        const res = await fetch(url, {
+            method: "post",
+            headers: {
+                "content-type": "application/json",
+                "survev-api-key": Config.secrets.SURVEV_API_KEY,
+            },
+            body: JSON.stringify(body),
+            signal: AbortSignal.timeout(5000),
+        });
+
+        if (res.ok) {
+            return res as Res;
+        }
+
+        defaultLogger.warn(
+            `Error fetching API server ${route}`,
+            res.status,
+            res.statusText,
+        );
+    } catch (err) {
+        defaultLogger.error(`Error fetching API server ${route}`, err);
+    }
+
+    return undefined;
+}
+
+export async function logErrorToWebhook(from: "server" | "client", ...messages: any[]) {
+    if (!Config.errorLoggingWebhook) return;
+
+    try {
+        const msg = messages
+            .map((msg) => {
+                if (msg instanceof Error) {
+                    return `\`\`\`${msg.cause}\n${msg.stack}\`\`\``;
+                }
+                if (typeof msg == "object") {
+                    return `\`\`\`json\n${JSON.stringify(msg, null, 2)}\`\`\``;
+                }
+                return `\`${msg}\``;
+            })
+            .join("\n");
+
+        let content = `Error from: \`${from}\`
+Region: \`${Config.gameServer.thisRegion}\`
+Timestamp: \`${new Date().toISOString()}\`
+`;
+        content += msg;
+
+        await fetch(Config.errorLoggingWebhook, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                content,
+            }),
+        });
+    } catch (err) {
+        // dont use defaultLogger.error here to not log it recursively :)
+        console.error("Failed to log error to webhook", err);
     }
 }

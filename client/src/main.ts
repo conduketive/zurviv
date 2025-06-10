@@ -2,6 +2,12 @@ import $ from "jquery";
 import * as PIXI from "pixi.js-legacy";
 import { GameConfig } from "../../shared/gameConfig";
 import * as net from "../../shared/net/net";
+import type {
+    FindGameBody,
+    FindGameError,
+    FindGameMatchData,
+    FindGameResponse,
+} from "../../shared/types/api";
 import { math } from "../../shared/utils/math";
 import { Account } from "./account";
 import { Ambiance } from "./ambiance";
@@ -9,12 +15,15 @@ import { api } from "./api";
 import { AudioManager } from "./audioManager";
 import { ConfigManager, type ConfigType } from "./config";
 import { device } from "./device";
+import { errorLogManager } from "./errorLogs";
 import { Game } from "./game";
 import { helpers } from "./helpers";
 import { InputHandler } from "./input";
 import { InputBindUi, InputBinds } from "./inputBinds";
 import { PingTest } from "./pingTest";
+import { proxy } from "./proxy";
 import { ResourceManager } from "./resources";
+import { SDK } from "./sdk";
 import { SiteInfo } from "./siteInfo";
 import { LoadoutMenu } from "./ui/loadoutMenu";
 import { Localization } from "./ui/localization";
@@ -26,18 +35,9 @@ import { ProfileUi } from "./ui/profileUi";
 import { TeamMenu } from "./ui/teamMenu";
 import { loadStaticDomImages } from "./ui/ui2";
 
-export interface MatchData {
-    zone: string;
-    gameId: number;
-    useHttps: boolean;
-    hosts: string[];
-    addrs: string[];
-    data: string;
-}
-
 class Application {
     nameInput = $("#player-name-input-solo");
-    serverSelect = $("#server-select-main");    
+    serverSelect = $("#server-select-main");
     muteBtns = $(".btn-sound-toggle");
     aimLineBtn = $("#btn-game-aim-line");
     masterSliders = $<HTMLInputElement>(".sl-master-volume");
@@ -51,6 +51,7 @@ class Application {
     playLoading = $(".play-loading-outer");
     errorModal = new MenuModal($("#modal-notification"));
     refreshModal = new MenuModal($("#modal-refresh"));
+    ipBanModal = new MenuModal($("#modal-ip-banned"));
     config = new ConfigManager();
     localization = new Localization();
 
@@ -102,7 +103,7 @@ class Application {
             this.loadoutMenu,
             this.errorModal,
         );
-        this.siteInfo = new SiteInfo(false, this.config, this.localization, );
+        this.siteInfo = new SiteInfo(false, this.config, this.localization);
 
         this.teamMenu = new TeamMenu(
             this.config,
@@ -123,7 +124,8 @@ class Application {
         this.loadBrowserDeps(onLoadComplete);
     }
 
-    loadBrowserDeps(onLoadCompleteCb: () => void) {
+    async loadBrowserDeps(onLoadCompleteCb: () => void) {
+        await SDK.init();
         onLoadCompleteCb();
     }
 
@@ -135,9 +137,10 @@ class Application {
             if (device.mobile) {
                 Menu.applyMobileBrowserStyling(device.tablet);
             }
-            const t = this.config.get("language") || this.localization.detectLocale();
-            this.config.set("language", t);
-            this.localization.setLocale(t);
+            const language =
+                this.config.get("language") || this.localization.detectLocale();
+            this.config.set("language", language);
+            this.localization.setLocale(language);
             this.localization.populateLanguageSelect();
             this.startPingTest();
             this.siteInfo.load();
@@ -147,40 +150,46 @@ class Application {
             (this.nameInput as unknown as HTMLInputElement).maxLength =
                 net.Constants.PlayerNameMaxLen;
 
-                window.onload = () => {
+            window.onload = () => {
                 let modes = this.siteInfo.info.modes;
                 const modeOptions: Record<string, number> = {};
                 if (modes) {
                     for (let i = 0; i < modes.length; i++) {
                         if (i % 4 === 0) {
                             const mapNameParts = modes[i].mapName.split("_");
-                            const formattedMapName = mapNameParts.length > 1 
-                                ? mapNameParts[1].charAt(0).toUpperCase() + mapNameParts[1].slice(1) 
-                                : modes[i].mapName.substring(0,1).toUpperCase() + modes[i].mapName.substring(1);
+                            const formattedMapName =
+                                mapNameParts.length > 1
+                                    ? mapNameParts[1].charAt(0).toUpperCase() +
+                                      mapNameParts[1].slice(1)
+                                    : modes[i].mapName.substring(0, 1).toUpperCase() +
+                                      modes[i].mapName.substring(1);
 
                             modeOptions[formattedMapName] = i;
                         }
                     }
-                } 
+                }
                 const teamOptions: Record<string, number> = {
-                    "Solo": 0,
-                    "Duo": 1,
-                    "Trio": 2,
-                    "Squad": 3,
+                    Solo: 0,
+                    Duo: 1,
+                    Trio: 2,
+                    Squad: 3,
                 };
-            
-                function updateButtonText(buttonId: string, selectedButton: HTMLElement): void {
+
+                function updateButtonText(
+                    buttonId: string,
+                    selectedButton: HTMLElement,
+                ): void {
                     const button = document.getElementById(buttonId);
                     if (!button) return;
-            
+
                     button.className = selectedButton.className;
-            
+
                     if (selectedButton.style.backgroundImage) {
-                        button.style.backgroundImage = selectedButton.style.backgroundImage;
-                    }  else button.style.backgroundImage = "";
+                        button.style.backgroundImage =
+                            selectedButton.style.backgroundImage;
+                    } else button.style.backgroundImage = "";
                     if (button.id === "dropdown-main-button-1") {
                         button.innerHTML = `Game Mode: ${selectedButton.innerText} | ▼`;
-            
 
                         if (selectedButton.innerText.trim() === "Faction") {
                             blockTeamMode();
@@ -191,17 +200,21 @@ class Application {
                         button.innerHTML = `Team Mode: ${selectedButton.innerText} | ▼`;
                     }
                 }
-            
-                function setupDropdown(mainButtonId: string, dropdownClass: string, containerId: string): void {
+
+                function setupDropdown(
+                    mainButtonId: string,
+                    dropdownClass: string,
+                    containerId: string,
+                ): void {
                     const mainButton = $(`#${mainButtonId}`);
                     const dropdown = $(`.${dropdownClass}`);
-            
+
                     mainButton.click((event) => {
                         event.stopPropagation();
                         $(".dropdown-menu").not(dropdown).hide();
                         dropdown.toggle();
                     });
-            
+
                     $(document).click((event) => {
                         if (!$(event.target).closest(`#${containerId}`).length) {
                             dropdown.hide();
@@ -214,46 +227,69 @@ class Application {
                             dropdown.hide();
                         }
                     });
-            
+
                     dropdown.addClass("dropdown-menu");
                 }
-            
-                function getSelectedValue(buttonId: string, options: Record<string, number>): number {
+
+                function getSelectedValue(
+                    buttonId: string,
+                    options: Record<string, number>,
+                ): number {
                     const selectedText = $(`#${buttonId}`).text().trim().split(" ")[2];
                     return options[selectedText] || 0;
                 }
-            
+
                 function blockTeamMode(): void {
-                    $("#dropdown-main-button-2").css({ 
-                        opacity: "0.5", 
-                        pointerEvents: "none"
-                    }).text("Team Mode: Disabled | ▼");
-            
+                    $("#dropdown-main-button-2")
+                        .css({
+                            opacity: "0.5",
+                            pointerEvents: "none",
+                        })
+                        .text("Team Mode: Disabled | ▼");
+
                     $("#dropdown-container-2").hide();
                 }
-            
+
                 function unblockTeamMode(): void {
-                    $("#dropdown-main-button-2").css({ 
-                        opacity: "1", 
-                        pointerEvents: "auto"
-                    }).text("Team Mode: Select | ▼");
-            
+                    $("#dropdown-main-button-2")
+                        .css({
+                            opacity: "1",
+                            pointerEvents: "auto",
+                        })
+                        .text("Team Mode: Select | ▼");
+
                     $("#dropdown-container-2").show();
                 }
-            
-                setupDropdown("dropdown-main-button-1", "dropdown-buttons-1", "dropdown-container-1");
-                setupDropdown("dropdown-main-button-2", "dropdown-buttons-2", "dropdown-container-2");
+
+                setupDropdown(
+                    "dropdown-main-button-1",
+                    "dropdown-buttons-1",
+                    "dropdown-container-1",
+                );
+                setupDropdown(
+                    "dropdown-main-button-2",
+                    "dropdown-buttons-2",
+                    "dropdown-container-2",
+                );
                 if (modeOptions) {
                     $("#play-button-menu").click(() => {
-                        const selectedMode: number = getSelectedValue("dropdown-main-button-1", modeOptions);
-                        const selectedTeam: number = getSelectedValue("dropdown-main-button-2", teamOptions);
+                        const selectedMode: number = getSelectedValue(
+                            "dropdown-main-button-1",
+                            modeOptions,
+                        );
+                        const selectedTeam: number = getSelectedValue(
+                            "dropdown-main-button-2",
+                            teamOptions,
+                        );
                         const totalValue: number = selectedMode + selectedTeam;
-                
-                        (this as any).tryQuickStartGame(totalValue);
+
+                        SDK.requestMidGameAd(() => {
+                            (this as any).tryQuickStartGame(totalValue);
+                        });
                     });
                 }
             };
-                
+
             this.serverSelect.change(() => {
                 const t = this.serverSelect.find(":selected").val();
                 this.config.set("region", t as string);
@@ -401,8 +437,8 @@ class Application {
                 this.ambience.onGameStart();
             };
             const onQuit = (errMsg?: string) => {
-                if (this.game!.updatePass) {
-                    this.pass.scheduleUpdatePass(this.game!.updatePassDelay);
+                if (this.game!.m_updatePass) {
+                    this.pass.scheduleUpdatePass(this.game!.m_updatePassDelay);
                 }
                 this.game!.free();
                 this.errorMessage = this.localization.translate(errMsg || "");
@@ -413,6 +449,14 @@ class Application {
                 if (errMsg == "index-invalid-protocol") {
                     this.showInvalidProtocolModal();
                 }
+                if (errMsg == "rate_limited") {
+                    this.onJoinGameError(errMsg);
+                }
+                if (errMsg) {
+                    this.showErrorModal(errMsg);
+                }
+
+                SDK.gamePlayStop();
             };
             this.game = new Game(
                 this.pixi,
@@ -441,6 +485,8 @@ class Application {
             this.onConfigModified();
             this.config.addModifiedListener(this.onConfigModified.bind(this));
             loadStaticDomImages();
+
+            SDK.gameLoadComplete();
         }
     }
 
@@ -512,7 +558,7 @@ class Application {
             );
     }
 
-    onTeamMenuJoinGame(data: MatchData) {
+    onTeamMenuJoinGame(data: FindGameMatchData) {
         this.waitOnAccount(() => {
             this.joinGame(data);
         });
@@ -522,6 +568,8 @@ class Application {
         if (errTxt && errTxt != "" && window.history) {
             window.history.replaceState("", "", "/");
         }
+        this.showErrorModal(errTxt);
+
         this.errorMessage = errTxt;
         this.setDOMFromConfig();
         this.refreshUi();
@@ -536,6 +584,14 @@ class Application {
     }
 
     setDOMFromConfig() {
+        if (SDK.isAnySDK && !this.config.get("playerName")) {
+            SDK.getPlayerName().then((username) => {
+                if (!username) return;
+                this.config.set("playerName", username);
+                this.nameInput.val(username);
+            });
+        }
+
         this.nameInput.val(this.config.get("playerName")!);
         this.serverSelect.find("option").each((_i, ele) => {
             ele.selected = ele.value == this.config.get("region");
@@ -614,7 +670,6 @@ class Application {
                     : this.localization.translate(ele.data("l10n")),
             );
         };
-
     }
 
     waitOnAccount(cb: () => void) {
@@ -624,6 +679,7 @@ class Application {
             // Wait some maximum amount of time for pending account requests
             const timeout = setTimeout(() => {
                 runOnce();
+                errorLogManager.storeGeneric("account", "wait_timeout");
             }, 2500);
             const runOnce = () => {
                 cb();
@@ -637,7 +693,14 @@ class Application {
     tryJoinTeam(create: boolean, url?: string) {
         if (this.active && this.quickPlayPendingModeIdx === -1) {
             // Join team if the url contains a team address
-            const roomUrl = url || window.location.hash.slice(1);
+            let roomUrl = url || window.location.hash.slice(1);
+
+            const sdkRoom = SDK.getRoomInviteParam();
+            if (sdkRoom) {
+                roomUrl = sdkRoom;
+                create = false;
+            }
+
             if (create || roomUrl != "") {
                 // The main menu and squad menus have separate
                 // DOM elements for input, such as player name and
@@ -681,7 +744,7 @@ class Application {
                 zones = [paramZone];
             }
 
-            const matchArgs = {
+            const matchArgs: FindGameBody = {
                 version,
                 region,
                 zones,
@@ -692,9 +755,13 @@ class Application {
 
             const tryQuickStartGameImpl = () => {
                 this.waitOnAccount(() => {
-                    this.findGame(matchArgs, (err, matchData) => {
+                    this.findGame(matchArgs, (err, matchData, ban) => {
                         if (err) {
                             this.onJoinGameError(err);
+                            return;
+                        }
+                        if (ban) {
+                            this.showIpBanModal(ban);
                             return;
                         }
                         this.joinGame(matchData!);
@@ -715,31 +782,59 @@ class Application {
     }
 
     findGame(
-        matchArgs: unknown,
-        cb: (err?: string | null, matchData?: MatchData) => void,
+        matchArgs: FindGameBody,
+        cb: (
+            err?: FindGameError | null,
+            matchData?: FindGameMatchData,
+            ban?: FindGameResponse & { banned: true },
+        ) => void,
     ) {
-        (function findGameImpl(iter, maxAttempts) {
+        const findGameImpl = (iter: number, maxAttempts: number, token: string) => {
             if (iter >= maxAttempts) {
                 cb("full");
                 return;
             }
-            const retry = function () {
+            const retry = () => {
                 setTimeout(() => {
-                    findGameImpl(iter + 1, maxAttempts);
+                    helpers.verifyTurnstile(
+                        this.siteInfo.info.captchaEnabled && !this.account.loggedIn,
+                        (token) => {
+                            findGameImpl(iter + 1, maxAttempts, token);
+                        },
+                    );
                 }, 500);
             };
+            matchArgs.turnstileToken = token;
+
             $.ajax({
                 type: "POST",
                 url: api.resolveUrl("/api/find_game"),
                 data: JSON.stringify(matchArgs),
                 contentType: "application/json; charset=utf-8",
                 timeout: 10 * 1000,
-                success: function (data: { err?: string; res: [MatchData] }) {
-                    if (data?.err && data.err != "full") {
-                        cb(data.err);
+                xhrFields: {
+                    withCredentials: proxy.anyLoginSupported(),
+                },
+                success: (data: FindGameResponse) => {
+                    if (data.error === "invalid_captcha") {
+                        // captch may have failed because the enabled state has changed since site info was loaded
+                        // so force it to true
+                        this.siteInfo.info.captchaEnabled = true;
+                        retry();
                         return;
                     }
-                    const matchData = data?.res ? data.res[0] : null;
+
+                    if (data.error && data.error != "full") {
+                        cb(data.error);
+                        return;
+                    }
+
+                    if (data.banned) {
+                        cb(null, undefined, data as FindGameResponse & { banned: true });
+                        return;
+                    }
+
+                    const matchData = data.res ? data.res[0] : null;
                     if (matchData?.hosts && matchData.addrs) {
                         cb(null, matchData);
                     } else {
@@ -750,10 +845,16 @@ class Application {
                     retry();
                 },
             });
-        })(0, 2);
+        };
+        helpers.verifyTurnstile(
+            this.siteInfo.info.captchaEnabled && !this.account.loggedIn,
+            (token) => {
+                findGameImpl(0, 2, token);
+            },
+        );
     }
 
-    joinGame(matchData: MatchData) {
+    joinGame(matchData: FindGameMatchData) {
         if (!this.game) {
             setTimeout(() => {
                 this.joinGame(matchData);
@@ -769,7 +870,7 @@ class Application {
                 }`,
             );
         }
-        const joinGameImpl = (urls: string[], matchData: MatchData) => {
+        const joinGameImpl = (urls: string[], matchData: FindGameMatchData) => {
             const url = urls.shift();
             if (!url) {
                 this.onJoinGameError("join_game_failed");
@@ -789,16 +890,27 @@ class Application {
         joinGameImpl(urls, matchData);
     }
 
-    onJoinGameError(err: string) {
-        const errMap = {
+    onJoinGameError(err: FindGameError) {
+        const errMap: Partial<Record<FindGameError, string>> = {
             full: this.localization.translate("index-failed-finding-game"),
             invalid_protocol: this.localization.translate("index-invalid-protocol"),
+            invalid_captcha: this.localization.translate("index-invalid-captcha"),
             join_game_failed: this.localization.translate("index-failed-joining-game"),
+            rate_limited: this.localization.translate("index-rate-limited"),
         };
         if (err == "invalid_protocol") {
             this.showInvalidProtocolModal();
         }
-        this.errorMessage = errMap[err as keyof typeof errMap] || errMap.full;
+
+        // Forcefully set captcha to enabled if we fail the captcha
+        // This can happen if it was disabled when the page loaded which would meant it was sending an empty token
+        // And we only fetch the state when the page loads...
+        if (err === "invalid_captcha") {
+            this.siteInfo.info.captchaEnabled = true;
+        }
+        this.showErrorModal(err);
+
+        this.errorMessage = errMap[err] || errMap.full!;
         this.quickPlayPendingModeIdx = -1;
         this.teamMenu.leave("join_game_failed");
         this.refreshUi();
@@ -806,6 +918,49 @@ class Application {
 
     showInvalidProtocolModal() {
         this.refreshModal.show(true);
+    }
+
+    showIpBanModal(ban: FindGameResponse & { banned: true }) {
+        $("#modal-ip-banned-reason").text(`Reason: ${ban.reason}`);
+
+        let expiration = "Duration: indefinite";
+        if (!ban.permanent) {
+            const expiresIn = new Date(ban.expiresIn);
+            const timeLeft = expiresIn.getTime() - Date.now();
+
+            const daysLeft = Math.round(timeLeft / (1000 * 60 * 60 * 24));
+            const hoursLeft = Math.round(timeLeft / (1000 * 60 * 60));
+
+            if (daysLeft > 1) {
+                expiration = `Expires in: ${daysLeft} days`;
+            } else if (hoursLeft > 1) {
+                expiration = `Expires in: ${hoursLeft} hours`;
+            } else {
+                expiration = `Expires in: less than an hour`;
+            }
+        }
+
+        $("#modal-ip-banned-expiration").text(expiration);
+
+        this.ipBanModal.show(true);
+
+        this.quickPlayPendingModeIdx = -1;
+        this.teamMenu.leave("banned");
+        this.refreshUi();
+    }
+
+    showErrorModal(err: string) {
+        const typeText: Record<string, string> = {
+            // TODO: translate those?
+            behind_proxy: this.localization.translate("index-behind-proxy"),
+            ip_banned: `Your IP has been banned`,
+        };
+        const text = typeText[err];
+
+        if (text) {
+            this.errorModal.selector.find(".modal-body-text").html(text);
+            this.errorModal.show();
+        }
     }
 
     update() {
@@ -828,7 +983,7 @@ class Application {
         this.teamMenu.update(dt);
 
         // Game update
-        if (this.game?.initialized && this.game.playing) {
+        if (this.game?.initialized && this.game.m_playing) {
             if (this.active) {
                 this.setAppActive(false);
                 this.setPlayLockout(true);
@@ -920,7 +1075,7 @@ window.onerror = function (msg, url, lineNo, columnNo, error) {
     // Don't report the same error multiple times
     if (!reportedErrors.includes(errStr)) {
         reportedErrors.push(errStr);
-        console.error("windowOnError", errStr);
+        errorLogManager.logWindowOnError(errObj);
     }
 };
 

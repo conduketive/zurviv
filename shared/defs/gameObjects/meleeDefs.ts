@@ -114,7 +114,7 @@ const BaseDefs: Record<string, MeleeDef> = {
             sprite: "loot-weapon-fists.img",
             scale: 0.3,
             rad: 25,
-            tint: 65280,
+            tint: 0xff00,
         },
     },
     knuckles: {
@@ -1022,7 +1022,7 @@ const BaseDefs: Record<string, MeleeDef> = {
             playerHit: "crowbar_hit_01",
         },
         lootImg: {
-            sprite: "loot-melee-crowbar-recon.img",
+            sprite: "loot-melee-crowbar-scout.img",
             tint: 0xffffff,
             border: "loot-circle-outer-02.img",
             borderTint: 0xffffff,
@@ -1030,7 +1030,7 @@ const BaseDefs: Record<string, MeleeDef> = {
             rot: 0.785,
         },
         worldImg: {
-            sprite: "loot-melee-crowbar-recon.img",
+            sprite: "loot-melee-crowbar-scout.img",
             pos: {
                 x: -1,
                 y: -10,
@@ -1294,4 +1294,4 @@ const SkinDefs: Record<string, MeleeDef> = {
     }),
 };
 
-export const MeleeDefs = { ...BaseDefs, ...SkinDefs };
+export const MeleeDefs: Record<string, MeleeDef> = { ...BaseDefs, ...SkinDefs };

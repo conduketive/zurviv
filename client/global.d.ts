@@ -63,8 +63,14 @@ declare global {
         }
     >;
 
-    const GIT_VERSION: string;
-    const AIP_PLACEMENT_ID: string;
+    const IS_DEV: boolean;
+
+    const GIT_VERSION: string | undefined;
+
+    const AIP_PLACEMENT_ID: string | undefined;
+    const GAMEMONETIZE_ID: string | undefined;
+
+    const TURNSTILE_SITE_KEY: string | undefined;
 }
 
 declare module "pixi.js-legacy" {

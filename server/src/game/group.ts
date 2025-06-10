@@ -1,11 +1,12 @@
 import { GameConfig } from "../../../shared/gameConfig";
 import { util } from "../../../shared/utils/util";
+import type { Vec2 } from "../../../shared/utils/v2";
 import type { Player } from "./objects/player";
 
 export class Group {
     hash: string;
     groupId: number;
-    allDeadOrDisconnected = true; //only set to false when first player is added to the group
+    allDeadOrDisconnected = true; // only set to false when first player is added to the group
     players: Player[] = [];
     livingPlayers: Player[] = [];
     autoFill: boolean;
@@ -13,8 +14,20 @@ export class Group {
     maxPlayers: number;
     reservedSlots = 0;
 
+    totalCount = 0;
+
+    /**
+     * We update the group spawn position (where new teammates will spawn) to the leader position
+     * Every 1 second if the leader is on a valid spawn position (e.g not inside a building etc)
+     */
+    spawnPositionTicker = 0;
+    spawnPosition?: Vec2;
+
     canJoin(players: number) {
-        return this.maxPlayers - this.reservedSlots - players >= 0;
+        return (
+            this.maxPlayers - this.reservedSlots - players >= 0 &&
+            !this.allDeadOrDisconnected
+        );
     }
 
     constructor(hash: string, groupId: number, autoFill: boolean, maxPlayers: number) {
@@ -48,6 +61,7 @@ export class Group {
         player.playerStatusDirty = true;
         this.players.push(player);
         this.livingPlayers.push(player);
+        this.totalCount++;
         this.allDeadOrDisconnected = false;
         this.checkPlayers();
     }
@@ -94,6 +108,20 @@ export class Group {
                 source: p.downedBy,
             });
         }
+    }
+
+    /**
+     * checks if any players in the group have the self revive perk
+     * @returns true if any players in the group have the self revive perk
+     */
+    checkSelfRevive() {
+        const alivePlayers = this.getAlivePlayers();
+        for (const p of alivePlayers) {
+            if (p.hasPerk("self_revive")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     checkPlayers(): void {

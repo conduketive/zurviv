@@ -1,9 +1,9 @@
 import { GameConfig } from "../../gameConfig";
 import { util } from "../../utils/util";
 import type { MapDef } from "../mapDefs";
-import { Main } from "./baseDefs";
+import { Main, type PartialMapDef } from "./baseDefs";
 
-const mapDef = {
+const mapDef: PartialMapDef = {
     assets: {
         audio: [
             { name: "snowball_01", channel: "sfx" },
@@ -16,14 +16,15 @@ const mapDef = {
     },
     biome: {
         colors: {
-            background: 603705,
-            water: 806225,
-            waterRipple: 11792639,
-            beach: 13480795,
-            riverbank: 9461284,
-            grass: 12434877,
-            underground: 1772803,
-            playerSubmerge: 2854052,
+            background: 0x93639,
+            water: 0xc4d51,
+            waterRipple: 0xb3f0ff,
+            beach: 0xcdb35b,
+            riverbank: 0x905e24,
+            grass: 0xbdbdbd,
+            underground: 0x1b0d03,
+            playerSubmerge: 0x2b8ca4,
+            playerGhillie: 0xbbbbbb, // surviv never had a snow color for the ghillie at all, i checked, so keeping this value. - Leia
         },
         particles: { camera: "falling_snow_fast" },
         airdrop: {

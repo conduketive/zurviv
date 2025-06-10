@@ -1,7 +1,7 @@
 import type { Vec2 } from "../utils/v2";
 import { Main } from "./maps/baseDefs";
-import { Cobalt } from "./maps/cobaltDefs";
 import { Castle } from "./maps/castle";
+import { Cobalt } from "./maps/cobaltDefs";
 import { Desert } from "./maps/desertDefs";
 import { Faction } from "./maps/factionDefs";
 import { Gamerio } from "./maps/gamerio";
@@ -18,6 +18,21 @@ import { Woods } from "./maps/woodsDefs";
 import { WoodsSnow } from "./maps/woodsSnowDefs";
 import { WoodsSpring } from "./maps/woodsSpringDefs";
 import { WoodsSummer } from "./maps/woodsSummerDefs";
+import type { MapId } from "./types/misc";
+
+export type Atlas =
+    | "gradient"
+    | "loadout"
+    | "shared"
+    | "main"
+    | "desert"
+    | "faction"
+    | "halloween"
+    | "potato"
+    | "snow"
+    | "woods"
+    | "cobalt"
+    | "savannah";
 
 export const MapDefs = {
     main: Main,
@@ -41,10 +56,8 @@ export const MapDefs = {
     turkey: Turkey,
 } satisfies Record<string, MapDef>;
 
-export type Atlas = "gradient" | "loadout" | "shared" | "main";
-
 export interface MapDef {
-    mapId: number;
+    mapId: MapId;
     desc: {
         name: string;
         icon: string;
@@ -128,6 +141,14 @@ export interface MapDef {
                 wait: number;
             }>;
         };
+        unlocks?: {
+            timings: Array<{
+                type: string; //can either be a building with the door(s) to unlock OR the door itself, no support for structures yet
+                stagger: number; //only for buildings with multiple unlocks, will stagger the unlocks instead of doing them all at once
+                circleIdx: number;
+                wait: number;
+            }>;
+        };
         bagSizes: Record<string, number[]>;
         bleedDamage: number;
         bleedDamageMult: number;
@@ -167,9 +188,11 @@ export interface MapDef {
                 }>;
                 smoothness: number;
                 masks: Array<{
-                    pos: Vec2;
+                    pos?: Vec2;
+                    genOnShore?: boolean;
                     rad: number;
                 }>;
+                spawnCabins: boolean;
             };
         };
         places: Array<{
@@ -181,7 +204,6 @@ export interface MapDef {
             large: string;
             xlarge: string;
         };
-        riverCabins: Record<string, number>;
         customSpawnRules: {
             locationSpawns: Array<{
                 type: string;

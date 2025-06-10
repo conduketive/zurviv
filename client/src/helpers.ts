@@ -2,13 +2,15 @@ import $ from "jquery";
 import { GameObjectDefs } from "../../shared/defs/gameObjectDefs";
 import type { MeleeDef } from "../../shared/defs/gameObjects/meleeDefs";
 import type { OutfitDef } from "../../shared/defs/gameObjects/outfitDefs";
+import { MapDefs } from "../../shared/defs/mapDefs";
 import * as net from "../../shared/net/net";
 import { device } from "./device";
+
 const truncateCanvas = document.createElement("canvas");
 
-export function getParameterByName(name: string, url?: string) {
+export function getParameterByName<T extends string>(name: string, url?: string): T {
     const searchParams = new URLSearchParams(url || window.location.search);
-    return searchParams.get(name) || "";
+    return (searchParams.get(name) || "") as T;
 }
 
 export const helpers = {
@@ -29,6 +31,37 @@ export const helpers = {
             }
         }
         return "";
+    },
+    getGameModes: function () {
+        const gameModes: {
+            mapId: number;
+            desc: {
+                buttonCss: string;
+                icon: string;
+                name: string;
+            };
+        }[] = [];
+
+        // Gather unique mapIds and assosciated map descriptions from the list of maps
+        const mapKeys = Object.keys(MapDefs);
+        for (let i = 0; i < mapKeys.length; i++) {
+            const mapKey = mapKeys[i];
+            const mapDef = MapDefs[mapKey as unknown as keyof typeof MapDefs];
+            if (
+                !gameModes.find((x) => {
+                    return x.mapId == mapDef.mapId;
+                })
+            ) {
+                gameModes.push({
+                    mapId: mapDef.mapId,
+                    desc: mapDef.desc,
+                });
+            }
+        }
+        gameModes.sort((a, b) => {
+            return a.mapId - b.mapId;
+        });
+        return gameModes;
     },
     sanitizeNameInput: function (input: string) {
         let name = input.trim();
@@ -123,6 +156,20 @@ export const helpers = {
             $temp.remove();
         } catch (_e) {}
     },
+    formatTime(time: number) {
+        const minutes = Math.floor(time / 60) % 60;
+        let seconds: string | number = Math.floor(time) % 60;
+        if (seconds < 10) {
+            seconds = `0${seconds}`;
+        }
+        let timeSurv = "";
+        timeSurv += `${minutes}:`;
+        timeSurv += seconds;
+        return timeSurv;
+    },
+    emoteImgToSvg(img: string) {
+        return img && img.length > 4 ? `../img/emotes/${img.slice(0, -4)}.svg` : "";
+    },
     getSvgFromGameType: function (gameType: string) {
         const def = GameObjectDefs[gameType] as any;
         const defType = def ? def.type : "";
@@ -178,5 +225,19 @@ export const helpers = {
             return Math.floor(Math.random() * Math.pow(2, 32)).toString(16);
         }
         return r32() + r32();
+    },
+    verifyTurnstile: function (enabled: boolean, cb: (token: string) => void) {
+        if (!enabled || !window.turnstile || !TURNSTILE_SITE_KEY) {
+            cb("");
+            return;
+        }
+        window.turnstile.render("#start-turnstile-container", {
+            sitekey: TURNSTILE_SITE_KEY,
+            appearance: "interaction-only",
+            callback: (token: string) => {
+                cb(token);
+                window.turnstile.remove("#start-turnstile-container");
+            },
+        });
     },
 };

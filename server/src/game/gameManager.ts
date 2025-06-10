@@ -1,32 +1,17 @@
-import { randomBytes } from "crypto";
+import { randomUUID } from "crypto";
 import { platform } from "os";
 import NanoTimer from "nanotimer";
 import type { WebSocket } from "uWebSockets.js";
 import type { MapDefs } from "../../../shared/defs/mapDefs";
-import type { TeamMode } from "../../../shared/gameConfig";
+import * as net from "../../../shared/net/net";
 import { Config } from "../config";
-import type { FindGameBody, GameSocketData } from "../gameServer";
+import type {
+    FindGamePrivateBody,
+    GameData,
+    GameSocketData,
+    ServerGameConfig,
+} from "../utils/types";
 import { Game } from "./game";
-
-export interface ServerGameConfig {
-    readonly mapName: keyof typeof MapDefs;
-    readonly teamMode: TeamMode;
-}
-
-export interface GameData {
-    id: string;
-    teamMode: TeamMode;
-    mapName: string;
-    canJoin: boolean;
-    aliveCount: number;
-    startedTime: number;
-    stopped: boolean;
-}
-
-export interface FindGameResponse {
-    gameId: string;
-    data: string;
-}
 
 export abstract class GameManager {
     abstract sockets: Map<string, WebSocket<GameSocketData>>;
@@ -35,7 +20,7 @@ export abstract class GameManager {
 
     abstract getById(id: string): GameData | undefined;
 
-    abstract findGame(body: FindGameBody): Promise<FindGameResponse>;
+    abstract findGame(body: FindGamePrivateBody): Promise<string>;
 
     abstract onOpen(socketId: string, socket: WebSocket<GameSocketData>): void;
 
@@ -82,8 +67,6 @@ export class SingleThreadGameManager implements GameManager {
                 this.netSync();
             }, 1000 / Config.netSyncTps);
         }
-
-        this.newGame(Config.modes[0]);
     }
 
     update(): void {
@@ -115,16 +98,23 @@ export class SingleThreadGameManager implements GameManager {
     }
 
     async newGame(config: ServerGameConfig): Promise<Game> {
-        const id = randomBytes(20).toString("hex");
+        const id = randomUUID();
         const game = new Game(
             id,
             config,
             (id, data) => {
                 this.sockets.get(id)?.send(data, true, false);
             },
-            (id) => {
+            (id, reason) => {
                 const socket = this.sockets.get(id);
                 if (socket && !socket.getUserData().closed) {
+                    if (reason) {
+                        const disconnectMsg = new net.DisconnectMsg();
+                        disconnectMsg.reason = reason;
+                        const stream = new net.MsgStream(new ArrayBuffer(128));
+                        stream.serializeMsg(net.MsgType.Disconnect, disconnectMsg);
+                        socket.send(stream.getBuffer(), true, false);
+                    }
                     socket.close();
                 }
             },
@@ -139,36 +129,29 @@ export class SingleThreadGameManager implements GameManager {
         return this.gamesById.get(id);
     }
 
-    async findGame(body: FindGameBody): Promise<FindGameResponse> {
-        const config = Config.modes[body.gameModeIdx];
-
+    async findGame(body: FindGamePrivateBody): Promise<string> {
         let game = this.games
             .filter((game) => {
                 return (
                     game.canJoin &&
-                    game.teamMode === config.teamMode &&
-                    game.mapName === config.mapName
+                    game.teamMode === body.teamMode &&
+                    game.mapName === body.mapName
                 );
             })
             .sort((a, b) => {
                 return a.startedTime - b.startedTime;
             })[0];
 
-        const mode = Config.modes[body.gameModeIdx];
         if (!game) {
             game = await this.newGame({
-                teamMode: mode.teamMode,
-                mapName: mode.mapName,
+                teamMode: body.teamMode,
+                mapName: body.mapName as keyof typeof MapDefs,
             });
         }
 
-        const id = randomBytes(20).toString("hex");
-        game.addJoinToken(id, body.autoFill, body.playerCount);
+        game.addJoinTokens(body.playerData, body.autoFill);
 
-        return {
-            gameId: game.id,
-            data: id,
-        };
+        return game.id;
     }
 
     onOpen(socketId: string, socket: WebSocket<GameSocketData>): void {

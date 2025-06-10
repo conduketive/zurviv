@@ -7,6 +7,8 @@ import type { Player } from "./objects/player";
 export class Team {
     players: Player[] = [];
     livingPlayers: Player[] = [];
+    /** number of alive players once the lobby closes, only set and used after lobby close */
+    highestAliveCount = -1;
     /** even if leader becomes lone survivr, this variable remains unchanged since it's used for gameover msgs */
     leader?: Player;
     isLastManApplied = false;
@@ -70,10 +72,13 @@ export class Team {
 
     checkAndApplyLastMan() {
         if (this.isLastManApplied) return;
+
         const playersToPromote = this.livingPlayers.filter(
             (p) => !p.downed && !p.disconnected,
         );
+
         if (playersToPromote.length > 2 || this.game.canJoin) return;
+
         const last1 = playersToPromote[0];
         const last2 = playersToPromote[1];
         if (last1 && last1.role != "last_man") last1.promoteToRole("last_man");

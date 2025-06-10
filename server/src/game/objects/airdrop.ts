@@ -1,3 +1,4 @@
+import { MapObjectDefs } from "../../../../shared/defs/mapObjectDefs";
 import type { ObstacleDef } from "../../../../shared/defs/mapObjectsTyping";
 import { GameConfig } from "../../../../shared/gameConfig";
 import { ObjectType } from "../../../../shared/net/objectSerializeFns";
@@ -6,7 +7,6 @@ import { collider } from "../../../../shared/utils/collider";
 import { math } from "../../../../shared/utils/math";
 import { util } from "../../../../shared/utils/util";
 import { type Vec2, v2 } from "../../../../shared/utils/v2";
-import { MapObjectDefs } from "../../..//../shared/defs/mapObjectDefs";
 import type { Game } from "../game";
 import { BaseGameObject } from "./gameObject";
 
@@ -18,7 +18,7 @@ export class AirdropBarn {
     addAirdrop(pos: Vec2, type: string) {
         const airdrop = new Airdrop(this.game, pos, type);
         this.airdrops.push(airdrop);
-        this.game.playerBarn.addEmote(0, pos, "ping_airdrop", true);
+        this.game.playerBarn.addMapPing("ping_airdrop", pos);
         this.game.objectRegister.register(airdrop);
     }
 
@@ -98,12 +98,6 @@ export class Airdrop extends BaseGameObject {
                             break;
                         }
                     }
-                } else if (
-                    obj.__type === ObjectType.Loot &&
-                    coldet.test(obj.collider, this.crateCollision)
-                ) {
-                    // just push randomly to wake up the loot
-                    obj.push(v2.randomUnit(), 1);
                 }
             }
 

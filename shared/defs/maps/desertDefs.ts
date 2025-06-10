@@ -2,10 +2,11 @@ import { GameConfig } from "../../gameConfig";
 import { util } from "../../utils/util";
 import { v2 } from "../../utils/v2";
 import type { MapDef } from "../mapDefs";
-import { Main } from "./baseDefs";
+import { MapId } from "../types/misc";
+import { Main, type PartialMapDef } from "./baseDefs";
 
-const mapDef = {
-    mapId: 1,
+const mapDef: PartialMapDef = {
+    mapId: MapId.Desert,
     desc: {
         name: "Desert",
         icon: "img/loot/loot-weapon-flare-gun.svg",
@@ -30,7 +31,7 @@ const mapDef = {
             grass: 14657367,
             underground: 4001027,
             playerSubmerge: 5151631,
-            playerGhillie: 0xdea756, //temporary until original color is found
+            playerGhillie: 0xdfa761,
         },
         particles: {},
     },

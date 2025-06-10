@@ -7,7 +7,7 @@ const mapDef = {
     desc: {
         name: "Gamerio",
         icon: "img/gamerio_logo.png",
-        buttonCss: "btn-mode-gamerio"
+        buttonCss: "btn-mode-gamerio",
     },
     assets: {
         audio: [],
@@ -134,7 +134,7 @@ const mapDef = {
         tier_scopes_sniper: [
             { name: "100xscope", count: 1, weight: 15 },
             { name: "200xscope", count: 1, weight: 5 },
-            { name: "400xscope", count: 1, weight: 1 }, 
+            { name: "400xscope", count: 1, weight: 1 },
         ],
         tier_mansion_floor: [{ name: "outfitCasanova", count: 1, weight: 1 }],
         tier_vault_floor: [{ name: "outfitJester", count: 1, weight: 1 }],
@@ -144,7 +144,7 @@ const mapDef = {
         tier_chrys_03: [
             { name: "100xscope", count: 1, weight: 5 },
             { name: "200xscope", count: 1, weight: 5 },
-            { name: "400xscope", count: 1, weight: 5 },  // ?
+            { name: "400xscope", count: 1, weight: 5 }, // ?
         ],
         tier_chrys_case: [
             { name: "", count: 1, weight: 5 }, // ?
@@ -239,7 +239,7 @@ const mapDef = {
             { name: "chest03", count: 1, weight: 0.25 },
             { name: "100xscope", count: 1, weight: 1 },
             { name: "200xscope", count: 1, weight: 0.5 },
-            { name: "400xscope", count: 1, weight: 0.2 }, 
+            { name: "400xscope", count: 1, weight: 0.2 },
         ],
         tier_conch: [
             { name: "outfitAqua", count: 1, weight: 1 },
@@ -356,7 +356,7 @@ const mapDef = {
             { name: "", count: 1, weight: 24 }, // ?
             { name: "100xscope", count: 1, weight: 15 },
             { name: "200xscope", count: 1, weight: 5 },
-            { name: "400xscope", count: 1, weight: 1 }, 
+            { name: "400xscope", count: 1, weight: 1 },
         ],
         tier_katanas: [
             { name: "katana", count: 1, weight: 4 }, // ?
@@ -469,7 +469,7 @@ const mapDef = {
         ],
         randomSpawns: [],
     },
-    
+
     /* STRIP_FROM_PROD_CLIENT:END */
 };
 

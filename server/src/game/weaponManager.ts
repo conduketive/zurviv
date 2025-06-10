@@ -18,6 +18,7 @@ import { type Vec2, v2 } from "../../../shared/utils/v2";
 import type { BulletParams } from "../game/objects/bullet";
 import type { GameObject } from "../game/objects/gameObject";
 import type { Player } from "../game/objects/player";
+import type { Projectile } from "./objects/projectile";
 
 /**
  * List of throwables to cycle based on the definition `inventoryOrder`
@@ -51,6 +52,7 @@ export class WeaponManager {
      * @param idx index being swapped to
      * @param cancelAction cancels current action if true
      * @param shouldReload will attempt automatic reload at 0 ammo if true
+     * @param changeCooldown Weather to change the weapons cooldown, used by SwapWeapSlots to keep them the same
      * @returns
      */
     setCurWeapIndex(
@@ -58,6 +60,7 @@ export class WeaponManager {
         cancelAction = true,
         cancelSlowdown = true,
         forceSwitch = false,
+        changeCooldown = true,
     ): void {
         // if current slot is invalid and next too, switch to melee
         if (!this.activeWeapon && !this.weapons[idx].type) {
@@ -72,7 +75,19 @@ export class WeaponManager {
 
         if (idx === this._curWeapIdx) return;
         if (this.weapons[idx].type === "") return;
-        if (this.bursts.length && !forceSwitch) return;
+
+        const curWeaponDef = GameObjectDefs[this.activeWeapon] as
+            | GunDef
+            | MeleeDef
+            | ThrowableDef;
+
+        if (
+            curWeaponDef?.type === "gun" &&
+            curWeaponDef.fireMode === "burst" &&
+            this.bursts.length &&
+            !forceSwitch
+        )
+            return;
 
         this.player.cancelAnim();
 
@@ -89,12 +104,8 @@ export class WeaponManager {
         const nextWeapon = this.weapons[idx];
         let effectiveSwitchDelay = 0;
 
-        if (curWeapon.type && nextWeapon.type) {
+        if (curWeapon.type && nextWeapon.type && changeCooldown) {
             // ensure that player is still holding both weapons (didnt drop one)
-            const curWeaponDef = GameObjectDefs[this.activeWeapon] as
-                | GunDef
-                | MeleeDef
-                | ThrowableDef;
             const nextWeaponDef = GameObjectDefs[this.weapons[idx].type] as
                 | GunDef
                 | MeleeDef
@@ -118,6 +129,11 @@ export class WeaponManager {
                 curWeapon.cooldown > 0
             ) {
                 effectiveSwitchDelay = nextWeaponDef.switchDelay;
+            } else if (nextWeaponDef.type === "melee") {
+                effectiveSwitchDelay = math.max(
+                    nextWeapon.cooldown,
+                    nextWeaponDef.switchDelay,
+                );
             }
 
             nextWeapon.cooldown = effectiveSwitchDelay;
@@ -167,6 +183,7 @@ export class WeaponManager {
             this.player.wearingPan = false;
             this.player.setDirty();
         }
+
         // pan is always "worn" if player has it and any other slot is selected
         if (type == "pan" && this.curWeapIdx != WeaponSlot.Melee) {
             this.player.wearingPan = true;
@@ -179,8 +196,12 @@ export class WeaponManager {
         if (weaponDef?.type === "gun") {
             this.weapons[idx].recoilTime = weaponDef.recoilTime;
         }
+        if (weaponDef && "switchDelay" in weaponDef) {
+            this.weapons[idx].cooldown = weaponDef.switchDelay;
+        }
 
         if (idx === this.curWeapIdx) {
+            this.bursts.length = 0;
             this.player.setDirty();
         }
 
@@ -327,14 +348,17 @@ export class WeaponManager {
         const itemDef = GameObjectDefs[this.activeWeapon] as MeleeDef;
         const player = this.player;
         const attack = itemDef.attack;
+        const weapon = this.weapons[this.curWeapIdx];
 
         if (
             player.animType !== GameConfig.Anim.Melee &&
-            (player.shootStart || (player.shootHold && itemDef.autoAttack))
+            (player.shootStart || (player.shootHold && itemDef.autoAttack)) &&
+            weapon.cooldown < 0
         ) {
             this.player.cancelAction();
 
             this.player.playAnim(GameConfig.Anim.Melee, attack.cooldownTime);
+            weapon.cooldown = attack.cooldownTime;
             this.meleeAttacks = [...attack.damageTimes];
         }
 
@@ -424,10 +448,11 @@ export class WeaponManager {
     /**
      * called when reload action completed, actually updates all state variables
      */
-    reload(): void {
-        const weaponDef = GameObjectDefs[this.activeWeapon] as GunDef;
+    reload(curWeapIdx = this.curWeapIdx): void {
+        const weapon = this.weapons[curWeapIdx];
+        const weaponDef = GameObjectDefs[weapon.type] as GunDef;
         const trueAmmoStats = this.getTrueAmmoStats(weaponDef);
-        const activeWeaponAmmo = this.weapons[this.curWeapIdx].ammo;
+        const activeWeaponAmmo = weapon.ammo;
         const spaceLeft = trueAmmoStats.trueMaxClip - activeWeaponAmmo; // if gun is 27/30 ammo, spaceLeft = 3
 
         const inv = this.player.inventory;
@@ -438,41 +463,30 @@ export class WeaponManager {
         }
 
         if (this.isInfinite(weaponDef)) {
-            this.weapons[this.curWeapIdx].ammo += math.clamp(
-                amountToReload,
-                0,
-                spaceLeft,
-            );
+            weapon.ammo += math.clamp(amountToReload, 0, spaceLeft);
         } else if (inv[weaponDef.ammo] < spaceLeft) {
             // 27/30, inv = 2
             if (trueAmmoStats.trueMaxClip != amountToReload) {
                 // m870, mosin, spas: only refill by one bullet at a time
-                this.weapons[this.curWeapIdx].ammo++;
+                weapon.ammo++;
                 inv[weaponDef.ammo]--;
             } else {
                 // mp5, sv98, ak47: refill to as much as you have left in your inventory
-                this.weapons[this.curWeapIdx].ammo += inv[weaponDef.ammo];
+                weapon.ammo += inv[weaponDef.ammo];
                 inv[weaponDef.ammo] = 0;
             }
         } else {
             // 27/30, inv = 100
-            this.weapons[this.curWeapIdx].ammo += math.clamp(
-                amountToReload,
-                0,
-                spaceLeft,
-            );
+            weapon.ammo += math.clamp(amountToReload, 0, spaceLeft);
             inv[weaponDef.ammo] -= math.clamp(amountToReload, 0, spaceLeft);
         }
 
         // if you have an m870 with 2 ammo loaded and 0 ammo left in your inventory, your actual max clip is just 2 since you cant load anymore ammo
         const realMaxClip =
             inv[weaponDef.ammo] == 0 && !this.isInfinite(weaponDef)
-                ? this.weapons[this.curWeapIdx].ammo
+                ? weapon.ammo
                 : trueAmmoStats.trueMaxClip;
-        if (
-            trueAmmoStats.trueMaxClip != amountToReload &&
-            this.weapons[this.curWeapIdx].ammo != realMaxClip
-        ) {
+        if (trueAmmoStats.trueMaxClip != amountToReload && weapon.ammo != realMaxClip) {
             this.player.reloadAgain = true;
         }
 
@@ -496,8 +510,8 @@ export class WeaponManager {
 
         let amountToDrop = 0;
         // some guns ammo type have no item in bagSizes, like potato guns
-        if (GameConfig.bagSizes[weaponAmmoType] && !this.isInfinite(weaponDef)) {
-            const bagSpace = GameConfig.bagSizes[weaponAmmoType][backpackLevel];
+        if (this.player.bagSizes[weaponAmmoType] && !this.isInfinite(weaponDef)) {
+            const bagSpace = this.player.bagSizes[weaponAmmoType][backpackLevel];
             if (this.player.inventory[weaponAmmoType] + weaponAmmoCount <= bagSpace) {
                 this.player.inventory[weaponAmmoType] += weaponAmmoCount;
                 this.player.inventoryDirty = true;
@@ -675,22 +689,18 @@ export class WeaponManager {
         const hasSplinter = this.player.hasPerk("splinter");
         const shouldApplyChambered =
             this.player.hasPerk("chambered") &&
-            itemDef.bulletCount === 1 &&
-            (weapon.ammo === 0 ||
+            itemDef.ammo !== "12gauge" &&
+            (weapon.ammo === 0 || //ammo count already decremented
                 weapon.ammo === this.getTrueAmmoStats(itemDef).trueMaxClip - 1);
 
         let damageMult = 1;
-        if (this.player.hasPerk("splinter")) {
-            damageMult *= PerkProperties.splinter.mainDamageMulti;
+        if (hasSplinter) {
+            damageMult *= PerkProperties.splinter.mainDamageMult;
         }
 
         const saturated = this.isBulletSaturated(itemDef.ammo);
         if (saturated) {
-            damageMult *= PerkProperties.ammoBonusDamageMulti;
-        }
-
-        if (this.player.lastBreathActive) {
-            damageMult *= 1.08;
+            damageMult *= PerkProperties.ammoBonusDamageMult;
         }
 
         if (shouldApplyChambered) {
@@ -711,6 +721,13 @@ export class WeaponManager {
             spread = 0.0;
         }
         this.player.recoilTicker = 0.0;
+
+        let bulletType = itemDef.bulletType;
+
+        if (itemDef.ammo == "9mm" && this.player.hasPerk("bonus_9mm")) {
+            bulletType = itemDef.bulletTypeBonus ?? bulletType;
+            spread *= PerkProperties.bonus_9mm.spreadMul;
+        }
 
         const bulletCount = itemDef.bulletCount;
         const jitter = itemDef.jitter ?? 0.25;
@@ -755,7 +772,7 @@ export class WeaponManager {
 
             const params: BulletParams = {
                 playerId: this.player.__id,
-                bulletType: itemDef.bulletType,
+                bulletType: bulletType,
                 gameSourceType: this.activeWeapon,
                 damageType: GameConfig.DamageType.Player,
                 pos: shotPos,
@@ -766,7 +783,7 @@ export class WeaponManager {
                 damageMult,
                 shotFx: i === 0,
                 shotOffhand: offHand,
-                trailSaturated: saturated,
+                trailSaturated: shouldApplyChambered || saturated,
                 trailSmall: false,
                 trailThick: shouldApplyChambered,
                 reflectCount: 0,
@@ -779,6 +796,7 @@ export class WeaponManager {
             this.player.game.bulletBarn.fireBullet(params);
 
             // Shoot a projectile if defined
+            let projectile: Projectile | undefined;
             if (itemDef.projType) {
                 const projDef = GameObjectDefs[itemDef.projType];
                 assert(
@@ -787,7 +805,7 @@ export class WeaponManager {
                 );
 
                 const vel = v2.mul(shotDir, projDef.throwPhysics.speed);
-                this.player.game.projectileBarn.addProjectile(
+                projectile = this.player.game.projectileBarn.addProjectile(
                     this.player.__id,
                     itemDef.projType,
                     shotPos,
@@ -796,6 +814,7 @@ export class WeaponManager {
                     vel,
                     projDef.fuseTime,
                     GameConfig.DamageType.Player,
+                    shotDir,
                 );
             }
 
@@ -806,17 +825,31 @@ export class WeaponManager {
                 for (let j = 0; j < 2; j++) {
                     const sParams = { ...params };
 
-                    const _deviation =
+                    const deviation =
                         util.random(0.2, 0.25) *
                         splinterSpread *
                         (j % 2 === 0 ? -1.0 : 1.0);
-                    sParams.dir = v2.rotate(sParams.dir, math.deg2rad(_deviation));
+                    sParams.dir = v2.rotate(sParams.dir, math.deg2rad(deviation));
                     sParams.lastShot = false;
                     sParams.shotFx = false;
                     sParams.trailSmall = true;
-                    sParams.damageMult *= PerkProperties.splinter.splitsDamageMulti;
+                    sParams.damageMult *= PerkProperties.splinter.splitsDamageMult;
 
                     this.player.game.bulletBarn.fireBullet(sParams);
+                    //
+                    if (projectile) {
+                        this.player.game.projectileBarn.addProjectile(
+                            this.player.__id,
+                            projectile.type,
+                            shotPos,
+                            0.5,
+                            bulletLayer,
+                            v2.rotate(projectile.vel, math.deg2rad(deviation)),
+                            projectile.fuseTime,
+                            GameConfig.DamageType.Player,
+                            sParams.dir,
+                        );
+                    }
                 }
             }
         }
@@ -978,6 +1011,7 @@ export class WeaponManager {
                     damageType: GameConfig.DamageType.Player,
                     source: this.player,
                     dir: v2.neg(hit.dir),
+                    weaponSourceType: this.activeWeapon,
                 });
                 if (obj.interactable) obj.interact(this.player);
             } else if (obj.__type === ObjectType.Player) {
@@ -1022,8 +1056,8 @@ export class WeaponManager {
         if (!this.cookingThrowable) return;
         this.cookingThrowable = false;
 
-        //need to store this incase throwableType gets replaced with its "heavy" variant like snowball => snowball_heavy
-        //used to manage inventory since snowball_heavy isnt stored in inventory, when it's thrown you decrement "snowball" from inv
+        // need to store this incase throwableType gets replaced with its "heavy" variant like snowball => snowball_heavy
+        // used to manage inventory since snowball_heavy isnt stored in inventory, when it's thrown you decrement "snowball" from inv
         const oldThrowableType = this.weapons[GameConfig.WeaponSlot.Throwable].type;
 
         let throwableType = this.weapons[GameConfig.WeaponSlot.Throwable].type;
@@ -1042,10 +1076,10 @@ export class WeaponManager {
         if (throwableDef.forceMaxThrowDistance) {
             multiplier = 1;
         } else if (this.curWeapIdx != GameConfig.WeaponSlot.Throwable || noSpeed) {
-            //if selected weapon slot is not throwable, that means player switched slots early and velocity needs to be 0
+            // if selected weapon slot is not throwable, that means player switched slots early and velocity needs to be 0
             multiplier = 0;
         } else {
-            //default throw strength algorithm, just based on mouse distance from player
+            // default throw strength algorithm, just based on mouse distance from player
             multiplier =
                 math.clamp(
                     this.player.toMouseLen,
@@ -1081,7 +1115,7 @@ export class WeaponManager {
             ),
         );
 
-        let { dir } = this.player;
+        let dir = v2.copy(this.player.dir);
         // Aim toward a point some distance infront of the player
         if (throwableDef.aimDistance > 0.0) {
             const aimTarget = v2.add(
@@ -1094,7 +1128,7 @@ export class WeaponManager {
         // Incorporate some of the player motion into projectile velocity
         const vel = v2.add(
             v2.mul(this.player.moveVel, throwableDef.throwPhysics.playerVelMult),
-            //player mouse position is irrelevant for max throwing distance
+            // player mouse position is irrelevant for max throwing distance
             v2.mul(dir, throwStr),
         );
 
@@ -1111,10 +1145,13 @@ export class WeaponManager {
             vel,
             fuseTime,
             GameConfig.DamageType.Player,
+            dir,
+            oldThrowableType,
         );
 
         if (oldThrowableType == "strobe") {
             let airstrikesLeft = 3;
+
             if (this.player.hasPerk("broken_arrow")) {
                 airstrikesLeft += PerkProperties.broken_arrow.bonusAirstrikes;
             }
@@ -1122,8 +1159,8 @@ export class WeaponManager {
             projectile.strobe = {
                 strobeTicker: 4,
                 airstrikesLeft: airstrikesLeft,
-                airstrikeTicker: 0
-            }
+                airstrikeTicker: 0,
+            };
         }
 
         const animationDuration = GameConfig.player.throwTime;

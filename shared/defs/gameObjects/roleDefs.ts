@@ -109,10 +109,10 @@ function createDefaultItems<T extends DefaultItems>(e: DeepPartial<T>): T {
         weapons: [
             { type: "", ammo: 0 },
             { type: "", ammo: 0 },
-            { type: "fists", ammo: 0 },
+            { type: "", ammo: 0 },
             { type: "", ammo: 0 },
         ],
-        backpack: "backpack00",
+        backpack: "",
         helmet: "",
         chest: "",
         outfit: "",
@@ -249,6 +249,7 @@ export const RoleDefs: Record<string, RoleDef> = {
             chest: "chest03",
             inventory: {
                 "4xscope": 1,
+                bandage: 30,
                 healthkit: 4,
                 painkiller: 4,
                 soda: 15,
@@ -366,7 +367,7 @@ export const RoleDefs: Record<string, RoleDef> = {
             "splinter",
             () =>
                 util.weightedRandom([
-                    { type: "takedown", weight: 1 },
+                    { type: "takedown", weight: 4.5 },
                     { type: "windwalk", weight: 1 },
                     { type: "field_medic", weight: 1 },
                 ]).type,
@@ -433,14 +434,20 @@ export const RoleDefs: Record<string, RoleDef> = {
         },
         mapIndicator: {
             sprite: "player-the-hunted.img",
-            tint: 16745472,
+            tint: 0xff8400,
             pulse: true,
-            pulseTint: 16745472,
+            pulseTint: 0xff8400,
         },
         perks: ["hunted"],
     },
     healer: {
         type: "role",
+        defaultItems: createDefaultItems({
+            outfit: "outfitMedic",
+            inventory: {
+                healthkit: 1,
+            },
+        }),
         announce: false,
         sound: { assign: "spawn_01" },
         perks: ["field_medic", "windwalk"],
@@ -449,10 +456,14 @@ export const RoleDefs: Record<string, RoleDef> = {
             spriteScale: 0.3,
         },
         guiImg: "img/gui/role-healer.svg",
-        color: 11468975,
+        color: 0xaf00af,
     },
     tank: {
         type: "role",
+        defaultItems: createDefaultItems({
+            outfit: "outfitTank",
+            chest: "chest01",
+        }),
         announce: false,
         sound: { assign: "spawn_01" },
         perks: ["steelskin", "endless_ammo"],
@@ -461,10 +472,16 @@ export const RoleDefs: Record<string, RoleDef> = {
             spriteScale: 0.3,
         },
         guiImg: "img/gui/role-tank.svg",
-        color: 13862400,
+        color: 0xd38600,
     },
     sniper: {
         type: "role",
+        defaultItems: createDefaultItems({
+            outfit: "outfitSniper",
+            inventory: {
+                "2xscope": 1,
+            },
+        }),
         announce: false,
         sound: { assign: "spawn_01" },
         perks: ["chambered", "takedown"],
@@ -473,10 +490,16 @@ export const RoleDefs: Record<string, RoleDef> = {
             spriteScale: 0.3,
         },
         guiImg: "img/gui/role-sniper.svg",
-        color: 30696,
+        color: 0x77e8,
     },
     scout: {
         type: "role",
+        defaultItems: createDefaultItems({
+            outfit: "outfitScout",
+            inventory: {
+                soda: 1,
+            },
+        }),
         announce: false,
         sound: { assign: "spawn_01" },
         perks: ["small_arms", "tree_climbing"],
@@ -485,10 +508,14 @@ export const RoleDefs: Record<string, RoleDef> = {
             spriteScale: 0.3,
         },
         guiImg: "img/gui/role-scout.svg",
-        color: 6725632,
+        color: 0x66a000,
     },
     demo: {
         type: "role",
+        defaultItems: createDefaultItems({
+            outfit: "outfitDemo",
+            backpack: "backpack01",
+        }),
         announce: false,
         sound: { assign: "spawn_01" },
         perks: ["fabricate", "flak_jacket"],
@@ -497,10 +524,16 @@ export const RoleDefs: Record<string, RoleDef> = {
             spriteScale: 0.3,
         },
         guiImg: "img/gui/role-demo.svg",
-        color: 6750976,
+        color: 0x670300,
     },
     assault: {
         type: "role",
+        defaultItems: createDefaultItems({
+            outfit: "outfitAssault",
+            inventory: {
+                bandage: 5,
+            },
+        }),
         announce: false,
         sound: { assign: "spawn_01" },
         perks: ["firepower", "bonus_assault"],
@@ -509,6 +542,6 @@ export const RoleDefs: Record<string, RoleDef> = {
             spriteScale: 0.3,
         },
         guiImg: "img/gui/role-assault.svg",
-        color: 16772119,
+        color: 0xffec17,
     },
 };
