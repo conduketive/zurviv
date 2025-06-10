@@ -880,8 +880,6 @@ export class Player extends BaseGameObject {
                 // TODO: this should be based on aoe_heal perk not role
                 this.game.playerBarn.medics.push(this);
                 break;
-            case "leader":
-                break;
         }
 
         if (roleDef.defaultItems) {
@@ -2513,13 +2511,13 @@ export class Player extends BaseGameObject {
                 finalDamage -= finalDamage * PerkProperties.steelskin.damageReduction;
             }
 
-            //let isHeadShot = false;
-            const isHeadShot = false;
+            let isHeadShot = false;
 
             if (gameSourceDef && "headshotMult" in gameSourceDef) {
                 isHeadShot =
                     gameSourceDef.type != "melee" &&
-                    Math.random() < GameConfig.player.headshotChance;
+                    Math.random() < GameConfig.player.headshotChance &&
+                    false;
 
                 if (isHeadShot) {
                     finalDamage *= gameSourceDef.headshotMult;
@@ -2587,11 +2585,12 @@ export class Player extends BaseGameObject {
             gameOverMsg.gameOver = !!winningTeamId;
             this.msgsToSend.push({ type: net.MsgType.GameOver, msg: gameOverMsg });
 
-        for (const spectator of this.spectators) {
-            spectator.msgsToSend.push({
-                type: net.MsgType.GameOver,
-                msg: gameOverMsg,
-            });
+            for (const spectator of this.spectators) {
+                spectator.msgsToSend.push({
+                    type: net.MsgType.GameOver,
+                    msg: gameOverMsg,
+                });
+            }
         }
     }
 

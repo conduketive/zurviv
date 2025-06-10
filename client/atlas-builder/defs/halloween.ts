@@ -26,5 +26,8 @@ export const HalloweenAtlas: AtlasDef = {
         "map/map-web-01.svg",
         "particles/part-airdrop-01h.svg",
         "particles/part-airdrop-02h.svg",
+        // ! @HACK to fix tree sprites not showing in spring
+        "map/map-tree-07sp.svg",
+        "map/map-tree-08sp.svg",
     ],
 };

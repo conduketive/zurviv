@@ -6,7 +6,6 @@ import { Main, type PartialMapDef } from "./baseDefs";
 
 const mapDef: PartialMapDef = {
     mapId: MapId.Halloween,
-
     desc: {
         name: "Halloween",
         icon: "img/gui/pumpkin-play.svg",
