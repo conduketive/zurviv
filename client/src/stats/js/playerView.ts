@@ -1,6 +1,6 @@
 import $ from "jquery";
 import { EmotesDefs } from "../../../../shared/defs/gameObjects/emoteDefs";
-import { TeamModeToString } from "../../../../shared/defs/types/misc";
+import { OriginalTeamModes, TeamModeToString } from "../../../../shared/defs/types/misc";
 import type { TeamMode } from "../../../../shared/gameConfig";
 import type {
     LeaderboardRequest,
@@ -115,7 +115,7 @@ function getPlayerCardData(
     }
 
     // Insert blank cards for all teammodes
-    const keys = Object.keys(TeamModeToString) as unknown as TeamMode[];
+    const keys = OriginalTeamModes || Object.keys(TeamModeToString) as unknown as TeamMode[];
 
     for (let i = 0; i < keys.length; i++) {
         const teamMode = keys[i];

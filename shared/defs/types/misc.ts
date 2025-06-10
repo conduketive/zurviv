@@ -17,3 +17,5 @@ export const TeamModeToString = {
     [TeamMode.Trio]: "trio",
     [TeamMode.Squad]: "squad",
 };
+
+export const OriginalTeamModes = [TeamMode.Solo, TeamMode.Duo, TeamMode.Squad];
