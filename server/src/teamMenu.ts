@@ -148,10 +148,12 @@ export class TeamMenu {
 
     addRoom(roomUrl: string, initialRoomData: RoomData, roomLeader: RoomPlayer) {
         const enabledGameModeIdxs = Config.modes
-        .slice(1)
-        .filter((m) => m.enabled)
-        .map((_, index) => index + 1)
-        .filter((index) => index % 4 !== 0 || Config.modes[index].mapName === "faction")
+            .slice(1)
+            .filter((m) => m.enabled)
+            .map((_, index) => index + 1)
+            .filter(
+                (index) => index % 4 !== 0 || Config.modes[index].mapName === "faction",
+            );
         const gameModeIdx = enabledGameModeIdxs.includes(initialRoomData.gameModeIdx)
             ? initialRoomData.gameModeIdx
             : 3 - initialRoomData.gameModeIdx;
@@ -165,9 +167,14 @@ export class TeamMenu {
                 autoFill: initialRoomData.autoFill,
                 findingGame: initialRoomData.findingGame,
                 lastError: initialRoomData.lastError,
-                maxPlayers: (gameModeIdx % 4 === 1) ? 2 :
-                (gameModeIdx % 4 === 2) ? 3 :
-                (gameModeIdx % 4 === 2) ? 3 : 4   
+                maxPlayers:
+                    gameModeIdx % 4 === 1
+                        ? 2
+                        : gameModeIdx % 4 === 2
+                          ? 3
+                          : gameModeIdx % 4 === 2
+                            ? 3
+                            : 4,
             },
             players: [roomLeader],
         };
@@ -220,8 +227,12 @@ export class TeamMenu {
      */
     modifyRoom(newRoomData: RoomData, room: Room): void {
         room.roomData.gameModeIdx = newRoomData.gameModeIdx;
-        room.roomData.maxPlayers = (room.roomData.gameModeIdx % 4 === 1) ? 2 :
-                                   (room.roomData.gameModeIdx % 4 === 2) ? 3 : 4;
+        room.roomData.maxPlayers =
+            room.roomData.gameModeIdx % 4 === 1
+                ? 2
+                : room.roomData.gameModeIdx % 4 === 2
+                  ? 3
+                  : 4;
         room.roomData.autoFill = newRoomData.autoFill;
         room.roomData.region = newRoomData.region;
     }

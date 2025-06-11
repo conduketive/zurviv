@@ -37,7 +37,7 @@ export interface MatchData {
 
 class Application {
     nameInput = $("#player-name-input-solo");
-    serverSelect = $("#server-select-main");    
+    serverSelect = $("#server-select-main");
     muteBtns = $(".btn-sound-toggle");
     aimLineBtn = $("#btn-game-aim-line");
     masterSliders = $<HTMLInputElement>(".sl-master-volume");
@@ -102,7 +102,7 @@ class Application {
             this.loadoutMenu,
             this.errorModal,
         );
-        this.siteInfo = new SiteInfo(false, this.config, this.localization, );
+        this.siteInfo = new SiteInfo(false, this.config, this.localization);
 
         this.teamMenu = new TeamMenu(
             this.config,
@@ -147,40 +147,46 @@ class Application {
             (this.nameInput as unknown as HTMLInputElement).maxLength =
                 net.Constants.PlayerNameMaxLen;
 
-                window.onload = () => {
+            window.onload = () => {
                 let modes = this.siteInfo.info.modes;
                 const modeOptions: Record<string, number> = {};
                 if (modes) {
                     for (let i = 0; i < modes.length; i++) {
                         if (i % 4 === 0) {
                             const mapNameParts = modes[i].mapName.split("_");
-                            const formattedMapName = mapNameParts.length > 1 
-                                ? mapNameParts[1].charAt(0).toUpperCase() + mapNameParts[1].slice(1) 
-                                : modes[i].mapName.substring(0,1).toUpperCase() + modes[i].mapName.substring(1);
+                            const formattedMapName =
+                                mapNameParts.length > 1
+                                    ? mapNameParts[1].charAt(0).toUpperCase() +
+                                      mapNameParts[1].slice(1)
+                                    : modes[i].mapName.substring(0, 1).toUpperCase() +
+                                      modes[i].mapName.substring(1);
 
                             modeOptions[formattedMapName] = i;
                         }
                     }
-                } 
+                }
                 const teamOptions: Record<string, number> = {
-                    "Solo": 0,
-                    "Duo": 1,
-                    "Trio": 2,
-                    "Squad": 3,
+                    Solo: 0,
+                    Duo: 1,
+                    Trio: 2,
+                    Squad: 3,
                 };
-            
-                function updateButtonText(buttonId: string, selectedButton: HTMLElement): void {
+
+                function updateButtonText(
+                    buttonId: string,
+                    selectedButton: HTMLElement,
+                ): void {
                     const button = document.getElementById(buttonId);
                     if (!button) return;
-            
+
                     button.className = selectedButton.className;
-            
+
                     if (selectedButton.style.backgroundImage) {
-                        button.style.backgroundImage = selectedButton.style.backgroundImage;
-                    }  else button.style.backgroundImage = "";
+                        button.style.backgroundImage =
+                            selectedButton.style.backgroundImage;
+                    } else button.style.backgroundImage = "";
                     if (button.id === "dropdown-main-button-1") {
                         button.innerHTML = `Game Mode: ${selectedButton.innerText} | ▼`;
-            
 
                         if (selectedButton.innerText.trim() === "Faction") {
                             blockTeamMode();
@@ -191,17 +197,21 @@ class Application {
                         button.innerHTML = `Team Mode: ${selectedButton.innerText} | ▼`;
                     }
                 }
-            
-                function setupDropdown(mainButtonId: string, dropdownClass: string, containerId: string): void {
+
+                function setupDropdown(
+                    mainButtonId: string,
+                    dropdownClass: string,
+                    containerId: string,
+                ): void {
                     const mainButton = $(`#${mainButtonId}`);
                     const dropdown = $(`.${dropdownClass}`);
-            
+
                     mainButton.click((event) => {
                         event.stopPropagation();
                         $(".dropdown-menu").not(dropdown).hide();
                         dropdown.toggle();
                     });
-            
+
                     $(document).click((event) => {
                         if (!$(event.target).closest(`#${containerId}`).length) {
                             dropdown.hide();
@@ -214,46 +224,67 @@ class Application {
                             dropdown.hide();
                         }
                     });
-            
+
                     dropdown.addClass("dropdown-menu");
                 }
-            
-                function getSelectedValue(buttonId: string, options: Record<string, number>): number {
+
+                function getSelectedValue(
+                    buttonId: string,
+                    options: Record<string, number>,
+                ): number {
                     const selectedText = $(`#${buttonId}`).text().trim().split(" ")[2];
                     return options[selectedText] || 0;
                 }
-            
+
                 function blockTeamMode(): void {
-                    $("#dropdown-main-button-2").css({ 
-                        opacity: "0.5", 
-                        pointerEvents: "none"
-                    }).text("Team Mode: Disabled | ▼");
-            
+                    $("#dropdown-main-button-2")
+                        .css({
+                            opacity: "0.5",
+                            pointerEvents: "none",
+                        })
+                        .text("Team Mode: Disabled | ▼");
+
                     $("#dropdown-container-2").hide();
                 }
-            
+
                 function unblockTeamMode(): void {
-                    $("#dropdown-main-button-2").css({ 
-                        opacity: "1", 
-                        pointerEvents: "auto"
-                    }).text("Team Mode: Select | ▼");
-            
+                    $("#dropdown-main-button-2")
+                        .css({
+                            opacity: "1",
+                            pointerEvents: "auto",
+                        })
+                        .text("Team Mode: Select | ▼");
+
                     $("#dropdown-container-2").show();
                 }
-            
-                setupDropdown("dropdown-main-button-1", "dropdown-buttons-1", "dropdown-container-1");
-                setupDropdown("dropdown-main-button-2", "dropdown-buttons-2", "dropdown-container-2");
+
+                setupDropdown(
+                    "dropdown-main-button-1",
+                    "dropdown-buttons-1",
+                    "dropdown-container-1",
+                );
+                setupDropdown(
+                    "dropdown-main-button-2",
+                    "dropdown-buttons-2",
+                    "dropdown-container-2",
+                );
                 if (modeOptions) {
                     $("#play-button-menu").click(() => {
-                        const selectedMode: number = getSelectedValue("dropdown-main-button-1", modeOptions);
-                        const selectedTeam: number = getSelectedValue("dropdown-main-button-2", teamOptions);
+                        const selectedMode: number = getSelectedValue(
+                            "dropdown-main-button-1",
+                            modeOptions,
+                        );
+                        const selectedTeam: number = getSelectedValue(
+                            "dropdown-main-button-2",
+                            teamOptions,
+                        );
                         const totalValue: number = selectedMode + selectedTeam;
-                
+
                         (this as any).tryQuickStartGame(totalValue);
                     });
                 }
             };
-                
+
             this.serverSelect.change(() => {
                 const t = this.serverSelect.find(":selected").val();
                 this.config.set("region", t as string);
@@ -614,7 +645,6 @@ class Application {
                     : this.localization.translate(ele.data("l10n")),
             );
         };
-
     }
 
     waitOnAccount(cb: () => void) {

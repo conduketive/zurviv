@@ -174,7 +174,6 @@ export class ResourceManager {
     }
 
     loadMapAssets(mapName: string) {
-        
         console.log("Load map", mapName);
         if (mapName == "main_spring") {
             mapName = "halloween";

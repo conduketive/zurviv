@@ -1,5 +1,4 @@
 import * as PIXI from "pixi.js-legacy";
-import { GameMod } from "../gameMod";
 import { GameObjectDefs, type LootDef } from "../../../shared/defs/gameObjectDefs";
 import type { GunDef } from "../../../shared/defs/gameObjects/gunDefs";
 import type { MeleeDef } from "../../../shared/defs/gameObjects/meleeDefs";
@@ -37,6 +36,7 @@ import type { Camera } from "../camera";
 import { debugLines } from "../debugLines";
 import { device } from "../device";
 import type { Ctx, DebugOptions } from "../game";
+import { GameMod } from "../gameMod";
 import { helpers } from "../helpers";
 import { InputHandler } from "../input";
 import type { SoundHandle } from "../lib/createJS";
@@ -727,14 +727,14 @@ export class Player implements AbstractObject {
         this.dirOld = v2.copy(this.dir);
         this.pos = v2.copy(this.netData.pos);
         //interpolation
-        if(gameMod.isInterpolation == true){
+        if (gameMod.isInterpolation == true) {
             !(
                 Math.abs(this.pos.x - this.posOld.x) > 50 ||
                 Math.abs(this.pos.y - this.posOld.y) > 50
             ) &&
                 //movement interpolation
                 ((this.pos.x += (this.posOld.x - this.pos.x) * 0.5),
-                (this.pos.y += (this.posOld.y - this.pos.y) * 0.5))
+                (this.pos.y += (this.posOld.y - this.pos.y) * 0.5));
         }
         this.dir = v2.copy(this.netData.dir);
         this.layer = this.netData.layer;
@@ -1705,17 +1705,22 @@ export class Player implements AbstractObject {
         }
         this.handLContainer.position.x -= this.gunRecoilL * 1.125;
         this.handRContainer.position.x -= this.gunRecoilR * 1.125;
-        
+
         const mouseY = inputManager.mousePos.y;
         const mouseX = inputManager.mousePos.x;
         //local rotation
-        if (this.activeId == this.__id && !this.isSpectating && device.mobile == false && gameMod.isLocalRotation == true) {
-        this.bodyContainer.rotation = Math.atan2(
-            mouseY - window.innerHeight / 2,
-            mouseX - window.innerWidth / 2,
-        );
+        if (
+            this.activeId == this.__id &&
+            !this.isSpectating &&
+            device.mobile == false &&
+            gameMod.isLocalRotation == true
+        ) {
+            this.bodyContainer.rotation = Math.atan2(
+                mouseY - window.innerHeight / 2,
+                mouseX - window.innerWidth / 2,
+            );
         } else {
-        this.bodyContainer.rotation = -Math.atan2(this.dir.y, this.dir.x);
+            this.bodyContainer.rotation = -Math.atan2(this.dir.y, this.dir.x);
         }
     }
 

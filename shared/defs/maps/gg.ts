@@ -7,16 +7,16 @@ const mapDef = {
     desc: {
         name: "GG",
         icon: "img/gg_logo.png",
-        buttonCss: "btn-mode-gg"
+        buttonCss: "btn-mode-gg",
     },
     gameConfig: {
-            planes: {
-                crates: [
-                    { name: "airdrop_crate_01", weight: 2 },
-                    { name: "airdrop_crate_02", weight: 1 },
-                ],
-            },
+        planes: {
+            crates: [
+                { name: "airdrop_crate_01", weight: 2 },
+                { name: "airdrop_crate_02", weight: 1 },
+            ],
         },
+    },
     lootTable: {
         // tier_world: [
         //     { name: "tier_guns", count: 1, weight: 0.29 }, // todo get more data on this from original
@@ -174,21 +174,21 @@ const mapDef = {
             { name: "colt45_dual", count: 1, weight: 1 },
         ],
         tier_chest: [
-            { name: "m9", count: 1, weight: 10 *0.8 },
-            { name: "glock", count: 1, weight: 10 *0.8 },
-            { name: "m93r", count: 1, weight: 10 *0.8 },
-            { name: "ot38", count: 1, weight: 10 *0.8 },
-            { name: "flare_gun", count: 1, weight: 30 *0.8 },
-            { name: "ots38", count: 1, weight: 10 *0.8 },
-            { name: "colt45", count: 1, weight: 7.5 *0.8 },
-            { name: "p30l", count: 1, weight: 7.5 *0.8 },
-            { name: "deagle", count: 1, weight: 5 *0.8 },
+            { name: "m9", count: 1, weight: 10 * 0.8 },
+            { name: "glock", count: 1, weight: 10 * 0.8 },
+            { name: "m93r", count: 1, weight: 10 * 0.8 },
+            { name: "ot38", count: 1, weight: 10 * 0.8 },
+            { name: "flare_gun", count: 1, weight: 30 * 0.8 },
+            { name: "ots38", count: 1, weight: 10 * 0.8 },
+            { name: "colt45", count: 1, weight: 7.5 * 0.8 },
+            { name: "p30l", count: 1, weight: 7.5 * 0.8 },
+            { name: "deagle", count: 1, weight: 5 * 0.8 },
 
-            { name: "helmet02", count: 1, weight: 16 *0.2 },
-            { name: "helmet03", count: 1, weight: 4 *0.2 },
-            { name: "chest02", count: 1, weight: 64 *0.2 },
-            { name: "chest03", count: 1, weight: 8 *0.2 },
-            { name: "4xscope", count: 1, weight: 8 *0.2 },
+            { name: "helmet02", count: 1, weight: 16 * 0.2 },
+            { name: "helmet03", count: 1, weight: 4 * 0.2 },
+            { name: "chest02", count: 1, weight: 64 * 0.2 },
+            { name: "chest03", count: 1, weight: 8 * 0.2 },
+            { name: "4xscope", count: 1, weight: 8 * 0.2 },
             //{ name: "8xscope", count: 1, weight: 0.25 },
         ],
         // tier_conch: [
@@ -407,7 +407,7 @@ const mapDef = {
             },
         ],
     },
-    
+
     /* STRIP_FROM_PROD_CLIENT:END */
 };
 

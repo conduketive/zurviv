@@ -2,6 +2,7 @@ import { App, SSLApp, type TemplatedApp } from "uWebSockets.js";
 import { version } from "../../package.json";
 import { Config, type ConfigType } from "./config";
 import type { FindGameBody, FindGameResponse } from "./gameServer";
+import { checkIp } from "./ipChecker";
 import { TeamMenu } from "./teamMenu";
 import { GIT_VERSION } from "./utils/gitRevision";
 import { Logger } from "./utils/logger";
@@ -13,7 +14,6 @@ import {
     readPostedJSON,
     returnJson,
 } from "./utils/serverHelpers";
-import { checkIp } from "./ipChecker"
 
 class Region {
     data: ConfigType["regions"][string];
@@ -168,7 +168,7 @@ if (process.argv.includes("--api-server")) {
             res.aborted = true;
         });
 
-        const ip = req.getHeader('x-real-ip');
+        const ip = req.getHeader("x-real-ip");
 
         if (findGameRateLimit.isRateLimited(getIp(res))) {
             res.writeStatus("429 Too Many Requests");
@@ -190,9 +190,9 @@ if (process.argv.includes("--api-server")) {
                     res.cork(() => {
                         returnJson(res, {
                             res: [
-                                { 
-                                    err: "VPNs are not allowed" 
-                                }
+                                {
+                                    err: "VPNs are not allowed",
+                                },
                             ],
                         });
                     });

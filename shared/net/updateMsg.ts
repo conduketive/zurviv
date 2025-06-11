@@ -64,7 +64,6 @@ function deserializeActivePlayer(s: BitStream, data: LocalDataWithDirty) {
     data.zoomDirty = s.readBoolean();
     if (data.zoomDirty) {
         data.zoom = s.readBits(9);
-
     }
     data.actionDirty = s.readBoolean();
     if (data.actionDirty) {

@@ -237,7 +237,7 @@ export class GameModeManager {
                     (highestKiller, p) =>
                         highestKiller.kills > p.kills ? highestKiller : p,
                 );
-                
+
                 //if game ends before leaders are promoted, just show the player by himself
                 return !redLeader || !blueLeader
                     ? [player]
@@ -257,9 +257,7 @@ export class GameModeManager {
         if (player.spectatorCount === 0) return;
         // Utility function to find a derivative of the original killer.
         let attempts = 0;
-        const getAliveKiller = (
-            killer: Player | undefined,
-        ): Player | undefined => {
+        const getAliveKiller = (killer: Player | undefined): Player | undefined => {
             attempts++;
             if (attempts > 80) return undefined;
             if (!killer) return undefined;
@@ -280,13 +278,18 @@ export class GameModeManager {
             player.group?.randomPlayer(),
             player.team?.randomPlayer(),
             getAliveKiller(player.killedBy),
-            player.game.playerBarn.randomPlayer()
+            player.game.playerBarn.randomPlayer(),
         ];
 
-        const playerToSpec = spectateTargets.filter(x => x !== undefined).shift();
+        const playerToSpec = spectateTargets.filter((x) => x !== undefined).shift();
         for (const spectator of player.spectators) {
             // If all group members have died, they need to be sent a game over message instead.
-            if (player.group && player.group.allDeadOrDisconnected && player.group.players.includes(spectator)) continue;
+            if (
+                player.group &&
+                player.group.allDeadOrDisconnected &&
+                player.group.players.includes(spectator)
+            )
+                continue;
             // Set remaining spectators to new player.
             spectator.spectating = playerToSpec;
         }
@@ -308,7 +311,7 @@ export class GameModeManager {
 
     handlePlayerDeath(player: Player, params: DamageParams): void {
         switch (this.mode) {
-            case GameMode.Solo:{
+            case GameMode.Solo: {
                 player.rank = this.aliveCount();
                 return player.kill(params);
             }

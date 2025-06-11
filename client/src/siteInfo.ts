@@ -80,39 +80,45 @@ export class SiteInfo {
         const modes = this.info.modes || [];
         let dropdownContainer = document.querySelector(".dropdown-buttons-1");
         const dropdownContainerTeam = document.querySelector(".dropdown-buttons-team-1");
-        if (!this.buttonsCreated){
+        if (!this.buttonsCreated) {
             for (let i = 0; i < modes.length; i++) {
                 if (i % 4 === 0) {
                     const mapNameParts = modes[i].mapName.split("_");
-                    const formattedMapName = mapNameParts.length > 1 
-                        ? mapNameParts[1].charAt(0).toUpperCase() + mapNameParts[1].slice(1) 
-                        : modes[i].mapName.substring(0,1).toUpperCase() + modes[i].mapName.substring(1);
-            
+                    const formattedMapName =
+                        mapNameParts.length > 1
+                            ? mapNameParts[1].charAt(0).toUpperCase() +
+                              mapNameParts[1].slice(1)
+                            : modes[i].mapName.substring(0, 1).toUpperCase() +
+                              modes[i].mapName.substring(1);
+
                     const newButton = document.createElement("a");
                     newButton.className = "btn-green btn-darken menu-option";
                     newButton.id = `btn-start-mode-${i}`;
                     newButton.textContent = formattedMapName;
-            
+
                     dropdownContainer?.appendChild(newButton);
-            
+
                     const newButtonTeam = document.createElement("a");
-                    newButtonTeam.className = "btn-green btn-darken menu-option team-selection";
+                    newButtonTeam.className =
+                        "btn-green btn-darken menu-option team-selection";
                     newButtonTeam.id = `btn-start-mode-team-${i}`;
                     newButtonTeam.textContent = formattedMapName;
-            
+
                     dropdownContainerTeam?.appendChild(newButtonTeam);
                 }
             }
             this.buttonsCreated = true;
         }
         for (let i = 0; i < modes.length; i++) {
-
             let button = document.getElementById(`btn-start-mode-${i}`);
             if (button) {
                 const mapNameParts = modes[i].mapName.split("_");
-                const formattedMapName = mapNameParts.length > 1 
-                    ? mapNameParts[1].charAt(0).toUpperCase() + mapNameParts[1].slice(1) 
-                    : modes[i].mapName.substring(0,1).toUpperCase() + modes[i].mapName.substring(1);
+                const formattedMapName =
+                    mapNameParts.length > 1
+                        ? mapNameParts[1].charAt(0).toUpperCase() +
+                          mapNameParts[1].slice(1)
+                        : modes[i].mapName.substring(0, 1).toUpperCase() +
+                          modes[i].mapName.substring(1);
 
                 button.innerHTML = `${formattedMapName}`;
             }
@@ -120,16 +126,22 @@ export class SiteInfo {
             button = document.getElementById(`btn-start-mode-team-${i}`);
             if (button) {
                 const mapNameParts = modes[i].mapName.split("_");
-                const formattedMapName = mapNameParts.length > 1 
-                    ? mapNameParts[1].charAt(0).toUpperCase() + mapNameParts[1].slice(1) 
-                    : modes[i].mapName.substring(0,1).toUpperCase() + modes[i].mapName.substring(1);
+                const formattedMapName =
+                    mapNameParts.length > 1
+                        ? mapNameParts[1].charAt(0).toUpperCase() +
+                          mapNameParts[1].slice(1)
+                        : modes[i].mapName.substring(0, 1).toUpperCase() +
+                          modes[i].mapName.substring(1);
 
                 button.innerHTML = `${formattedMapName}`;
             }
 
             const mode = modes[i];
-            const mapDef = (MapDefs[mode.mapName as keyof typeof MapDefs] || MapDefs.main).desc;
-            const buttonText = mapDef.buttonText ? mapDef.buttonText : modeTypes[mode.teamMode];
+            const mapDef = (MapDefs[mode.mapName as keyof typeof MapDefs] || MapDefs.main)
+                .desc;
+            const buttonText = mapDef.buttonText
+                ? mapDef.buttonText
+                : modeTypes[mode.teamMode];
 
             availableModes.push({
                 icon: mapDef.icon,

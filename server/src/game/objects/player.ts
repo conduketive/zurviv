@@ -31,6 +31,7 @@ import { math } from "../../../../shared/utils/math";
 import { assert, util } from "../../../../shared/utils/util";
 import { type Vec2, v2 } from "../../../../shared/utils/v2";
 import { IDAllocator } from "../../utils/IDAllocator";
+import { logIp } from "../../utils/joinLogging";
 import { checkForBadWords } from "../../utils/serverHelpers";
 import type { Game, JoinTokenData } from "../game";
 import { Group } from "../group";
@@ -39,7 +40,6 @@ import { WeaponManager, throwableList } from "../weaponManager";
 import { BaseGameObject, type DamageParams, type GameObject } from "./gameObject";
 import type { Loot } from "./loot";
 import type { Obstacle } from "./obstacle";
-import { logIp } from "../../utils/joinLogging"
 
 interface Emote {
     playerId: number;
@@ -2103,7 +2103,7 @@ export class Player extends BaseGameObject {
      * adds gameover message to "this.msgsToSend" for the player and all their spectators
      */
     addGameOverMsg(winningTeamId: number = 0): void {
-        const allPlayerStats = this.game.playerBarn.players.map(player => ({
+        const allPlayerStats = this.game.playerBarn.players.map((player) => ({
             playerId: player.playerId,
             rank: player.rank,
             timeAlive: player.timeAlive,
@@ -2112,8 +2112,7 @@ export class Player extends BaseGameObject {
             damageDealt: player.damageDealt,
             damageTaken: player.damageTaken,
             teamId: player.teamId,
-            })
-        );
+        }));
 
         const gameOverMsg = new net.GameOverMsg();
         gameOverMsg.playerStats = allPlayerStats;
@@ -2127,14 +2126,13 @@ export class Player extends BaseGameObject {
             type: net.MsgType.GameOver,
             msg: gameOverMsg,
         });
-    
+
         for (const spectator of this.spectators) {
             spectator.msgsToSend.push({
                 type: net.MsgType.GameOver,
                 msg: gameOverMsg,
             });
         }
-        
     }
 
     downedBy: Player | undefined;
@@ -2638,10 +2636,10 @@ export class Player extends BaseGameObject {
 
     shouldAcceptInput(input: number): boolean {
         return this.downed
-            ?
-                (input === GameConfig.Input.Revive && this.hasPerk("self_revive")) || // Players can revive themselves if they have the self-revive perk.
-                (input === GameConfig.Input.Cancel && this.game.modeManager.isReviving(this)) || // Players can cancel their own revives (if they are reviving themself, which is only true if they have the perk).
-                input === GameConfig.Input.Interact // Players can interact with obstacles while downed.
+            ? (input === GameConfig.Input.Revive && this.hasPerk("self_revive")) || // Players can revive themselves if they have the self-revive perk.
+                  (input === GameConfig.Input.Cancel &&
+                      this.game.modeManager.isReviving(this)) || // Players can cancel their own revives (if they are reviving themself, which is only true if they have the perk).
+                  input === GameConfig.Input.Interact // Players can interact with obstacles while downed.
             : true;
     }
 

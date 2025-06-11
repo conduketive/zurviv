@@ -1,3 +1,1 @@
-export const bannedIPs: string[] = [
-
-];
+export const bannedIPs: string[] = [];

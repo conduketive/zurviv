@@ -1,6 +1,6 @@
 import { Config } from "../config";
 
-const key = Config.ipEncodeKey || '';
+const key = Config.ipEncodeKey || "";
 
 export function logIp(name: string, ip?: string) {
     if (!ip) return;
