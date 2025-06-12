@@ -115,7 +115,8 @@ function getPlayerCardData(
     }
 
     // Insert blank cards for all teammodes
-    const keys = OriginalTeamModes || Object.keys(TeamModeToString) as unknown as TeamMode[];
+    const keys =
+        OriginalTeamModes || (Object.keys(TeamModeToString) as unknown as TeamMode[]);
 
     for (let i = 0; i < keys.length; i++) {
         const teamMode = keys[i];
