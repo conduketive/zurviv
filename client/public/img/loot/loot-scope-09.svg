@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="128"
+   height="128"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="loot-scope-30.svg"
+   inkscape:export-filename="loot-scope-200.svg"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:page
+       x="0"
+       y="0"
+       width="128"
+       height="128"
+       id="page2"
+       margin="0"
+       bleed="0" />
+  </sodipodi:namedview>
+  <text
+     style="font-size:56px;line-height:1.25;-inkscape-font-specification:Arial"
+     x="16.967751"
+     y="83.27684"
+     font-weight="400"
+     font-size="39.912px"
+     font-family="Arial"
+     letter-spacing="0"
+     word-spacing="0"
+     fill="#ffffff"
+     stroke-width="0.998"
+     id="text1"><tspan
+       x="16.967751"
+       y="83.27684"
+       style="font-size:56px;-inkscape-font-specification:Arial"
+       font-size="74.502px"
+       id="tspan1">400</tspan></text>
+  <path
+     d="M 61.455,0.662 V 7.224 C 32.12,8.522 8.522,32.12 7.225,61.455 H 0.661 v 5.09 h 6.562 c 1.298,29.336 24.895,52.933 54.231,54.23 v 6.563 h 5.09 v -6.562 c 29.336,-1.298 52.933,-24.895 54.23,-54.231 h 6.563 v -5.09 h -6.562 C 119.478,32.12 95.88,8.522 66.545,7.225 V 0.661 Z m 0,11.656 v 4.113 h 5.09 v -4.113 c 26.58,1.283 47.854,22.558 49.137,49.137 h -5.61 v 5.09 h 5.61 c -1.283,26.58 -22.558,47.854 -49.137,49.137 v -4.413 h -5.09 v 4.413 C 34.875,114.399 13.601,93.124 12.318,66.545 h 5.111 v -5.09 H 12.318 C 13.601,34.875 34.876,13.601 61.455,12.318 Z"
+     fill="#ffffff"
+     id="path1" />
+</svg>
