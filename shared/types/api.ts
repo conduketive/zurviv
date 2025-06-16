@@ -9,6 +9,7 @@ export const zFindGameBody = z.object({
     autoFill: z.boolean(),
     gameModeIdx: z.number(),
     turnstileToken: z.string().optional(),
+    mode: z.enum(["casual", "competitive", "event"]).optional(),
 });
 
 export type FindGameBody = z.infer<typeof zFindGameBody>;

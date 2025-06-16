@@ -196,16 +196,18 @@ class Application {
                         } else {
                             unblockTeamMode();
                         }
+                    } else if (button.id === "dropdown-main-button-game-mode") {
+                        button.innerHTML = `Game Mode: ${selectedButton.innerText} | ▼`;
                     } else {
                         button.innerHTML = `Team Mode: ${selectedButton.innerText} | ▼`;
                     }
                 }
 
-                function setupDropdown(
+                const setupDropdown = (
                     mainButtonId: string,
                     dropdownClass: string,
                     containerId: string,
-                ): void {
+                ) => {
                     const mainButton = $(`#${mainButtonId}`);
                     const dropdown = $(`.${dropdownClass}`);
 
@@ -222,14 +224,23 @@ class Application {
                     });
 
                     dropdown.on("click", (event) => {
+                        console.log(event.target?.id);
                         if (event.target.tagName === "A") {
+                            if (event.target.id?.startsWith("btn-game-mode-")) {
+                                $("[data-selected-game-mode]").attr(
+                                    "data-selected-game-mode",
+                                    event.target.textContent?.trim().toLowerCase()!,
+                                );
+                            }
+                            this.siteInfo.updatePageFromInfo();
                             updateButtonText(mainButtonId, event.target);
                             dropdown.hide();
                         }
                     });
 
+                    this.siteInfo.updatePageFromInfo();
                     dropdown.addClass("dropdown-menu");
-                }
+                };
 
                 function getSelectedValue(
                     buttonId: string,
@@ -262,6 +273,11 @@ class Application {
                 }
 
                 setupDropdown(
+                    "dropdown-main-button-game-mode",
+                    "dropdown-buttons-game-mode",
+                    "dropdown-container-game-mode",
+                );
+                setupDropdown(
                     "dropdown-main-button-1",
                     "dropdown-buttons-1",
                     "dropdown-container-1",
@@ -282,9 +298,9 @@ class Application {
                             teamOptions,
                         );
                         const totalValue: number = selectedMode + selectedTeam;
-
+                        console.log("selectedMode", selectedMode);
                         SDK.requestMidGameAd(() => {
-                            (this as any).tryQuickStartGame(totalValue);
+                            (this as Application).tryQuickStartGame(totalValue);
                         });
                     });
                 }
@@ -751,6 +767,10 @@ class Application {
                 playerCount: 1,
                 autoFill: true,
                 gameModeIdx,
+                mode: $("[data-selected-game-mode]").attr("data-selected-game-mode") as
+                    | "casual"
+                    | "competitive"
+                    | "event",
             };
 
             const tryQuickStartGameImpl = () => {

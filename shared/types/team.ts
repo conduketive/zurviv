@@ -160,6 +160,7 @@ export const zTeamPlayGameMsg = z.object({
         region: z.string(),
         zones: z.array(z.string()),
         turnstileToken: z.string().optional(),
+        mode: z.string().catch("casual"),
     }),
 });
 

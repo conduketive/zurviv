@@ -1,3 +1,4 @@
+import $ from "jquery";
 export class GameMod {
     lastFrameTime: number;
     frameCount: number;
@@ -615,3 +616,17 @@ export class PingTest {
         };
     }
 }
+
+/*
+ a function that only shows the map mods in the selected game mode
+ run on page load and on dropdown change
+*/
+export const updateSelectedGameMode = (currentSelectedValue: string) => {
+    if ("event" === currentSelectedValue) {
+        $('[data-is-event-map="true"]').show();
+        $('[data-is-event-map="false"]').hide();
+    } else {
+        $('[data-is-event-map="true"]').hide();
+        $('[data-is-event-map="false"]').show();
+    }
+};

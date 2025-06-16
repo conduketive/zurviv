@@ -5,6 +5,7 @@ import type { Info } from "../../shared/types/api";
 import { api } from "./api";
 import type { ConfigManager } from "./config";
 import { device } from "./device";
+import { updateSelectedGameMode } from "./gameMod";
 import type { Localization } from "./ui/localization";
 
 export class SiteInfo {
@@ -43,25 +44,24 @@ export class SiteInfo {
     }
 
     getGameModeStyles() {
+        const eventModes = ["GG", "gamerio"].map((t) => t.toLocaleLowerCase());
         const availableModes = [];
         const modes = this.info.modes || [];
         let dropdownContainer = document.querySelector(".dropdown-buttons-1");
         const dropdownContainerTeam = document.querySelector(".dropdown-buttons-team-1");
+
         if (!this.buttonsCreated) {
             for (let i = 0; i < modes.length; i++) {
+                const mode = modes[i];
                 if (i % 4 === 0) {
-                    const mapNameParts = modes[i].mapName.split("_");
-                    const formattedMapName =
-                        mapNameParts.length > 1
-                            ? mapNameParts[1].charAt(0).toUpperCase() +
-                              mapNameParts[1].slice(1)
-                            : modes[i].mapName.substring(0, 1).toUpperCase() +
-                              modes[i].mapName.substring(1);
+                    const formattedMapName = getFormattedMapName(mode.mapName);
+                    const isEvent = eventModes.includes(mode.mapName.toLocaleLowerCase());
 
                     const newButton = document.createElement("a");
                     newButton.className = "btn-green btn-darken menu-option";
                     newButton.id = `btn-start-mode-${i}`;
                     newButton.textContent = formattedMapName;
+                    newButton.dataset.isEventMap = isEvent.toString();
 
                     dropdownContainer?.appendChild(newButton);
 
@@ -70,40 +70,29 @@ export class SiteInfo {
                         "btn-green btn-darken menu-option team-selection";
                     newButtonTeam.id = `btn-start-mode-team-${i}`;
                     newButtonTeam.textContent = formattedMapName;
+                    newButtonTeam.dataset.isEventMap = isEvent.toString();
 
                     dropdownContainerTeam?.appendChild(newButtonTeam);
                 }
             }
             this.buttonsCreated = true;
         }
+
         for (let i = 0; i < modes.length; i++) {
+            const mode = modes[i];
+            const isEvent = eventModes.includes(mode.mapName.toLocaleLowerCase());
             let button = document.getElementById(`btn-start-mode-${i}`);
             if (button) {
-                const mapNameParts = modes[i].mapName.split("_");
-                const formattedMapName =
-                    mapNameParts.length > 1
-                        ? mapNameParts[1].charAt(0).toUpperCase() +
-                          mapNameParts[1].slice(1)
-                        : modes[i].mapName.substring(0, 1).toUpperCase() +
-                          modes[i].mapName.substring(1);
-
-                button.innerHTML = `${formattedMapName}`;
+                button.innerHTML = getFormattedMapName(mode.mapName);
+                button.dataset.isEventMap = isEvent.toString();
             }
 
             button = document.getElementById(`btn-start-mode-team-${i}`);
             if (button) {
-                const mapNameParts = modes[i].mapName.split("_");
-                const formattedMapName =
-                    mapNameParts.length > 1
-                        ? mapNameParts[1].charAt(0).toUpperCase() +
-                          mapNameParts[1].slice(1)
-                        : modes[i].mapName.substring(0, 1).toUpperCase() +
-                          modes[i].mapName.substring(1);
-
-                button.innerHTML = `${formattedMapName}`;
+                button.innerHTML = getFormattedMapName(mode.mapName);
+                button.dataset.isEventMap = isEvent.toString();
             }
 
-            const mode = modes[i];
             const mapDef = (MapDefs[mode.mapName as keyof typeof MapDefs] || MapDefs.main)
                 .desc;
             const buttonText = mapDef.buttonText
@@ -116,6 +105,11 @@ export class SiteInfo {
                 enabled: mode.enabled,
             });
         }
+
+        // hide inactive game modes
+        updateSelectedGameMode(
+            $("[data-selected-game-mode]").attr("data-selected-game-mode")!,
+        );
         return availableModes;
     }
 
@@ -219,4 +213,13 @@ export class SiteInfo {
             featuredYoutuberElem.css("display", displayYoutuber ? "block" : "none");
         }
     }
+}
+
+export function getFormattedMapName(mapName: string) {
+    const mapNameParts = mapName.split("_");
+    const formattedMapName =
+        mapNameParts.length > 1
+            ? mapNameParts[1].charAt(0).toUpperCase() + mapNameParts[1].slice(1)
+            : mapName.substring(0, 1).toUpperCase() + mapName.substring(1);
+    return formattedMapName;
 }

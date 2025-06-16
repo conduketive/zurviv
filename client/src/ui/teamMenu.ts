@@ -16,7 +16,7 @@ import { device } from "../device";
 import { helpers } from "../helpers";
 import type { PingTest } from "../pingTest";
 import { SDK } from "../sdk";
-import type { SiteInfo } from "../siteInfo";
+import { type SiteInfo, getFormattedMapName } from "../siteInfo";
 import type { Localization } from "./localization";
 
 function errorTypeToString(type: string, localization: Localization) {
@@ -48,6 +48,7 @@ export class TeamMenu {
     serverSelect = $("#team-server-select");
     queueMode1 = $("#dropdown-main-button-team-1");
     queueMode2 = $("#dropdown-main-button-team-2");
+    queueTeamModeGame = $("#dropdown-main-button-team-game-mode");
     teamSelection = $(".team-selection");
     fillAuto = $("#btn-team-fill-auto");
     fillNone = $("#btn-team-fill-none");
@@ -86,6 +87,7 @@ export class TeamMenu {
 
     selectedMode: number = this.roomData.gameModeIdx || 0;
     selectedTeam: number = this.roomData.maxPlayers || 1;
+    selectedGameMode: string = "casual";
 
     constructor(
         public config: ConfigManager,
@@ -100,6 +102,11 @@ export class TeamMenu {
     }
 
     initUI() {
+        this.setupDropdown(
+            "dropdown-main-button-team-game-mode",
+            "dropdown-buttons-team-game-mode",
+            "dropdown-container-team-game-mode",
+        );
         this.setupDropdown(
             "dropdown-main-button-team-1",
             "dropdown-buttons-team-1",
@@ -129,14 +136,13 @@ export class TeamMenu {
                 this.modeOptions = {};
                 for (let i = 0; i < modes.length; i++) {
                     if (i % 4 === 0) {
-                        const mapNameParts = modes[i].mapName.split("_");
-                        const formattedMapName =
-                            mapNameParts.length > 1
-                                ? mapNameParts[1].charAt(0).toUpperCase() +
-                                  mapNameParts[1].slice(1)
-                                : modes[i].mapName.substring(0, 1).toUpperCase() +
-                                  modes[i].mapName.substring(1);
-
+                        const formattedMapName = getFormattedMapName(modes[i].mapName);
+                        if (
+                            ["gg", "gamerio"].includes(
+                                formattedMapName.toLocaleLowerCase(),
+                            )
+                        )
+                            continue;
                         this.modeOptions[formattedMapName] = i;
                     }
                 }
@@ -273,6 +279,12 @@ export class TeamMenu {
                 } else {
                     this.unblockTeamMode();
                 }
+            } else if (button.id === "dropdown-main-button-team-game-mode") {
+                button.innerHTML = `Game Mode: ${selectedButton.innerText} | ▼`;
+                this.selectedGameMode = selectedButton.innerText
+                    .trim()
+                    .toLocaleLowerCase()!;
+                console.log({ selectedGameMode: this.selectedGameMode });
             } else {
                 button.innerHTML = `Team Mode: ${selectedButton.innerText} | ▼`;
                 this.selectedTeam =
@@ -307,12 +319,11 @@ export class TeamMenu {
     }
 
     getMode(): void {
-        if (this.isLeader) {
-            console.log("Updating mode:", this.selectedMode, "team:", this.selectedTeam);
-            const totalValue = this.selectedMode + this.selectedTeam;
-            this.setRoomProperty("gameModeIdx", totalValue);
-            this.setRoomProperty("maxPlayers", this.selectedTeam);
-        }
+        if (!this.isLeader) return;
+        console.log("Updating mode:", this.selectedMode, "team:", this.selectedTeam);
+        const totalValue = this.selectedMode + this.selectedTeam;
+        this.setRoomProperty("gameModeIdx", totalValue);
+        this.setRoomProperty("maxPlayers", this.selectedTeam);
     }
 
     getPlayerById(playerId: number) {
@@ -520,6 +531,7 @@ export class TeamMenu {
                 version,
                 region,
                 zones,
+                mode: this.selectedGameMode,
             };
 
             helpers.verifyTurnstile(this.roomData.captchaEnabled, (token) => {

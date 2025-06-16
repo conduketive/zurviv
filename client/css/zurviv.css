@@ -1,0 +1,20 @@
+#btn-help {
+  display: none;
+}
+
+.dropdown-buttons-game-mode,
+.dropdown-buttons-team-game-mode {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: #a3c082;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  z-index: 2;
+}
+
+#team-menu-options #player-options {
+  display: none;
+}
