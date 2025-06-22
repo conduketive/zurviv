@@ -9,7 +9,7 @@ export const zFindGameBody = z.object({
     autoFill: z.boolean(),
     gameModeIdx: z.number(),
     turnstileToken: z.string().optional(),
-    mode: z.enum(["casual", "competitive", "event"]).optional(),
+    mode: z.enum(["casual", "competitive", "event"]).catch("casual"),
 });
 
 export type FindGameBody = z.infer<typeof zFindGameBody>;
@@ -30,7 +30,8 @@ export type FindGameError =
     | "rate_limited"
     | "banned"
     | "behind_proxy"
-    | "invalid_captcha";
+    | "invalid_captcha"
+    | "invalid_role";
 
 export type FindGameResponse =
     | {

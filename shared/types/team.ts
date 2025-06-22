@@ -14,6 +14,7 @@ export type TeamMenuErrorType =
     | "find_game_full"
     | "find_game_invalid_protocol"
     | "find_game_invalid_captcha"
+    | "find_game_invalid_role"
     | "kicked"
     | "banned"
     | "behind_proxy"
@@ -160,7 +161,7 @@ export const zTeamPlayGameMsg = z.object({
         region: z.string(),
         zones: z.array(z.string()),
         turnstileToken: z.string().optional(),
-        mode: z.string().catch("casual"),
+        mode: z.enum(["casual", "competitive", "event"]).catch("casual"),
     }),
 });
 

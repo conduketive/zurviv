@@ -117,7 +117,7 @@ app.post("/api/find_game", validateParams(zFindGameBody), async (c) => {
 
     const token = randomUUID();
     let userId: string | null = null;
-
+    let hasServerRole = false;
     const sessionId = getCookie(c, "session") ?? null;
 
     if (sessionId) {
@@ -128,13 +128,22 @@ app.post("/api/find_game", validateParams(zFindGameBody), async (c) => {
             if (account.user?.banned) {
                 userId = null;
             }
+            hasServerRole = account.user?.hasServerRole ?? false;
         } catch (err) {
             server.logger.error("/api/find_game: Failed to validate session", err);
             userId = null;
+            hasServerRole = false;
+        }
+    }
+    const body = c.req.valid("json");
+    if (body.mode === "event" || body.mode === "competitive") {
+        if (!hasServerRole) {
+            return c.json<FindGameResponse>({ error: "invalid_role" });
         }
     }
 
-    const body = c.req.valid("json");
+    console.log({ body });
+
     if (server.captchaEnabled && !userId) {
         if (!body.turnstileToken) {
             return c.json<FindGameResponse>({ error: "invalid_captcha" });

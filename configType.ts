@@ -269,6 +269,11 @@ export interface ConfigType {
         DISCORD_SECRET_ID?: string;
 
         /**
+         * Discord bot token.
+         */
+        DISCORD_BOT_TOKEN?: string;
+
+        /**
          * Google client ID.
          * If this and the secret ID are present the google login button will be enabled client-side.
          */

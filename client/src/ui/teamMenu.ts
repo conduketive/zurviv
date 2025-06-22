@@ -31,6 +31,7 @@ function errorTypeToString(type: string, localization: Localization) {
         find_game_full: localization.translate("index-failed-finding-game"),
         find_game_invalid_protocol: localization.translate("index-invalid-protocol"),
         find_game_invalid_captcha: localization.translate("index-invalid-captcha"),
+        find_game_invalid_role: localization.translate("index-invalid-role"),
         kicked: localization.translate("index-team-kicked"),
         banned: localization.translate("index-ip-banned"),
         behind_proxy: "behind_proxy", // this will get passed to the main app to show a modal

@@ -32,6 +32,7 @@ import {
 interface SocketData {
     rateLimit: Record<symbol, number>;
     player: Player;
+    hasServerRole: boolean;
     ip: string;
 }
 
@@ -69,6 +70,7 @@ class Player {
         public teamMenu: TeamMenu,
         public userId: string | null,
         public ip: string,
+        public hasServerRole: boolean,
     ) {
         // disconnect if didn't join a room in 5 seconds
         this.disconnectTimeout = setTimeout(() => {
@@ -243,6 +245,15 @@ class Room {
 
         const tokenMap = new Map<Player, string>();
 
+        if (data.mode === "competitive" || data.mode === "event") {
+            for (const player of this.players) {
+                if (!player.hasServerRole) {
+                    this.data.lastError = "find_game_invalid_role";
+                    this.sendState();
+                    return;
+                }
+            }
+        }
         const playerData = this.players.map((p) => {
             const token = randomUUID();
             tokenMap.set(p, token);
@@ -431,6 +442,7 @@ export class TeamMenu {
                 wsRateLimit.ipConnected(ip!);
 
                 let userId: string | null = null;
+                let hasServerRole = false;
                 const sessionId = getCookie(c, "session") ?? null;
 
                 if (sessionId) {
@@ -441,9 +453,13 @@ export class TeamMenu {
                         if (account.user?.banned) {
                             userId = null;
                         }
+
+                        // !!
+                        hasServerRole = account.user?.hasServerRole ?? false;
                     } catch (err) {
                         this.logger.error(`Failed to validate session:`, err);
                         userId = null;
+                        hasServerRole = false;
                     }
                 }
 
@@ -451,6 +467,7 @@ export class TeamMenu {
                     onOpen(_event, ws) {
                         ws.raw = {
                             ip,
+                            hasServerRole,
                             rateLimit: {},
                             player: undefined,
                         };
@@ -467,7 +484,12 @@ export class TeamMenu {
                             ws.close();
                             return;
                         }
-                        teamMenu.onOpen(ws as WSContext<SocketData>, userId, ip!);
+                        teamMenu.onOpen(
+                            ws as WSContext<SocketData>,
+                            userId,
+                            ip!,
+                            hasServerRole!,
+                        );
                     },
 
                     onMessage(event, ws) {
@@ -500,8 +522,13 @@ export class TeamMenu {
         );
     }
 
-    onOpen(ws: WSContext<SocketData>, userId: string | null, ip: string) {
-        const player = new Player(ws, this, userId, ip);
+    onOpen(
+        ws: WSContext<SocketData>,
+        userId: string | null,
+        ip: string,
+        hasServerRole: boolean,
+    ) {
+        const player = new Player(ws, this, userId, ip, hasServerRole);
         ws.raw!.player = player;
     }
 

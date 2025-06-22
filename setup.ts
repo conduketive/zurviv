@@ -181,6 +181,14 @@ async function setupAccounts(config: PartialConfig) {
             required: true,
         });
         config.secrets.DISCORD_SECRET_ID = clientSecret.value;
+
+        const botToken = await prompt<{ value: string }>({
+            message: "Enter discord bot token",
+            name: "value",
+            type: "text",
+            required: false,
+        });
+        config.secrets.DISCORD_BOT_TOKEN = botToken.value;
     }
 }
 

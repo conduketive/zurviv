@@ -915,6 +915,7 @@ class Application {
             full: this.localization.translate("index-failed-finding-game"),
             invalid_protocol: this.localization.translate("index-invalid-protocol"),
             invalid_captcha: this.localization.translate("index-invalid-captcha"),
+            invalid_role: this.localization.translate("index-invalid-role"),
             join_game_failed: this.localization.translate("index-failed-joining-game"),
             rate_limited: this.localization.translate("index-rate-limited"),
         };
