@@ -41,11 +41,17 @@ class Region {
     }
 
     async findGame(body: FindGamePrivateBody): Promise<FindGamePrivateRes> {
-        const data = await this.fetch<FindGamePrivateRes>("api/find_game", body);
-        if (!data) {
-            return { error: "full" };
+        try {
+
+            const data = await this.fetch<FindGamePrivateRes>("api/find_game", body);
+            if (!data) {
+                return { error: "full" };
+            }
+            return data;
+        } catch (err) {
+            defaultLogger.error(`Error fetching region ${this.id}`, err);
+            return { error: "join_game_failed" };
         }
-        return data;
     }
 }
 
