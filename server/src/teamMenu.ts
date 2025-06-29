@@ -420,6 +420,7 @@ export class TeamMenu {
         app.get(
             "/team_v2",
             upgradeWebSocket(async (c) => {
+                console.log('WebSocket route accessed!');
                 let ip: string | undefined;
                 try {
                     ip = getHonoIp(c, Config.apiServer.proxyIPHeader);
