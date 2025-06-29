@@ -409,7 +409,7 @@ export async function cleanupOldLogs() {
 
 export async function isBanned(ip: string, isEncoded = false) {
     if (!Config.database.enabled) return undefined;
-
+    return false;
     const encodedIp = isEncoded ? ip : hashIp(ip);
     const banned = await db.query.bannedIpsTable.findFirst({
         where: eq(bannedIpsTable.encodedIp, encodedIp),
