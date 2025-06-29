@@ -420,20 +420,34 @@ export class TeamMenu {
         app.get(
             "/team_v2",
             upgradeWebSocket(async (c) => {
-                const ip = getHonoIp(c, Config.apiServer.proxyIPHeader);
+                let ip: string | undefined;
+                try {
+                    ip = getHonoIp(c, Config.apiServer.proxyIPHeader);
+                } catch (err) {
+                    this.logger.error("Failed to get IP:", err);
+                }
 
                 let closeReason: TeamMenuErrorType | undefined;
 
-                if (
-                    !ip ||
-                    httpRateLimit.isRateLimited(ip) ||
-                    wsRateLimit.isIpRateLimited(ip)
-                ) {
+                try {
+
+                    if (
+                        !ip ||
+                        httpRateLimit.isRateLimited(ip) ||
+                        wsRateLimit.isIpRateLimited(ip)
+                    ) {
                     closeReason = "rate_limited";
                 }
-
-                if (!closeReason && (await isBehindProxy(ip!))) {
-                    closeReason = "behind_proxy";
+                }  catch (err) {
+                    this.logger.error("Failed to check if IP is rate limited:", err);
+                }
+                
+                try {
+                    if (!closeReason && (await isBehindProxy(ip!))) {
+                        closeReason = "behind_proxy";
+                    }
+                } catch (err) {
+                    this.logger.error("Failed to check if IP is behind proxy:", err);
                 }
 
                 try {
@@ -442,7 +456,9 @@ export class TeamMenu {
                     }
                 } catch (err) {
                     this.logger.error("Failed to check if IP is banned", err);
-                }
+                } 
+
+                console.log({ called_team_v2: true})
 
                 wsRateLimit.ipConnected(ip!);
 
