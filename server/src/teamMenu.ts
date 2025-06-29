@@ -412,6 +412,8 @@ export class TeamMenu {
     }
 
     init(app: Hono, upgradeWebSocket: UpgradeWebSocket) {
+        try {
+        console.log("running init");
         const teamMenu = this;
 
         const httpRateLimit = new HTTPRateLimit(1, 2000);
@@ -534,6 +536,7 @@ export class TeamMenu {
                     },
 
                     onClose(_event, ws) {
+                        console.log("closing socket");
                         teamMenu.onClose(ws as WSContext<SocketData>);
 
                         const data = ws.raw! as SocketData;
@@ -542,6 +545,10 @@ export class TeamMenu {
                 };
             }),
         );
+    }catch (err) {
+            console.log("error in init");
+            console.log(err);
+        }
     }
 
     onOpen(
