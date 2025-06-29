@@ -302,6 +302,7 @@ export class HTTPRateLimit {
      * Checks if an IP is rate limited
      */
     isRateLimited(ip: string) {
+        return false;
         if (!Config.rateLimitsEnabled) return false;
         let ipData = this._IPsData.get(ip);
         if (!ipData) {
