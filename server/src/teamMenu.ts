@@ -413,139 +413,138 @@ export class TeamMenu {
 
     init(app: Hono, upgradeWebSocket: UpgradeWebSocket) {
         try {
-        console.log("running init");
-        const teamMenu = this;
+            console.log("running init");
+            const teamMenu = this;
 
-        const httpRateLimit = new HTTPRateLimit(1, 2000);
-        const wsRateLimit = new WebSocketRateLimit(5, 1000, 5);
+            const httpRateLimit = new HTTPRateLimit(1, 2000);
+            const wsRateLimit = new WebSocketRateLimit(5, 1000, 5);
 
-        app.get(
-            "/team_v2",
-            upgradeWebSocket(async (c) => {
-                console.log('WebSocket route accessed!');
-                let ip: string | undefined;
-                try {
-                    ip = getHonoIp(c, Config.apiServer.proxyIPHeader);
-                } catch (err) {
-                    this.logger.error("Failed to get IP:", err);
-                }
-
-                let closeReason: TeamMenuErrorType | undefined;
-
-                try {
-
-                    if (
-                        !ip ||
-                        httpRateLimit.isRateLimited(ip) ||
-                        wsRateLimit.isIpRateLimited(ip)
-                    ) {
-                    closeReason = "rate_limited";
-                }
-                }  catch (err) {
-                    this.logger.error("Failed to check if IP is rate limited:", err);
-                }
-                
-                try {
-                    if (!closeReason && (await isBehindProxy(ip!))) {
-                        closeReason = "behind_proxy";
-                    }
-                } catch (err) {
-                    this.logger.error("Failed to check if IP is behind proxy:", err);
-                }
-
-                try {
-                    if (await isBanned(ip!)) {
-                        closeReason = "banned";
-                    }
-                } catch (err) {
-                    this.logger.error("Failed to check if IP is banned", err);
-                } 
-
-                console.log({ called_team_v2: true})
-
-                wsRateLimit.ipConnected(ip!);
-
-                let userId: string | null = null;
-                let hasServerRole = false;
-                const sessionId = getCookie(c, "session") ?? null;
-
-                if (sessionId) {
+            app.get(
+                "/team_v2",
+                upgradeWebSocket(async (c) => {
+                    console.log("WebSocket route accessed!");
+                    let ip: string | undefined;
                     try {
-                        const account = await validateSessionToken(sessionId);
-                        userId = account.user?.id || null;
-
-                        if (account.user?.banned) {
-                            userId = null;
-                        }
-
-                        // !!
-                        hasServerRole = account.user?.hasServerRole ?? false;
+                        ip = getHonoIp(c, Config.apiServer.proxyIPHeader);
                     } catch (err) {
-                        this.logger.error(`Failed to validate session:`, err);
-                        userId = null;
-                        hasServerRole = false;
+                        this.logger.error("Failed to get IP:", err);
                     }
-                }
 
-                return {
-                    onOpen(_event, ws) {
-                        ws.raw = {
-                            ip,
-                            hasServerRole,
-                            rateLimit: {},
-                            player: undefined,
-                        };
+                    let closeReason: TeamMenuErrorType | undefined;
 
-                        if (closeReason) {
-                            ws.send(
-                                JSON.stringify({
-                                    type: "error",
-                                    data: {
-                                        type: closeReason as TeamMenuErrorType,
-                                    },
-                                } satisfies TeamErrorMsg),
-                            );
-                            ws.close();
-                            return;
+                    try {
+                        if (
+                            !ip ||
+                            httpRateLimit.isRateLimited(ip) ||
+                            wsRateLimit.isIpRateLimited(ip)
+                        ) {
+                            closeReason = "rate_limited";
                         }
-                        teamMenu.onOpen(
-                            ws as WSContext<SocketData>,
-                            userId,
-                            ip!,
-                            hasServerRole!,
-                        );
-                    },
+                    } catch (err) {
+                        this.logger.error("Failed to check if IP is rate limited:", err);
+                    }
 
-                    onMessage(event, ws) {
-                        const data = ws.raw! as SocketData;
-
-                        if (wsRateLimit.isRateLimited(data.rateLimit)) {
-                            ws.close();
-                            return;
+                    try {
+                        if (!closeReason && (await isBehindProxy(ip!))) {
+                            closeReason = "behind_proxy";
                         }
+                    } catch (err) {
+                        this.logger.error("Failed to check if IP is behind proxy:", err);
+                    }
 
+                    try {
+                        if (await isBanned(ip!)) {
+                            closeReason = "banned";
+                        }
+                    } catch (err) {
+                        this.logger.error("Failed to check if IP is banned", err);
+                    }
+
+                    console.log({ called_team_v2: true });
+
+                    wsRateLimit.ipConnected(ip!);
+
+                    let userId: string | null = null;
+                    let hasServerRole = false;
+                    const sessionId = getCookie(c, "session") ?? null;
+
+                    if (sessionId) {
                         try {
-                            teamMenu.onMsg(
-                                ws as WSContext<SocketData>,
-                                event.data as string,
-                            );
+                            const account = await validateSessionToken(sessionId);
+                            userId = account.user?.id || null;
+
+                            if (account.user?.banned) {
+                                userId = null;
+                            }
+
+                            // !!
+                            hasServerRole = account.user?.hasServerRole ?? false;
                         } catch (err) {
-                            teamMenu.logger.error("Error processing message:", err);
-                            ws.close();
+                            this.logger.error(`Failed to validate session:`, err);
+                            userId = null;
+                            hasServerRole = false;
                         }
-                    },
+                    }
 
-                    onClose(_event, ws) {
-                        console.log("closing socket");
-                        teamMenu.onClose(ws as WSContext<SocketData>);
+                    return {
+                        onOpen(_event, ws) {
+                            ws.raw = {
+                                ip,
+                                hasServerRole,
+                                rateLimit: {},
+                                player: undefined,
+                            };
 
-                        const data = ws.raw! as SocketData;
-                        wsRateLimit.ipDisconnected(data.ip);
-                    },
-                };
-            }),
-        );
-    }catch (err) {
+                            if (closeReason) {
+                                ws.send(
+                                    JSON.stringify({
+                                        type: "error",
+                                        data: {
+                                            type: closeReason as TeamMenuErrorType,
+                                        },
+                                    } satisfies TeamErrorMsg),
+                                );
+                                ws.close();
+                                return;
+                            }
+                            teamMenu.onOpen(
+                                ws as WSContext<SocketData>,
+                                userId,
+                                ip!,
+                                hasServerRole!,
+                            );
+                        },
+
+                        onMessage(event, ws) {
+                            const data = ws.raw! as SocketData;
+
+                            if (wsRateLimit.isRateLimited(data.rateLimit)) {
+                                ws.close();
+                                return;
+                            }
+
+                            try {
+                                teamMenu.onMsg(
+                                    ws as WSContext<SocketData>,
+                                    event.data as string,
+                                );
+                            } catch (err) {
+                                teamMenu.logger.error("Error processing message:", err);
+                                ws.close();
+                            }
+                        },
+
+                        onClose(_event, ws) {
+                            console.log("closing socket");
+                            teamMenu.onClose(ws as WSContext<SocketData>);
+
+                            const data = ws.raw! as SocketData;
+                            wsRateLimit.ipDisconnected(data.ip);
+                        },
+                    };
+                }),
+            );
+        } catch (err) {
             console.log("error in init");
             console.log(err);
         }

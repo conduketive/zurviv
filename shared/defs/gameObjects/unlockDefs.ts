@@ -1,7 +1,10 @@
 import { CrosshairDefs } from "./crosshairDefs";
 import { HealEffectDefs } from "./healEffectDefs";
 import { PassDefs } from "./passDefs";
-import { accountUnlocks as accountOutfitUnlocks, defaultUnlocks as defaultOutfitUnlocks } from "./zurvivUnlockDefs";
+import {
+    accountUnlocks as accountOutfitUnlocks,
+    defaultUnlocks as defaultOutfitUnlocks,
+} from "./zurvivUnlockDefs";
 
 const _allowedHealEffects = Object.keys(HealEffectDefs);
 const _allowedMeleeSkins = [
@@ -224,10 +227,6 @@ export const UnlockDefs: Record<UnlockDefKey, UnlockDef> = {
         type: "unlock",
         name: "new-account",
         free: true,
-        unlocks: [
-            ...new Set([
-                ...accountOutfitUnlocks
-            ])
-        ],
+        unlocks: [...new Set([...accountOutfitUnlocks])],
     },
 };

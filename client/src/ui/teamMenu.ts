@@ -16,7 +16,7 @@ import { device } from "../device";
 import { helpers } from "../helpers";
 import type { PingTest } from "../pingTest";
 import { SDK } from "../sdk";
-import { type SiteInfo, getFormattedMapName } from "../siteInfo";
+import { getFormattedMapName, type SiteInfo } from "../siteInfo";
 import type { Localization } from "./localization";
 
 function errorTypeToString(type: string, localization: Localization) {

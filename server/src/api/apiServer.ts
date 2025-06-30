@@ -42,7 +42,6 @@ class Region {
 
     async findGame(body: FindGamePrivateBody): Promise<FindGamePrivateRes> {
         try {
-
             const data = await this.fetch<FindGamePrivateRes>("api/find_game", body);
             if (!data) {
                 return { error: "failed_to_find_game" };

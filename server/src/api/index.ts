@@ -90,7 +90,7 @@ app.post("/api/find_game", validateParams(zFindGameBody), async (c) => {
     const ip = getHonoIp(c, Config.apiServer.proxyIPHeader);
 
     if (!ip) {
-        return c.json({error: "failed to find ip"}, 500);
+        return c.json({ error: "failed to find ip" }, 500);
     }
 
     if (findGameRateLimit.isRateLimited(ip)) {
