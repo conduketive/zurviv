@@ -8,7 +8,7 @@ import { Config } from "../../../../config";
 import { checkForBadWords } from "../../../../utils/serverHelpers";
 import { createSession, invalidateSession } from "../../../auth";
 import { db } from "../../../db";
-import { type UsersTableInsert, itemsTable, usersTable } from "../../../db/schema";
+import { itemsTable, type UsersTableInsert, usersTable } from "../../../db/schema";
 import { userHasRole } from "./hasDiscordRole";
 
 let oauthBaseURL: URL | undefined = undefined;
