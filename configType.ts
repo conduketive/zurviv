@@ -314,6 +314,8 @@ export interface ConfigType {
          */
         AIP_PLACEMENT_ID?: string;
         GAMEMONETIZE_ID?: string;
+
+        AXIOM_TOKEN?: string;
     };
 
     /**
