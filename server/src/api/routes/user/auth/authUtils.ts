@@ -1,5 +1,5 @@
 import { generateRandomString } from "@oslojs/crypto/random";
-import { eq } from "drizzle-orm";
+import { count, eq } from "drizzle-orm";
 import type { Context } from "hono";
 import { deleteCookie, setCookie } from "hono/cookie";
 import slugify from "slugify";
@@ -81,6 +81,7 @@ export function deleteSessionTokenCookie(c: Context) {
 type Provider = "discord" | "google";
 
 export async function handleAuthUser(c: Context, provider: Provider, authId: string) {
+
     const existingUser = await db.query.usersTable.findFirst({
         where: eq(usersTable.authId, authId),
         columns: {
@@ -155,6 +156,16 @@ export async function createNewUser(payload: UsersTableInsert) {
             timeAcquired: Date.now(),
         };
     });
+
+    const usersCount = await db.select({ count: count() }).from(usersTable);
+    if (usersCount && usersCount[0]?.count <= 30) { 
+        items.push({
+            userId: payload.id,
+            source: unlockType,
+            type: "knuckles_legendary",
+            timeAcquired: Date.now(),
+        });
+    }
 
     await db.insert(itemsTable).values(items);
 }

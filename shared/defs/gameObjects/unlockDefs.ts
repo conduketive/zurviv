@@ -2,8 +2,9 @@ import { CrosshairDefs } from "./crosshairDefs";
 import { HealEffectDefs } from "./healEffectDefs";
 import { PassDefs } from "./passDefs";
 import {
-    accountUnlocks as accountOutfitUnlocks,
-    defaultUnlocks as defaultOutfitUnlocks,
+    accountOutfitUnlocks,
+    defaultMeleeUnlocks,
+    defaultOutfitUnlocks,
 } from "./zurvivUnlockDefs";
 
 const _allowedHealEffects = Object.keys(HealEffectDefs);
@@ -215,11 +216,11 @@ export const UnlockDefs: Record<UnlockDefKey, UnlockDef> = {
             /* use this to unlock everything :) */
             ...new Set([
                 ...defaultOutfitUnlocks,
-                ..._allowedMeleeSkins,
                 ..._allowedEmotes,
+                ...defaultMeleeUnlocks,
                 ..._allowedHealEffects,
                 ...Object.keys(CrosshairDefs),
-                ...PassDefs.pass_survivr1.items.map((item) => item.item),
+                // ...PassDefs.pass_survivr1.items.map((item) => item.item),
             ]),
         ],
     },

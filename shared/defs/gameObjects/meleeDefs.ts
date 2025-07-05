@@ -1075,6 +1075,18 @@ const SkinDefs: Record<string, MeleeDef> = {
             sprite: "loot-melee-knuckles-heroic.img",
         },
     }),
+    knuckles_legendary: defineMeleeSkin("knuckles", {
+        name: "Knuckles Legendary",
+        rarity: 5,
+        lore: "For the fastest of them all.",
+        noPotatoSwap: false,
+        lootImg: {
+            sprite: "loot-melee-knuckles-legendary.img",
+        },
+        worldImg: {
+            sprite: "loot-melee-knuckles-legendary.img",
+        },
+    }),
     karambit_rugged: defineMeleeSkin("karambit", {
         name: "Karambit Rugged",
         rarity: 3,

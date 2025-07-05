@@ -8560,10 +8560,30 @@
             "h": 128
           }
         },
-        "loot-melee-knuckles-rusted.img": {
+        "loot-melee-knuckles-legendary.img": {
           "frame": {
             "x": 561,
             "y": 1771,
+            "w": 92,
+            "h": 58
+          },
+          "rotated": false,
+          "trimmed": true,
+          "spriteSourceSize": {
+            "x": 18,
+            "y": 35,
+            "w": 92,
+            "h": 58
+          },
+          "sourceSize": {
+            "w": 128,
+            "h": 128
+          }
+        },
+        "loot-melee-knuckles-rusted.img": {
+          "frame": {
+            "x": 2378,
+            "y": 1188,
             "w": 92,
             "h": 58
           },

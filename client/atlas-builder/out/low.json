@@ -8560,10 +8560,30 @@
             "h": 64
           }
         },
-        "loot-melee-knuckles-rusted.img": {
+        "loot-melee-knuckles-legendary.img": {
           "frame": {
             "x": 634,
             "y": 465,
+            "w": 46,
+            "h": 29
+          },
+          "rotated": false,
+          "trimmed": true,
+          "spriteSourceSize": {
+            "x": 9,
+            "y": 17,
+            "w": 46,
+            "h": 29
+          },
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          }
+        },
+        "loot-melee-knuckles-rusted.img": {
+          "frame": {
+            "x": 708,
+            "y": 1744,
             "w": 46,
             "h": 29
           },
@@ -13882,8 +13902,8 @@
         },
         "ping-part-eighth-highlight.img": {
           "frame": {
-            "x": 1015,
-            "y": 1672,
+            "x": 1026,
+            "y": 1058,
             "w": 25,
             "h": 21
           },
@@ -13902,8 +13922,8 @@
         },
         "ping-part-eighth.img": {
           "frame": {
-            "x": 1026,
-            "y": 1058,
+            "x": 390,
+            "y": 1915,
             "w": 25,
             "h": 21
           },
@@ -16122,8 +16142,8 @@
         },
         "skull-outlined.img": {
           "frame": {
-            "x": 708,
-            "y": 1744,
+            "x": 1015,
+            "y": 1672,
             "w": 26,
             "h": 30
           },

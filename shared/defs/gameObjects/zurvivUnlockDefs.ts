@@ -1,4 +1,7 @@
-export const defaultUnlocks = [
+export const defaultMeleeUnlocks = [
+    "fists"
+]
+export const defaultOutfitUnlocks = [
     "outfitBase",
     "outfitWhite",
     "outfitKeyLime",
@@ -8,7 +11,7 @@ export const defaultUnlocks = [
     "outfitWoodland",
 ];
 
-export const accountUnlocks = [
+export const accountOutfitUnlocks = [
     "outfitAqua",
     "outfitCasanova",
     "outfitCoral",
