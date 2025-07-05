@@ -1,12 +1,18 @@
 import { Config } from "../../../../config";
 
-const GUILD_ID = "1385955477912948806";
-const ROLE_ID = "1385963373564399616";
+// unique to zurviv only, so hardcoding them for now
+const GUILD_ID = "1007749611122855977";
+const ROLE_ID = "1232222683832389642";
 
 export async function getUserRolesInServer(
     userId: string,
     guildId = GUILD_ID,
-): Promise<string[] | null> {
+): Promise<string[]> {
+    if ( ! Config.secrets.DISCORD_BOT_TOKEN) {
+        console.error("No discord bot token set, cannot fetch user roles");
+        return []
+    }
+
     try {
         const response = await fetch(
             `https://discord.com/api/guilds/${guildId}/members/${userId}`,
@@ -18,10 +24,10 @@ export async function getUserRolesInServer(
             },
         );
 
-        console.log({ response });
         if (!response.ok) {
             if (response.status === 404) {
-                return null;
+                console.error("User not found in server");
+                return [];
             }
             throw new Error(`Discord API error: ${response.status}`);
         }
@@ -33,11 +39,10 @@ export async function getUserRolesInServer(
                 username: string;
             };
         };
-
         return memberData.roles;
     } catch (error) {
         console.error("Error fetching user roles:", error);
-        return null;
+        return [];
     }
 }
 
@@ -47,5 +52,5 @@ export async function userHasRole(
     roleId = ROLE_ID,
 ): Promise<boolean> {
     const roles = await getUserRolesInServer(userId, guildId);
-    return roles ? roles.includes(roleId) : false;
+    return roles.includes(roleId);
 }
