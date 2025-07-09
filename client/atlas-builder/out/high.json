@@ -8460,6 +8460,26 @@
             "h": 128
           }
         },
+        "loot-melee-karambit-winner.img": {
+          "frame": {
+            "x": 561,
+            "y": 1771,
+            "w": 100,
+            "h": 38
+          },
+          "rotated": false,
+          "trimmed": true,
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 100,
+            "h": 38
+          },
+          "sourceSize": {
+            "w": 100,
+            "h": 38
+          }
+        },
         "loot-melee-katana-demo.img": {
           "frame": {
             "x": 2,
@@ -8562,8 +8582,8 @@
         },
         "loot-melee-knuckles-legendary.img": {
           "frame": {
-            "x": 561,
-            "y": 1771,
+            "x": 2378,
+            "y": 1188,
             "w": 92,
             "h": 58
           },
@@ -8582,8 +8602,8 @@
         },
         "loot-melee-knuckles-rusted.img": {
           "frame": {
-            "x": 2378,
-            "y": 1188,
+            "x": 2001,
+            "y": 3446,
             "w": 92,
             "h": 58
           },

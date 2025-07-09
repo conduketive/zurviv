@@ -6682,8 +6682,8 @@
         },
         "gun-dp28-top-01.img": {
           "frame": {
-            "x": 593,
-            "y": 1676,
+            "x": 1153,
+            "y": 2011,
             "w": 35,
             "h": 35
           },
@@ -7022,8 +7022,8 @@
         },
         "gun-potato-smg-top-01.img": {
           "frame": {
-            "x": 1076,
-            "y": 978,
+            "x": 1056,
+            "y": 1096,
             "w": 32,
             "h": 32
           },
@@ -8442,8 +8442,8 @@
         },
         "loot-melee-karambit-rugged.img": {
           "frame": {
-            "x": 421,
-            "y": 1739,
+            "x": 580,
+            "y": 294,
             "w": 50,
             "h": 21
           },
@@ -8458,6 +8458,26 @@
           "sourceSize": {
             "w": 64,
             "h": 64
+          }
+        },
+        "loot-melee-karambit-winner.img": {
+          "frame": {
+            "x": 421,
+            "y": 1739,
+            "w": 50,
+            "h": 19
+          },
+          "rotated": false,
+          "trimmed": true,
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 50,
+            "h": 19
+          },
+          "sourceSize": {
+            "w": 50,
+            "h": 19
           }
         },
         "loot-melee-katana-demo.img": {
@@ -8542,26 +8562,6 @@
         },
         "loot-melee-knuckles-heroic.img": {
           "frame": {
-            "x": 580,
-            "y": 294,
-            "w": 46,
-            "h": 29
-          },
-          "rotated": false,
-          "trimmed": true,
-          "spriteSourceSize": {
-            "x": 9,
-            "y": 17,
-            "w": 46,
-            "h": 29
-          },
-          "sourceSize": {
-            "w": 64,
-            "h": 64
-          }
-        },
-        "loot-melee-knuckles-legendary.img": {
-          "frame": {
             "x": 634,
             "y": 465,
             "w": 46,
@@ -8580,10 +8580,30 @@
             "h": 64
           }
         },
-        "loot-melee-knuckles-rusted.img": {
+        "loot-melee-knuckles-legendary.img": {
           "frame": {
             "x": 708,
             "y": 1744,
+            "w": 46,
+            "h": 29
+          },
+          "rotated": false,
+          "trimmed": true,
+          "spriteSourceSize": {
+            "x": 9,
+            "y": 17,
+            "w": 46,
+            "h": 29
+          },
+          "sourceSize": {
+            "w": 64,
+            "h": 64
+          }
+        },
+        "loot-melee-knuckles-rusted.img": {
+          "frame": {
+            "x": 593,
+            "y": 1676,
             "w": 46,
             "h": 29
           },
@@ -12642,8 +12662,8 @@
         },
         "part-frag-burst-01.img": {
           "frame": {
-            "x": 1039,
-            "y": 984,
+            "x": 1041,
+            "y": 904,
             "w": 33,
             "h": 33
           },
@@ -12663,7 +12683,7 @@
         "part-frag-burst-02.img": {
           "frame": {
             "x": 1041,
-            "y": 904,
+            "y": 941,
             "w": 33,
             "h": 33
           },
@@ -13102,8 +13122,8 @@
         },
         "part-potato-01.img": {
           "frame": {
-            "x": 1041,
-            "y": 941,
+            "x": 1056,
+            "y": 1059,
             "w": 33,
             "h": 33
           },
@@ -13142,8 +13162,8 @@
         },
         "part-pulse-01.img": {
           "frame": {
-            "x": 1056,
-            "y": 1058,
+            "x": 1064,
+            "y": 1021,
             "w": 33,
             "h": 33
           },
@@ -13342,8 +13362,8 @@
         },
         "part-snow-01.img": {
           "frame": {
-            "x": 1153,
-            "y": 2011,
+            "x": 1026,
+            "y": 1021,
             "w": 34,
             "h": 34
           },
@@ -13462,8 +13482,8 @@
         },
         "part-strobe-01.img": {
           "frame": {
-            "x": 1063,
-            "y": 1021,
+            "x": 1075,
+            "y": 978,
             "w": 33,
             "h": 33
           },
@@ -13903,7 +13923,7 @@
         "ping-part-eighth-highlight.img": {
           "frame": {
             "x": 1026,
-            "y": 1058,
+            "y": 1059,
             "w": 25,
             "h": 21
           },
@@ -14302,8 +14322,8 @@
         },
         "player-bullet-trail-02.img": {
           "frame": {
-            "x": 421,
-            "y": 1764,
+            "x": 613,
+            "y": 398,
             "w": 17,
             "h": 18
           },
@@ -15902,8 +15922,8 @@
         },
         "resume.img": {
           "frame": {
-            "x": 1045,
-            "y": 1730,
+            "x": 1039,
+            "y": 984,
             "w": 32,
             "h": 33
           },
@@ -16322,8 +16342,8 @@
         },
         "submit.img": {
           "frame": {
-            "x": 1026,
-            "y": 1021,
+            "x": 1045,
+            "y": 1730,
             "w": 33,
             "h": 33
           },
