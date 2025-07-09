@@ -2,11 +2,6 @@ import type { ConfigType } from "./configType";
 import { TeamMode } from "./shared/gameConfig";
 
 export const MODES_LIST: ConfigType["modes"] = [
-    { mapName: "castle", teamMode: TeamMode.Solo, enabled: true },
-    { mapName: "castle", teamMode: TeamMode.Duo, enabled: true },
-    { mapName: "castle", teamMode: TeamMode.Trio, enabled: true },
-    { mapName: "castle", teamMode: TeamMode.Squad, enabled: true },
-
     { mapName: "main", teamMode: TeamMode.Solo, enabled: true },
     { mapName: "main", teamMode: TeamMode.Duo, enabled: true },
     { mapName: "main", teamMode: TeamMode.Trio, enabled: true },
