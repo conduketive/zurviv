@@ -31,6 +31,15 @@ export enum Action {
     Revive,
 }
 
+export enum Rarity {
+    Stock,
+    Common,
+    Uncommon,
+    Rare,
+    Epic,
+    Mythic,
+}
+
 export enum WeaponSlot {
     Primary,
     Secondary,

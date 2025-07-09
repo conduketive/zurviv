@@ -47,7 +47,7 @@ import { errorLogManager } from "../errorLogs";
 import type { Ctx } from "../game";
 import { GameMod } from "../gameMod";
 import { helpers } from "../helpers";
-import { InputHandler } from "../input";
+import type { InputHandler } from "../input";
 import type { InputBinds } from "./../inputBinds";
 import type { SoundHandle } from "../lib/createJS";
 import type { Map } from "../map";
@@ -58,9 +58,6 @@ import type { Obstacle } from "./obstacle";
 import type { Emitter, ParticleBarn } from "./particles";
 import { halloweenSpriteMap } from "./projectile";
 import { createCasingParticle } from "./shot";
-
-const inputManager = new InputHandler(document.body);
-const gameMod = new GameMod();
 
 const submergeMaskScaleFactor = 0.1;
 
@@ -815,14 +812,15 @@ export class Player implements AbstractObject {
             this.posInterpTicker += dt;
             const posT = math.clamp(this.posInterpTicker / camera.m_interpInterval, 0, 1);
             this.m_visualPos = v2.lerp(posT, this.m_visualPosOld, this.m_pos);
-
-            this.dirInterpolationTicker += dt;
-            const dirT = math.clamp(
-                this.dirInterpolationTicker / camera.m_interpInterval,
-                0,
-                1,
-            );
-            this.m_visualDir = v2.lerp(dirT, this.m_visualDirOld, this.m_dir);
+            if (!camera.m_localRotationEnabled) {
+                this.dirInterpolationTicker += dt;
+                const dirT = math.clamp(
+                    this.dirInterpolationTicker / camera.m_interpInterval,
+                    0,
+                    1,
+                );
+                this.m_visualDir = v2.lerp(dirT, this.m_visualDirOld, this.m_dir);
+            }
         } else {
             this.m_visualPos = v2.copy(this.m_pos);
             this.m_visualDir = v2.copy(this.m_dir);
@@ -1267,7 +1265,7 @@ export class Player implements AbstractObject {
 
         this.updateAura(dt, isActivePlayer, activePlayer);
 
-        this.Zr();
+        this.Zr(inputBinds.input, camera, isActivePlayer, isSpectating, displayingStats);
 
         // @NOTE: There's an off-by-one frame issue for effects spawned earlier
         // in this frame that reference renderLayer / zOrd / zIdx. This issue is
@@ -1798,7 +1796,13 @@ export class Player implements AbstractObject {
         }
     }
 
-    Zr() {
+    Zr(
+        inputManager: InputHandler,
+        camera: Camera,
+        isActivePlayer: boolean,
+        isSpectating: boolean,
+        displayingStats: boolean,
+    ) {
         const e = function (e: PIXI.Container, t: Pose) {
             e.position.set(t.pos.x, t.pos.y);
             e.pivot.set(-t.pivot.x, -t.pivot.y);
@@ -1817,15 +1821,15 @@ export class Player implements AbstractObject {
         }
         this.handLContainer.position.x -= this.gunRecoilL * 1.125;
         this.handRContainer.position.x -= this.gunRecoilR * 1.125;
-
+        //Local Rotation
         const mouseY = inputManager.mousePos.y;
         const mouseX = inputManager.mousePos.x;
-        //local rotation
         if (
-            this.activeId == this.__id &&
-            !this.isSpectating &&
-            device.mobile == false &&
-            gameMod.isLocalRotation == true
+            !device.mobile &&
+            camera.m_localRotationEnabled &&
+            isActivePlayer &&
+            !isSpectating &&
+            !displayingStats
         ) {
             this.bodyContainer.rotation = Math.atan2(
                 mouseY - window.innerHeight / 2,
