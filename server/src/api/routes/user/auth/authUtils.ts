@@ -81,7 +81,6 @@ export function deleteSessionTokenCookie(c: Context) {
 type Provider = "discord" | "google";
 
 export async function handleAuthUser(c: Context, provider: Provider, authId: string) {
-
     const existingUser = await db.query.usersTable.findFirst({
         where: eq(usersTable.authId, authId),
         columns: {
@@ -158,7 +157,7 @@ export async function createNewUser(payload: UsersTableInsert) {
     });
 
     const usersCount = await db.select({ count: count() }).from(usersTable);
-    if (usersCount && usersCount[0]?.count <= 30) { 
+    if (usersCount && usersCount[0]?.count <= 30) {
         items.push({
             userId: payload.id,
             source: unlockType,

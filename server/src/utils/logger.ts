@@ -1,7 +1,7 @@
+import { Axiom } from "@axiomhq/js";
 import { styleText } from "util";
 import { Config } from "../config";
 import { logErrorToWebhook } from "./serverHelpers";
-import { Axiom } from '@axiomhq/js';
 
 const logCfg = Config.logging;
 
@@ -11,28 +11,28 @@ const axiom = new Axiom({
 export class Logger {
     constructor(public prefix: string) {}
 
-    private async logToAxiom( message: any[], error?: Error): Promise<void> {
-        if ( !Config.secrets.AXIOM_TOKEN) return;
+    private async logToAxiom(message: any[], error?: Error): Promise<void> {
+        if (!Config.secrets.AXIOM_TOKEN) return;
         try {
-          const logEntry = {
-            timestamp: new Date().toISOString(),
-            level: "debug",
-            prefix: this.prefix,
-            message: message.join(" "),
-            ...(error && { 
-              error: {
-                name: error.name,
-                message: error.message,
-                stack: error.stack,
-              }
-            }),
-          };
-    
-          await axiom.ingest('logss', [logEntry]);
+            const logEntry = {
+                timestamp: new Date().toISOString(),
+                level: "debug",
+                prefix: this.prefix,
+                message: message.join(" "),
+                ...(error && {
+                    error: {
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack,
+                    },
+                }),
+            };
+
+            await axiom.ingest("logss", [logEntry]);
         } catch (err) {
-          console.error('Failed to log to Axiom:', err);
+            console.error("Failed to log to Axiom:", err);
         }
-      }
+    }
 
     private log(logFn = console.log, ...message: any[]): void {
         if (logCfg.logDate) {
@@ -56,10 +56,10 @@ export class Logger {
             }
         }
 
-        const errors = message.find(msg => msg instanceof Error);
-        this.logToAxiom(message, errors).catch(err => {
-            console.error('Axiom logging failed:', err);
-          });
+        const errors = message.find((msg) => msg instanceof Error);
+        this.logToAxiom(message, errors).catch((err) => {
+            console.error("Axiom logging failed:", err);
+        });
     }
 
     info(...message: any[]): void {

@@ -8,9 +8,9 @@ export async function getUserRolesInServer(
     userId: string,
     guildId = GUILD_ID,
 ): Promise<string[]> {
-    if ( ! Config.secrets.DISCORD_BOT_TOKEN) {
+    if (!Config.secrets.DISCORD_BOT_TOKEN) {
         console.error("No discord bot token set, cannot fetch user roles");
-        return []
+        return [];
     }
 
     try {

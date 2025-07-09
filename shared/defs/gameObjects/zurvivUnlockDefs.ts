@@ -1,6 +1,4 @@
-export const defaultMeleeUnlocks = [
-    "fists"
-]
+export const defaultMeleeUnlocks = ["fists"];
 export const defaultOutfitUnlocks = [
     "outfitBase",
     "outfitWhite",

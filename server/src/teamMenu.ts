@@ -452,9 +452,9 @@ export class TeamMenu {
                         this.logger.error("Failed to check if IP is behind proxy:", err);
                     }
 
-                if (await isBanned(ip!)) {
-                    closeReason = "banned";
-                }
+                    if (await isBanned(ip!)) {
+                        closeReason = "banned";
+                    }
 
                     wsRateLimit.ipConnected(ip!);
 
