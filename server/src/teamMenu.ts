@@ -529,7 +529,7 @@ export class TeamMenu {
                         },
 
                         onClose(_event, ws) {
-                            console.log("closing socket");
+                            teamMenu.logger.debug("Closing team menu socket", closeReason);
                             teamMenu.onClose(ws as WSContext<SocketData>);
 
                             const data = ws.raw! as SocketData;
