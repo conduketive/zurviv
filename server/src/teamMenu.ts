@@ -490,6 +490,7 @@ export class TeamMenu {
                             };
 
                             if (closeReason) {
+                                console.log({ closeReason });
                                 ws.send(
                                     JSON.stringify({
                                         type: "error",
