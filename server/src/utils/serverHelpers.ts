@@ -239,6 +239,7 @@ export class WebSocketRateLimit {
      * false otherwise
      */
     isIpRateLimited(ip: string): boolean {
+        return false;
         let data = this._IPsData.get(ip);
         if (!data) {
             data = {
