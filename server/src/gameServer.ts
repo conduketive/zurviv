@@ -272,12 +272,12 @@ app.ws<pingSocketData>("/ptc", {
             return;
         }
 
-        if (false || pingHTTPRateLimit.isRateLimited(ip) || pingWsRateLimit.isIpRateLimited(ip)) {
-            res.writeStatus("429 Too Many Requests");
-            res.write("429 Too Many Requests");
-            res.end();
-            return;
-        }
+        // if (pingHTTPRateLimit.isRateLimited(ip) || pingWsRateLimit.isIpRateLimited(ip)) {
+        //     res.writeStatus("429 Too Many Requests");
+        //     res.write("429 Too Many Requests");
+        //     res.end();
+        //     return;
+        // }
         pingWsRateLimit.ipConnected(ip);
 
         res.upgrade(
