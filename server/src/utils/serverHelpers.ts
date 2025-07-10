@@ -224,6 +224,7 @@ export class WebSocketRateLimit {
      * Returns true if a websocket is being rate limited by sending too many messages
      */
     isRateLimited(wsData: Record<symbol, number>) {
+        return false;
         if (!Config.rateLimitsEnabled) return false;
         if (wsData[this._last] != this._now) {
             wsData[this._last] = this._now;
