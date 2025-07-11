@@ -64,7 +64,7 @@ export function getConfig(isProduction: boolean, dir: string) {
         },
         captchaEnabled: false,
         cachingEnabled: false,
-        rateLimitsEnabled: isProduction,
+        rateLimitsEnabled: false, // isProduction,
         uniqueInGameNames: false,
         debug: {
             spawnMode: "default",

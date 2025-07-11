@@ -224,7 +224,6 @@ export class WebSocketRateLimit {
      * Returns true if a websocket is being rate limited by sending too many messages
      */
     isRateLimited(wsData: Record<symbol, number>) {
-        return false;
         if (!Config.rateLimitsEnabled) return false;
         if (wsData[this._last] != this._now) {
             wsData[this._last] = this._now;
@@ -239,7 +238,6 @@ export class WebSocketRateLimit {
      * false otherwise
      */
     isIpRateLimited(ip: string): boolean {
-        return false;
         let data = this._IPsData.get(ip);
         if (!data) {
             data = {
@@ -304,7 +302,6 @@ export class HTTPRateLimit {
      * Checks if an IP is rate limited
      */
     isRateLimited(ip: string) {
-        return false;
         if (!Config.rateLimitsEnabled) return false;
         let ipData = this._IPsData.get(ip);
         if (!ipData) {
