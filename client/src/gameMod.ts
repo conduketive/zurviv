@@ -4,7 +4,6 @@ export class GameMod {
     frameCount: number;
     fps: number;
     kills: number;
-    isLocalRotation: boolean;
     isFpsUncapped: boolean;
     isInterpolation: boolean;
     isFpsVisible: boolean;
@@ -25,8 +24,6 @@ export class GameMod {
         this.frameCount = 0;
         this.fps = 0;
         this.kills = 0;
-        this.isLocalRotation =
-            settings["local-rotation"] !== undefined ? settings["local-rotation"] : true;
         this.isFpsUncapped =
             settings["fps-uncap"] !== undefined ? settings["fps-uncap"] : false;
         this.isInterpolation =
@@ -463,18 +460,6 @@ export class GameMod {
     SettingsCheck() {
         if (this.hasInitialized) return;
         this.hasInitialized = true;
-
-        const boxRotation = document.querySelector("#modal-settings-local-rotation");
-        if (boxRotation) {
-            const localRotationCheckbox = document.querySelector("#local-rotation");
-            if (localRotationCheckbox) {
-                localRotationCheckbox.addEventListener("change", (event) => {
-                    this.isLocalRotation = (event.target as HTMLInputElement).checked;
-                    this.saveLocalStorage();
-                });
-            }
-        }
-
         const boxUncap = document.querySelector("#modal-settings-fps-uncap");
         if (boxUncap) {
             const fpsUncap = document.querySelector("#fps-uncap");
@@ -500,7 +485,6 @@ export class GameMod {
 
     saveLocalStorage() {
         const settings = {
-            "local-rotation": this.isLocalRotation,
             "fps-uncap": this.isFpsUncapped,
             "movement-interpolation": this.isInterpolation,
         };
