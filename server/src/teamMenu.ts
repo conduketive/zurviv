@@ -436,7 +436,6 @@ export class TeamMenu {
                     }
 
                     let closeReason: TeamMenuErrorType | undefined;
-
                     try {
                         if (
                             !ip ||

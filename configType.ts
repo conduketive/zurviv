@@ -285,6 +285,11 @@ export interface ConfigType {
         GOOGLE_SECRET_ID?: string;
 
         /**
+         * Discord bot token.
+         */
+        DISCORD_BOT_TOKEN?: string;
+
+        /**
          * Enables proxycheck.io to ban VPNs and proxies from connecting.
          *
          */
@@ -317,6 +322,16 @@ export interface ConfigType {
 
         AXIOM_TOKEN?: string;
     };
+
+    /**
+     * Role ID for users with moderation permissions
+     */
+    discordRoleId?: string;
+
+    /**
+     * Guild ID
+     */
+    discordGuildId?: string;
 
     /**
      * Enables caching some expensive API requests (like leaderboards) with Redis.
