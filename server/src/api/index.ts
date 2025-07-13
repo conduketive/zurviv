@@ -31,6 +31,7 @@ import { PrivateRouter } from "./routes/private/private";
 import { StatsRouter } from "./routes/stats/StatsRouter";
 import { AuthRouter } from "./routes/user/AuthRouter";
 import { UserRouter } from "./routes/user/UserRouter";
+import { EVENT_MODES } from "../../../modesList";
 
 export type Context = {
     Variables: {
@@ -132,13 +133,11 @@ app.post("/api/find_game", validateParams(zFindGameBody), async (c) => {
         }
     }
     const body = c.req.valid("json");
-    if (body.mode === "event" || body.mode === "competitive") {
+    if (body.mode === "event" || body.mode === "competitive" || EVENT_MODES.includes(body.mapName)) {
         if (!hasServerRole) {
             return c.json<FindGameResponse>({ error: "invalid_role" });
         }
     }
-
-    console.log({ body });
 
     if (server.captchaEnabled && !userId) {
         if (!body.turnstileToken) {

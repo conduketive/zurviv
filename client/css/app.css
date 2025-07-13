@@ -4688,12 +4688,14 @@ input [type="image"]:focus {
   font-size: 18px;
 }
 
-#modal-ip-banned {
+#modal-ip-banned,
+#modal-invalide-role {
   background-color: #000;
   background-color: rgba(0, 0, 0, 0.75);
 }
 
-#modal-ip-banned .modal-content {
+#modal-ip-banned .modal-content,
+#modal-invalide-role .modal-content {
   text-decoration: none;
   left: 50%;
   transform: translateX(-50%);
@@ -4702,7 +4704,12 @@ input [type="image"]:focus {
   animation-duration: 0.2s;
 }
 
-#modal-ip-banned .modal-body {
+#modal-invalide-role .modal-content {
+  bottom: 30% !important;
+}
+
+#modal-ip-banned .modal-body
+#modal-invalide-role .modal-body {
   background: #000;
   color: #fff;
 }

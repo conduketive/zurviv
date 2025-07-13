@@ -2,6 +2,7 @@ import { randomUUID } from "crypto";
 import type { Hono } from "hono";
 import { getCookie } from "hono/cookie";
 import type { UpgradeWebSocket, WSContext } from "hono/ws";
+import { EVENT_MODES } from "../../modesList";
 import type { FindGameError } from "../../shared/types/api";
 import {
     type ClientRoomData,
@@ -248,7 +249,11 @@ class Room {
 
         const tokenMap = new Map<Player, string>();
 
-        if (data.mode === "competitive" || data.mode === "event") {
+        if (
+            EVENT_MODES.includes(data.mapName) ||
+            data.mode === "competitive" ||
+            data.mode === "event"
+        ) {
             for (const player of this.players) {
                 if (!player.hasServerRole) {
                     this.data.lastError = "find_game_invalid_role";
@@ -531,7 +536,10 @@ export class TeamMenu {
                         },
 
                         onClose(_event, ws) {
-                            teamMenu.logger.debug("Closing team menu socket", closeReason);
+                            teamMenu.logger.debug(
+                                "Closing team menu socket",
+                                closeReason,
+                            );
                             teamMenu.onClose(ws as WSContext<SocketData>);
 
                             const data = ws.raw! as SocketData;

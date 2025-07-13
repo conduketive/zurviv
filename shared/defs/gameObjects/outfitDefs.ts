@@ -88,7 +88,7 @@ const SkinDefs: Record<string, OutfitDef> = {
             footSprite: "player-feet-02.img",
             backpackTint: 13644309,
             backpackSprite: "player-circle-base-01.img",
-            frontSprite: "player-accessory-outfitFireball.img"
+            frontSprite: "player-accessory-outfitFireball.img",
         },
         lootImg: {
             sprite: "loot-shirt-outfitFireball.img",

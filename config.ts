@@ -67,7 +67,7 @@ export function getConfig(isProduction: boolean, dir: string) {
         rateLimitsEnabled: false, // isProduction,
         uniqueInGameNames: false,
         debug: {
-            spawnMode: "default",
+            spawnMode: "fixed",
             allowBots: isDev,
             allowEditMsg: isDev,
             allowMockAccount: isDev,

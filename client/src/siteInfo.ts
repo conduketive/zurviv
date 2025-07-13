@@ -62,6 +62,7 @@ export class SiteInfo {
                     newButton.id = `btn-start-mode-${i}`;
                     newButton.textContent = formattedMapName;
                     newButton.dataset.isEventMap = isEvent.toString();
+                    newButton.dataset.mapName = mode.mapName;
 
                     dropdownContainer?.appendChild(newButton);
 

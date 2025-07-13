@@ -52,6 +52,7 @@ class Application {
     errorModal = new MenuModal($("#modal-notification"));
     refreshModal = new MenuModal($("#modal-refresh"));
     ipBanModal = new MenuModal($("#modal-ip-banned"));
+    invalidRoleModal = new MenuModal($("#modal-invalide-role"));
     config = new ConfigManager();
     localization = new Localization();
 
@@ -229,6 +230,12 @@ class Application {
                             if (event.target.id?.startsWith("btn-game-mode-")) {
                                 $("[data-selected-game-mode]").attr(
                                     "data-selected-game-mode",
+                                    event.target.textContent?.trim().toLowerCase()!,
+                                );
+                            }
+                            if (event.target.id?.startsWith("btn-start-mode-")) {
+                                $("[data-selected-game-map-name]").attr(
+                                    "data-selected-game-map-name",
                                     event.target.textContent?.trim().toLowerCase()!,
                                 );
                             }
@@ -767,6 +774,9 @@ class Application {
                 playerCount: 1,
                 autoFill: true,
                 gameModeIdx,
+                mapName: $("[data-selected-game-map-name]").attr(
+                    "data-selected-game-map-name",
+                )!,
                 mode: $("[data-selected-game-mode]").attr("data-selected-game-mode") as
                     | "casual"
                     | "competitive"
@@ -776,6 +786,10 @@ class Application {
             const tryQuickStartGameImpl = () => {
                 this.waitOnAccount(() => {
                     this.findGame(matchArgs, (err, matchData, ban) => {
+                        if ( err === "invalid_role") {
+                            this.showInvalidRoleModal();
+                            return;
+                        }
                         if (err) {
                             this.onJoinGameError(err);
                             return;
@@ -848,7 +862,7 @@ class Application {
                         cb(data.error);
                         return;
                     }
-
+                    
                     if (data.banned) {
                         cb(null, undefined, data as FindGameResponse & { banned: true });
                         return;
@@ -941,6 +955,14 @@ class Application {
         this.refreshModal.show(true);
     }
 
+    showInvalidRoleModal() {
+        this.invalidRoleModal.show(true);
+
+        this.quickPlayPendingModeIdx = -1;
+        this.teamMenu.leave("banned");
+        this.refreshUi();
+    }
+    
     showIpBanModal(ban: FindGameResponse & { banned: true }) {
         $("#modal-ip-banned-reason").text(`Reason: ${ban.reason}`);
 

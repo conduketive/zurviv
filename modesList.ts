@@ -70,3 +70,5 @@ export const MODES_LIST: ConfigType["modes"] = [
     { mapName: "gamerio", teamMode: TeamMode.Trio, enabled: true },
     { mapName: "gamerio", teamMode: TeamMode.Squad, enabled: true },
 ];
+
+export const EVENT_MODES = ["GG", "gamerio"].map(t => t.toLocaleLowerCase());

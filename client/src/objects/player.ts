@@ -58,6 +58,7 @@ import type { Obstacle } from "./obstacle";
 import type { Emitter, ParticleBarn } from "./particles";
 import { halloweenSpriteMap } from "./projectile";
 import { createCasingParticle } from "./shot";
+
 const gameMod = new GameMod();
 
 const submergeMaskScaleFactor = 0.1;
@@ -830,7 +831,7 @@ export class Player implements AbstractObject {
         } else {
             this.m_visualPos = v2.copy(this.m_pos);
             this.m_visualDir = v2.copy(this.m_dir);
-        }   
+        }
 
         // Ease radius transitions
         if (!math.eqAbs(this.m_rad, this.m_bodyRad)) {
@@ -1771,13 +1772,13 @@ export class Player implements AbstractObject {
         if (outfitImg.frontSprite) {
             this.frontSprite.texture = PIXI.Texture.from(outfitImg.frontSprite);
             this.frontSprite.scale.set(bodyScale * 0.25);
-            this.frontSprite.position.set(-4, 0)
+            this.frontSprite.position.set(-4, 0);
             this.frontSprite.tint = 0xffffff;
             this.frontSprite.visible = true;
         } else {
             this.frontSprite.visible = false;
         }
-        
+
         if (this.bodyContainer.children.includes(this.helmetSprite)) {
             const helmetIndex = this.bodyContainer.getChildIndex(this.helmetSprite);
             this.bodyContainer.setChildIndex(this.frontSprite, helmetIndex);
