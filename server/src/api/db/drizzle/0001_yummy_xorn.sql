@@ -1,1 +1,0 @@
-ALTER TABLE "users" ADD COLUMN "has_server_role" boolean DEFAULT false NOT NULL;
