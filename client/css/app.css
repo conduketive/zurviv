@@ -4708,8 +4708,7 @@ input [type="image"]:focus {
   bottom: 30% !important;
 }
 
-#modal-ip-banned .modal-body
-#modal-invalide-role .modal-body {
+#modal-ip-banned .modal-body #modal-invalide-role .modal-body {
   background: #000;
   color: #fff;
 }

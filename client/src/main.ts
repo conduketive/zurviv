@@ -786,7 +786,7 @@ class Application {
             const tryQuickStartGameImpl = () => {
                 this.waitOnAccount(() => {
                     this.findGame(matchArgs, (err, matchData, ban) => {
-                        if ( err === "invalid_role") {
+                        if (err === "invalid_role") {
                             this.showInvalidRoleModal();
                             return;
                         }
@@ -862,7 +862,7 @@ class Application {
                         cb(data.error);
                         return;
                     }
-                    
+
                     if (data.banned) {
                         cb(null, undefined, data as FindGameResponse & { banned: true });
                         return;
@@ -962,7 +962,7 @@ class Application {
         this.teamMenu.leave("banned");
         this.refreshUi();
     }
-    
+
     showIpBanModal(ban: FindGameResponse & { banned: true }) {
         $("#modal-ip-banned-reason").text(`Reason: ${ban.reason}`);
 
