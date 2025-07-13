@@ -3,8 +3,7 @@ CREATE TABLE "banned_ips" (
 	"expries_in" timestamp NOT NULL,
 	"encoded_ip" text PRIMARY KEY NOT NULL,
 	"permanent" boolean DEFAULT false NOT NULL,
-	"reason" text DEFAULT '' NOT NULL,
-	"banned_by" text DEFAULT 'admin' NOT NULL
+	"reason" text DEFAULT '' NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "ip_logs" (
@@ -16,7 +15,6 @@ CREATE TABLE "ip_logs" (
 	"username" text NOT NULL,
 	"user_id" text DEFAULT '',
 	"encoded_ip" text NOT NULL,
-	"team_mode" integer DEFAULT 1 NOT NULL,
 	"ip" text NOT NULL,
 	"find_game_ip" text NOT NULL,
 	"find_game_encoded_ip" text NOT NULL
@@ -66,7 +64,6 @@ CREATE TABLE "users" (
 	"slug" text NOT NULL,
 	"banned" boolean DEFAULT false NOT NULL,
 	"ban_reason" text DEFAULT '' NOT NULL,
-	"banned_by" text DEFAULT '' NOT NULL,
 	"username" text DEFAULT '' NOT NULL,
 	"username_set" boolean DEFAULT false NOT NULL,
 	"user_created" timestamp with time zone DEFAULT now() NOT NULL,
@@ -75,7 +72,6 @@ CREATE TABLE "users" (
 	"linked_google" boolean DEFAULT false NOT NULL,
 	"linked_discord" boolean DEFAULT false NOT NULL,
 	"loadout" json DEFAULT '{"outfit":"outfitBase","melee":"fists","heal":"heal_basic","boost":"boost_basic","player_icon":"","crosshair":{"type":"crosshair_default","color":16777215,"size":"1.00","stroke":"0.00"},"emotes":["emote_happyface","emote_thumbsup","emote_surviv","emote_sadface","",""]}'::json NOT NULL,
-	"has_server_role" boolean DEFAULT false NOT NULL,
 	CONSTRAINT "users_slug_unique" UNIQUE("slug")
 );
 --> statement-breakpoint

@@ -1,6 +1,6 @@
 {
-  "id": "34c224cc-04dc-4476-b9fa-588269d6d6e7",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "4436cc99-4100-4542-ab15-7d556a83271b",
+  "prevId": "34c224cc-04dc-4476-b9fa-588269d6d6e7",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -616,6 +616,13 @@
           "primaryKey": false,
           "notNull": true,
           "default": "'{\"outfit\":\"outfitBase\",\"melee\":\"fists\",\"heal\":\"heal_basic\",\"boost\":\"boost_basic\",\"player_icon\":\"\",\"crosshair\":{\"type\":\"crosshair_default\",\"color\":16777215,\"size\":\"1.00\",\"stroke\":\"0.00\"},\"emotes\":[\"emote_happyface\",\"emote_thumbsup\",\"emote_surviv\",\"emote_sadface\",\"\",\"\"]}'::json"
+        },
+        "has_server_role": {
+          "name": "has_server_role",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
         }
       },
       "indexes": {},

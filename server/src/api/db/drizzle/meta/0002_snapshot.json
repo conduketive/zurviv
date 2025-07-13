@@ -1,6 +1,6 @@
 {
-  "id": "34c224cc-04dc-4476-b9fa-588269d6d6e7",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "f29c0dbf-4b4b-4e90-a626-a5881dc74551",
+  "prevId": "579476ca-7712-4a45-8c24-fc1b0523a562",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -40,6 +40,13 @@
           "primaryKey": false,
           "notNull": true,
           "default": "''"
+        },
+        "banned_by": {
+          "name": "banned_by",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'admin'"
         }
       },
       "indexes": {},
@@ -103,6 +110,13 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "team_mode": {
+          "name": "team_mode",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 1
         },
         "ip": {
           "name": "ip",
@@ -557,6 +571,13 @@
         },
         "ban_reason": {
           "name": "ban_reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
+        "banned_by": {
+          "name": "banned_by",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
