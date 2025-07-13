@@ -217,6 +217,7 @@ export class Player implements AbstractObject {
     footRSubmergeSprite = createSprite();
     bodyEffectSprite = createSprite();
     patchSprite = createSprite();
+    frontSprite = createSprite();
     handLContainer = new PIXI.Container();
     handRContainer = new PIXI.Container();
 
@@ -413,6 +414,10 @@ export class Player implements AbstractObject {
         this.bodyContainer.addChild(this.footRContainer);
         this.bodyContainer.addChild(this.backpackSprite);
         this.bodyContainer.addChild(this.bodySprite);
+        this.frontSprite = new PIXI.Sprite();
+        this.frontSprite.anchor.set(0.5);
+        this.frontSprite.visible = false;
+        this.bodyContainer.addChild(this.frontSprite);
         this.bodyContainer.addChild(this.chestSprite);
         this.bodyContainer.addChild(this.flakSprite);
         this.bodyContainer.addChild(this.steelskinSprite);
@@ -824,7 +829,7 @@ export class Player implements AbstractObject {
         } else {
             this.m_visualPos = v2.copy(this.m_pos);
             this.m_visualDir = v2.copy(this.m_dir);
-        }
+        }   
 
         // Ease radius transitions
         if (!math.eqAbs(this.m_rad, this.m_bodyRad)) {
@@ -1762,7 +1767,20 @@ export class Player implements AbstractObject {
         } else {
             this.visorSprite.visible = false;
         }
-        this.bodyContainer.scale.set(bodyScale, bodyScale);
+        if (outfitImg.frontSprite) {
+            this.frontSprite.texture = PIXI.Texture.from(outfitImg.frontSprite);
+            this.frontSprite.scale.set(bodyScale * 0.25);
+            this.frontSprite.position.set(-4, 0)
+            this.frontSprite.tint = 0xffffff;
+            this.frontSprite.visible = true;
+        } else {
+            this.frontSprite.visible = false;
+        }
+        
+        if (this.bodyContainer.children.includes(this.helmetSprite)) {
+            const helmetIndex = this.bodyContainer.getChildIndex(this.helmetSprite);
+            this.bodyContainer.setChildIndex(this.frontSprite, helmetIndex);
+        }
     }
 
     updateAura(dt: number, isActivePlayer: boolean, activePlayer: Player) {

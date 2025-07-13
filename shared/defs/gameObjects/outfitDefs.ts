@@ -13,6 +13,7 @@ export interface OutfitDef {
         footSprite: string;
         backpackTint: number;
         backpackSprite: string;
+        frontSprite?: string;
     };
     lootImg: {
         sprite: string;
@@ -74,6 +75,27 @@ const SkinDefs: Record<string, OutfitDef> = {
             sprite: "loot-shirt-outfitBase.img",
             tint: 0xffffff,
         },
+    }),
+    outfitFireball: defineOutfitSkin("outfitBase", {
+        name: "",
+        noDropOnDeath: true,
+        skinImg: {
+            baseTint: 12266256,
+            baseSprite: "player-base-01.img",
+            handTint: 0xffffff,
+            handSprite: "player-hands-outfitFireball.img",
+            footTint: 9684974,
+            footSprite: "player-feet-02.img",
+            backpackTint: 13644309,
+            backpackSprite: "player-circle-base-01.img",
+            frontSprite: "player-accessory-outfitFireball.img"
+        },
+        lootImg: {
+            sprite: "loot-shirt-outfitFireball.img",
+            tint: 0xffffff,
+        },
+        rarity: 3,
+        lore: "For those who wield the power of the pan.",
     }),
     outfitDemo: defineOutfitSkin("outfitBase", {
         noDrop: true,
