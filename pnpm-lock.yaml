@@ -143,6 +143,9 @@ importers:
       hono:
         specifier: ^4.7.11
         version: 4.7.11
+      lru-cache:
+        specifier: ^11.1.0
+        version: 11.1.0
       nanotimer:
         specifier: ^0.3.15
         version: 0.3.15
@@ -1646,6 +1649,10 @@ packages:
 
   lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
+
+  lru-cache@11.1.0:
+    resolution: {integrity: sha512-QIXZUBJUx+2zHUdQujWejBkcD9+cs94tLn0+YL8UrCh+D5sCXZ4c7LaEH48pNwRY3MLDgqUFyhlCyjJPf1WP0A==}
+    engines: {node: 20 || >=22}
 
   magic-bytes.js@1.12.1:
     resolution: {integrity: sha512-ThQLOhN86ZkJ7qemtVRGYM+gRgR8GEXNli9H/PMvpnZsE44Xfh3wx9kGJaldg314v85m+bFW6WBMaVHJc/c3zA==}
@@ -3287,6 +3294,8 @@ snapshots:
   lodash.snakecase@4.1.1: {}
 
   lodash@4.17.21: {}
+
+  lru-cache@11.1.0: {}
 
   magic-bytes.js@1.12.1: {}
 

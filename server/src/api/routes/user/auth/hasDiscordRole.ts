@@ -1,4 +1,11 @@
+import { LRUCache } from "lru-cache";
 import { Config } from "../../../../config";
+import { server } from "../../../apiServer";
+
+export const userRolesCache = new LRUCache<string, string[]>({
+    max: 2000,
+    ttl: 3 * 60 * 1000,
+});
 
 // unique to zurviv only, so hardcoding them for now
 const GUILD_ID = "1007749611122855977";
@@ -13,44 +20,64 @@ export async function getUserRolesInServer(
         return [];
     }
 
-    try {
-        const response = await fetch(
-            `https://discord.com/api/guilds/${guildId}/members/${userId}`,
-            {
-                headers: {
-                    Authorization: `Bot ${Config.secrets.DISCORD_BOT_TOKEN}`,
-                    "Content-Type": "application/json",
+    if (!userId) {
+        return [];
+    }
+
+    const cachedRoles = userRolesCache.get(userId);
+    if (cachedRoles) {
+        return cachedRoles;
+    }
+
+        try {
+            const response = await fetch(
+                `https://discord.com/api/guilds/${guildId}/members/${userId}`,
+                {
+                    headers: {
+                        Authorization: `Bot ${Config.secrets.DISCORD_BOT_TOKEN}`,
+                        "Content-Type": "application/json",
+                    },
                 },
-            },
-        );
+            );
 
-        if (!response.ok) {
-            if (response.status === 404) {
-                console.error("User not found in server");
-                return [];
+            if (!response.ok) {
+                if (response.status === 404) {
+                    console.error("User not found in server");
+                    return [];
+                }
+                throw new Error(`Discord API error: ${response.status}`);
             }
-            throw new Error(`Discord API error: ${response.status}`);
-        }
 
-        const memberData = (await response.json()) as {
-            roles: string[];
-            user: {
-                id: string;
-                username: string;
+            const memberData = (await response.json()) as {
+                roles: string[];
+                user: {
+                    id: string;
+                    username: string;
+                };
             };
-        };
-        return memberData.roles;
-    } catch (error) {
-        console.error("Error fetching user roles:", error);
+
+            userRolesCache.set(userId, memberData.roles);
+            return memberData.roles;
+        } catch (error) {
+            server.logger.warn(
+                "Error fetching user roles:",
+                {
+                    userId,
+                },
+                error,
+            );
         return [];
     }
 }
 
 export async function userHasRole(
-    userId: string,
+    userId?: string,
     guildId = GUILD_ID,
     roleId = ROLE_ID,
 ): Promise<boolean> {
+    if ( !userId ) {
+        return false;
+    }
     const roles = await getUserRolesInServer(userId, guildId);
     return roles.includes(roleId);
 }

@@ -31,6 +31,7 @@ import { cleanupOldLogs, isBanned } from "./routes/private/ModerationRouter";
 import { PrivateRouter } from "./routes/private/private";
 import { StatsRouter } from "./routes/stats/StatsRouter";
 import { AuthRouter } from "./routes/user/AuthRouter";
+import { userHasRole } from "./routes/user/auth/hasDiscordRole";
 import { UserRouter } from "./routes/user/UserRouter";
 
 export type Context = {
@@ -125,7 +126,10 @@ app.post("/api/find_game", validateParams(zFindGameBody), async (c) => {
             if (account.user?.banned) {
                 userId = null;
             }
-            hasServerRole = account.user?.hasServerRole ?? false;
+
+            if (userId) {
+                hasServerRole = (await userHasRole(account.user?.authId)) ?? false;
+            }
         } catch (err) {
             server.logger.error("/api/find_game: Failed to validate session", err);
             userId = null;

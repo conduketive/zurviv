@@ -9,7 +9,6 @@ import { checkForBadWords } from "../../../../utils/serverHelpers";
 import { createSession, invalidateSession } from "../../../auth";
 import { db } from "../../../db";
 import { itemsTable, type UsersTableInsert, usersTable } from "../../../db/schema";
-import { userHasRole } from "./hasDiscordRole";
 
 let oauthBaseURL: URL | undefined = undefined;
 if (URL.canParse(Config.oauthBasePath)) {
@@ -93,15 +92,7 @@ export async function handleAuthUser(c: Context, provider: Provider, authId: str
         domain: cookieDomain,
     });
 
-    const hasServerRole = await userHasRole(authId);
-
     if (existingUser) {
-        await db
-            .update(usersTable)
-            .set({
-                hasServerRole,
-            })
-            .where(eq(usersTable.id, existingUser.id));
         await setSessionTokenCookie(existingUser.id, c);
         return;
     }
@@ -134,7 +125,6 @@ export async function handleAuthUser(c: Context, provider: Provider, authId: str
         linked: true,
         username: username,
         slug,
-        hasServerRole,
         ...linkedProvider,
     });
 

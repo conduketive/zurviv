@@ -19,6 +19,7 @@ import { assert } from "../../shared/utils/util";
 import type { ApiServer } from "./api/apiServer";
 import { validateSessionToken } from "./api/auth";
 import { hashIp, isBanned } from "./api/routes/private/ModerationRouter";
+import { userHasRole } from "./api/routes/user/auth/hasDiscordRole";
 import { Config } from "./config";
 import { Logger } from "./utils/logger";
 import {
@@ -475,8 +476,9 @@ export class TeamMenu {
                                 userId = null;
                             }
 
-                            // !!
-                            hasServerRole = account.user?.hasServerRole ?? false;
+                            if (userId) {
+                                hasServerRole = (await userHasRole(account.user?.authId)) ?? false;
+                            }
                         } catch (err) {
                             this.logger.error(`Failed to validate session:`, err);
                             userId = null;
