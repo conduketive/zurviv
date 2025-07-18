@@ -145,7 +145,7 @@ export class PlayerBarn {
                     p.findGameIp == joinData.findGameIp ||
                     (joinData.userId !== null && p.userId === joinData.userId),
             );
-            if (count.length >= 3) {
+            if (count.length >= 6) {
                 this.game.closeSocket(socketId, "rate_limited");
                 return;
             }
