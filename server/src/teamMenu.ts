@@ -251,7 +251,7 @@ class Room {
         const tokenMap = new Map<Player, string>();
 
         if (
-            EVENT_MODES.includes(data.mapName) ||
+            EVENT_MODES.includes(data?.mapName!) ||
             data.mode === "competitive" ||
             data.mode === "event"
         ) {
@@ -580,6 +580,7 @@ export class TeamMenu {
             zTeamClientMsg.parse(msg);
         } catch {
             this.logger.warn("Failed to parse message, closing socket.");
+            console.log({ })
             ws.close();
             return;
         }
