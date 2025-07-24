@@ -484,6 +484,8 @@ export class Obstacle extends BaseGameObject {
                             undefined, // undefined to use default push speed value
                             params.dir,
                             lootTierOrItem.props?.preloadGuns,
+                            item.preload,
+                            "obstacle",
                         );
                     }
                 }

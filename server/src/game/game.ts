@@ -4,7 +4,7 @@ import { math } from "../../../shared/utils/math";
 import { v2 } from "../../../shared/utils/v2";
 import { Config } from "../config";
 import { Logger } from "../utils/logger";
-import { fetchApiServer } from "../utils/serverHelpers";
+import { apiPrivateRouter } from "../utils/serverHelpers";
 import {
     type FindGamePrivateBody,
     ProcessMsgType,
@@ -575,16 +575,19 @@ export class Game {
         // to avoid blocking the game from being GC'd until this request is done
         // and opening a database in each process if it fails
         // etc
-        const res = await fetchApiServer<SaveGameBody, { error: string }>(
-            "private/save_game",
-            {
-                matchData: values,
-            },
-        );
+        let res: Response | undefined = undefined;
+        try {
+            res = await apiPrivateRouter.save_game.$post({
+                json: {
+                    matchData: values,
+                },
+            });
+        } catch (err) {
+            this.logger.error(`Failed to fetch API save game:`, err);
+        }
 
-        if (!res || res.error) {
+        if (!res || !res.ok) {
             this.logger.warn(`Failed to save game data, saving locally instead`);
-
             // we dump the game  to a local db if we failed to save;
             // avoid importing sqlite and creating the database at process startup
             // since this code should rarely run anyway

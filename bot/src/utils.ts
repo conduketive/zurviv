@@ -1,7 +1,6 @@
 import type {
     ButtonInteraction,
     ComponentType,
-    GuildMember,
     Interaction,
     Message,
     RepliableInteraction,

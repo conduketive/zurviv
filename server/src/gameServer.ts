@@ -9,8 +9,8 @@ import { GameProcessManager } from "./game/gameProcessManager";
 import { GIT_VERSION } from "./utils/gitRevision";
 import { Logger } from "./utils/logger";
 import {
+    apiPrivateRouter,
     cors,
-    fetchApiServer,
     forbidden,
     getIp,
     HTTPRateLimit,
@@ -87,13 +87,38 @@ class GameServer {
         };
     }
 
-    sendData() {
-        fetchApiServer("private/update_region", {
-            data: {
-                playerCount: this.manager.getPlayerCount(),
-            },
-            regionId: Config.gameServer.thisRegion,
-        });
+    async sendData() {
+        try {
+            await apiPrivateRouter.update_region.$post({
+                json: {
+                    data: {
+                        playerCount: this.manager.getPlayerCount(),
+                    },
+                    regionId: Config.gameServer.thisRegion,
+                },
+            });
+        } catch (err) {
+            this.logger.error(`Failed to update region: `, err);
+        }
+    }
+
+    async isIpBanned(ip: string) {
+        try {
+            const apiRes = await apiPrivateRouter.moderation.is_ip_banned.$post({
+                json: {
+                    ip,
+                },
+            });
+
+            if (apiRes.ok) {
+                const body = await apiRes.json();
+                return body.banned;
+            }
+        } catch (err) {
+            this.logger.error(`Failed check if IP is banned: `, err);
+        }
+
+        return false;
     }
 }
 
@@ -115,7 +140,7 @@ app.options("/api/find_game", (res) => {
     res.end();
 });
 
-app.post("/api/find_game", async (res, req) => {
+app.post("/api/find_game", (res, req) => {
     res.onAborted(() => {
         res.aborted = true;
     });
@@ -143,6 +168,11 @@ app.post("/api/find_game", async (res, req) => {
             }
         },
         () => {
+            res.cork(() => {
+                res.writeStatus("500 Internal Server Error");
+                res.write("500 Internal Server Error");
+                res.end();
+            });
             server.logger.warn("/api/find_game: Error retrieving body");
         },
     );
@@ -194,6 +224,8 @@ app.ws<GameSocketData>("/play", {
 
         if (await isBehindProxy(ip)) {
             disconnectReason = "behind_proxy";
+        } else if (await server.isIpBanned(ip)) {
+            disconnectReason = "ip_banned";
         }
 
         if (res.aborted) return;

@@ -160,6 +160,7 @@ export interface MapDef {
             name: string;
             count: number;
             weight: number;
+            preload?: boolean;
         }>
     >;
     mapGen: {

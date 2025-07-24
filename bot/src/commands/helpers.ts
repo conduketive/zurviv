@@ -15,7 +15,10 @@ export function createCommand<T extends z.ZodSchema>(config: {
         name: keyof z.input<T>;
         description: string;
         required: boolean;
-        type: ApplicationCommandOptionType.String | ApplicationCommandOptionType.Integer;
+        type:
+            | ApplicationCommandOptionType.String
+            | ApplicationCommandOptionType.Integer
+            | ApplicationCommandOptionType.Boolean;
     }[];
 }) {
     return config;
@@ -26,6 +29,8 @@ export async function genericExecute<N extends Exclude<Command, "search_player">
     interaction: ChatInputCommandInteraction,
     validator: z.ZodTypeAny,
 ) {
+    await interaction.deferReply();
+
     const options = interaction.options.data.reduce(
         (obj, { name, value }) => {
             obj[name] = value;
@@ -36,7 +41,7 @@ export async function genericExecute<N extends Exclude<Command, "search_player">
 
     const args = validator.safeParse({
         ...options,
-        executorId: interaction.user.id,
+        executor_id: interaction.user.id,
     });
 
     if (!args.success) {
@@ -53,7 +58,7 @@ export async function genericExecute<N extends Exclude<Command, "search_player">
     });
 
     const { message } = await res.json();
-    await interaction.reply(message);
+    await interaction.editReply(message);
 }
 
 export function createSlashCommand(config: ReturnType<typeof createCommand>) {
@@ -74,6 +79,14 @@ export function createSlashCommand(config: ReturnType<typeof createCommand>) {
             case ApplicationCommandOptionType.Integer:
                 builder.addIntegerOption((integerOption) =>
                     integerOption
+                        .setName(option.name as string)
+                        .setDescription(option.description)
+                        .setRequired(option.required),
+                );
+                break;
+            case ApplicationCommandOptionType.Boolean:
+                builder.addBooleanOption((booleanOption) =>
+                    booleanOption
                         .setName(option.name as string)
                         .setDescription(option.description)
                         .setRequired(option.required),

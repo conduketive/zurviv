@@ -536,9 +536,8 @@ export class WeaponManager {
 
     dropGun(weapIdx: number): void {
         const def = GameObjectDefs[this.weapons[weapIdx].type] as GunDef | undefined;
-        if (def && def.noDrop) {
-            return;
-        }
+        if (def?.noDrop) return;
+
         this._dropGun(weapIdx);
         this.setWeapon(weapIdx, "", 0);
     }
@@ -566,6 +565,19 @@ export class WeaponManager {
         }
     }
 
+    /**
+     * Checks if player can drop flare gun, if holding one.
+     * @param weapIdx The slot index.
+     */
+    canDropFlare(weapIdx: number): boolean {
+        const def = GameObjectDefs[this.weapons[weapIdx].type] as GunDef;
+        if (!def) return false;
+
+        if (this.player.role !== "leader") return true;
+
+        return def.ammo !== "flare" || this.player.hasFiredFlare;
+    }
+
     isBulletSaturated(ammo: string): boolean {
         if (this.player.lastBreathActive) {
             return true;
@@ -590,7 +602,7 @@ export class WeaponManager {
     }
 
     offHand = false;
-    fireWeapon(offHand: boolean) {
+    fireWeapon(offHand: boolean, forceFire?: boolean) {
         const itemDef = GameObjectDefs[this.activeWeapon] as GunDef;
 
         const weapon = this.weapons[this.curWeapIdx];
@@ -607,7 +619,7 @@ export class WeaponManager {
         weapon.recoilTime = itemDef.recoilTime;
 
         // Check firing location
-        if (itemDef.outsideOnly && this.player.indoors) {
+        if (itemDef.outsideOnly && this.player.indoors && !forceFire) {
             const msg = new net.PickupMsg();
             msg.type = net.PickupMsgType.GunCannotFire;
             this.player.msgsToSend.push({ type: net.MsgType.Pickup, msg });
@@ -688,6 +700,7 @@ export class WeaponManager {
         //
         const hasExplosive = this.player.hasPerk("explosive");
         const hasSplinter = this.player.hasPerk("splinter");
+        const hasApRounds = this.player.hasPerk("ap_rounds");
         const shouldApplyChambered =
             this.player.hasPerk("chambered") &&
             itemDef.ammo !== "12gauge" &&
@@ -789,6 +802,7 @@ export class WeaponManager {
                 trailThick: shouldApplyChambered,
                 reflectCount: 0,
                 splinter: hasSplinter,
+                apRounds: hasApRounds,
                 lastShot: weapon.ammo <= 0,
                 reflectObjId: this.player.obstacleOutfit?.__id,
                 onHitFx: hasExplosive ? "explosion_rounds" : undefined,
@@ -858,6 +872,11 @@ export class WeaponManager {
         if (this.activeWeapon == "bugle" && this.player.hasPerk("inspiration")) {
             this.player.playBugle();
         }
+
+        if (bulletType === "bullet_flare" && this.player.role === "leader") {
+            this.player.hasFiredFlare = true;
+        }
+
         if (
             this.player.game.map.factionMode &&
             !this.player.game.playerBarn.players.every(
