@@ -1,3 +1,4 @@
+import { string } from "zod";
 import { GameObjectDefs } from "../../../../shared/defs/gameObjectDefs";
 import { MapObjectDefs } from "../../../../shared/defs/mapObjectDefs";
 import type { ObstacleDef } from "../../../../shared/defs/mapObjectsTyping";
@@ -449,18 +450,36 @@ export class Obstacle extends BaseGameObject {
         }
 
         for (const lootTierOrItem of loot) {
+            const num = (name: string) => {
+                const doubleLoot = [
+                    "bandage",
+                    "healthkit",
+                    "soda",
+                    "painkiller",
+                ];
+                if ( doubleLoot.includes(name) ) {
+                    return util.weightedRandom([
+                        { percentage: 1, weight: 5 },
+                        { percentage: 2, weight: 3.5 },
+                        { percentage: 3, weight: 1 },
+                        { percentage: 4, weight: 0.5 },
+                    ]).percentage
+                }
+                return 1;
+            };
+
             if ("tier" in lootTierOrItem) {
                 const count = util.randomInt(lootTierOrItem.min!, lootTierOrItem.max!);
 
                 for (let i = 0; i < count; i++) {
                     const items = this.game.lootBarn.getLootTable(lootTierOrItem.tier!);
-
                     for (const item of items) {
+                        console.log({item: item.name, count: item.count});
                         this.game.lootBarn.addLoot(
                             item.name,
                             v2.add(lootPos, v2.mul(v2.randomUnit(), 0.2)),
                             this.layer,
-                            item.count,
+                            item.count * num(item.name),
                             undefined,
                             undefined, // undefined to use default push speed value
                             params.dir,
@@ -469,11 +488,12 @@ export class Obstacle extends BaseGameObject {
                     }
                 }
             } else {
+                console.log({ item: lootTierOrItem.type, count: lootTierOrItem.count });
                 this.game.lootBarn.addLoot(
                     lootTierOrItem.type!,
                     v2.add(lootPos, v2.mul(v2.randomUnit(), 0.2)),
                     this.layer,
-                    lootTierOrItem.count!,
+                    lootTierOrItem.count! * num(lootTierOrItem.type!),
                     undefined,
                     undefined,
                     params.dir,

@@ -889,13 +889,17 @@
                 </div>
 
                 <div class="dropdown-container" id="dropdown-container-1">
-                  <a class="btn-green btn-darken menu-option" id="dropdown-main-button-1" data-selected-game-map-name="main">Select Map Mode ▼</a>
-                  <div class="dropdown-buttons-1">
+                  <a class="btn-green btn-darken menu-option" id="dropdown-main-button-map-mode" data-selected-game-map-name="main">Select Map Mode ▼</a>
+                  <div class="dropdown-buttons-map-mode">
                   </div>
                 </div>
 
                 <div class="dropdown-container" id="dropdown-container-2">
-                  <a class="btn-green btn-darken menu-option" id="dropdown-main-button-2">Select Team Mode ▼</a>
+                  <a
+                    class="btn-green btn-darken menu-option"
+                    id="dropdown-main-button-team-mode"
+                    data-selected-team-mode="solo"
+                  >Select Team Mode ▼</a>
                   <div class="dropdown-buttons-2">
                     <a class='btn-green btn-darken menu-option' id='btn-start-solo'>Solo</a>
                     <a class='btn-green btn-darken menu-option' id='btn-start-duo'>Duo</a>
@@ -981,7 +985,10 @@
                       </div>
       
                       <div class="dropdown-container-team" id="dropdown-container-team-1">
-                        <a class="btn-green btn-darken menu-option" id="dropdown-main-button-team-1">Select Map Mode ▼</a>
+                        <a class="btn-green btn-darken menu-option"
+                        id="dropdown-main-button-team-1"
+                        data-selected-game-map-name="main"
+                        >Select Map Mode ▼</a>
                         <div class="dropdown-buttons-team-1">
                         </div>
                       </div>

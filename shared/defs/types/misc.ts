@@ -9,6 +9,10 @@ export enum MapId {
     Savannah = 5,
     Halloween = 6,
     Cobalt = 7,
+
+    // comp modes start at 50+
+    CompMain = 50,
+
     // custom zurviv modes starts at 100+
     GG = 100,
     Gamerio = 101,

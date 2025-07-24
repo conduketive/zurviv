@@ -136,16 +136,9 @@ export class TeamMenu {
                 let modes = this.siteInfo.info.modes;
                 this.modeOptions = {};
                 for (let i = 0; i < modes.length; i++) {
-                    if (i % 4 === 0) {
-                        const formattedMapName = getFormattedMapName(modes[i].mapName);
-                        if (
-                            ["gg", "gamerio"].includes(
-                                formattedMapName.toLocaleLowerCase(),
-                            )
-                        )
-                            continue;
-                        this.modeOptions[formattedMapName] = i;
-                    }
+                    const formattedMapName = getFormattedMapName(modes[i].mapName);
+                    if (formattedMapName in this.modeOptions) continue;
+                    this.modeOptions[formattedMapName] = i;
                 }
                 const teamMode = Object.keys(this.teamOptionsMap).find(
                     (key) => this.teamOptionsMap[key] === this.roomData.maxPlayers - 1,
@@ -252,9 +245,10 @@ export class TeamMenu {
             $(document).click((event) => {
                 if (!$(event.target).closest(`#${containerId}`).length) {
                     dropdown.hide();
+                    this.siteInfo.updatePageFromInfo();
                 }
             });
-
+            this.siteInfo.updatePageFromInfo();
             dropdown.addClass("dropdown-menu");
         }
     }
@@ -270,7 +264,7 @@ export class TeamMenu {
             } else button.style.backgroundImage = "";
 
             if (button.id === "dropdown-main-button-team-1") {
-                button.innerHTML = `Game Mode: ${selectedButton.innerText} | ▼`;
+                button.innerHTML = `Map Mode: ${selectedButton.innerText} | ▼`;
                 this.selectedMode =
                     this.modeOptions[selectedButton.innerText.trim()] || 0;
 
@@ -285,7 +279,20 @@ export class TeamMenu {
                 this.selectedGameMode = selectedButton.innerText
                     .trim()
                     .toLocaleLowerCase()!;
-                console.log({ selectedGameMode: this.selectedGameMode });
+
+                $("[data-selected-game-mode]").attr(
+                    "data-selected-game-mode",
+                    this.selectedGameMode,
+                );
+
+                console.log({
+                    option: this.modeOptions,
+                    selected: this.selectedGameMode,
+                    y: this.siteInfo.getMapInGameMode(this.selectedGameMode),
+                    x: selectedButton.innerText,
+                });
+                this.siteInfo.resetMapModeButton();
+                this.selectedGameMode = selectedButton.innerText;
             } else {
                 button.innerHTML = `Team Mode: ${selectedButton.innerText} | ▼`;
                 this.selectedTeam =
@@ -532,7 +539,7 @@ export class TeamMenu {
                 version,
                 region,
                 zones,
-                mode: this.selectedGameMode,
+                mode: this.selectedGameMode.toLocaleLowerCase(),
             };
 
             helpers.verifyTurnstile(this.roomData.captchaEnabled, (token) => {

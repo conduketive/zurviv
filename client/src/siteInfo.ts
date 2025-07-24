@@ -1,4 +1,4 @@
-import $ from "jquery";
+import $, { map } from "jquery";
 import { MapDefs } from "../../shared/defs/mapDefs";
 import { TeamModeToString } from "../../shared/defs/types/misc";
 import type { Info } from "../../shared/types/api";
@@ -43,57 +43,64 @@ export class SiteInfo {
         });
     }
 
+    modesMap: Record<string, string[]> = {
+        competitive: [],
+        casual: [],
+        event: [],
+    };
     getGameModeStyles() {
         const eventModes = ["GG", "gamerio"].map((t) => t.toLocaleLowerCase());
         const availableModes = [];
         const modes = this.info.modes || [];
-        let dropdownContainer = document.querySelector(".dropdown-buttons-1");
-        const dropdownContainerTeam = document.querySelector(".dropdown-buttons-team-1");
+        const mapModeDropdownContainer = document.querySelector(
+            ".dropdown-buttons-map-mode",
+        );
+        const mapModeTeamDropdownContainer = document.querySelector(
+            ".dropdown-buttons-team-1",
+        );
 
+        const seenModes = new Set();
         if (!this.buttonsCreated) {
             for (let i = 0; i < modes.length; i++) {
                 const mode = modes[i];
-                if (i % 4 === 0) {
-                    const formattedMapName = getFormattedMapName(mode.mapName);
-                    const isEvent = eventModes.includes(mode.mapName.toLocaleLowerCase());
 
-                    const newButton = document.createElement("a");
-                    newButton.className = "btn-green btn-darken menu-option";
-                    newButton.id = `btn-start-mode-${i}`;
-                    newButton.textContent = formattedMapName;
-                    newButton.dataset.isEventMap = isEvent.toString();
-                    newButton.dataset.mapName = mode.mapName;
+                if (seenModes.has(mode.mapName)) continue;
+                seenModes.add(mode.mapName);
 
-                    dropdownContainer?.appendChild(newButton);
+                const formattedMapName = getFormattedMapName(mode.mapName);
+                const isEvent = eventModes.includes(mode.mapName.toLocaleLowerCase());
+                const isComp = mode.mapName.startsWith("comp_");
 
-                    const newButtonTeam = document.createElement("a");
-                    newButtonTeam.className =
-                        "btn-green btn-darken menu-option team-selection";
-                    newButtonTeam.id = `btn-start-mode-team-${i}`;
-                    newButtonTeam.textContent = formattedMapName;
-                    newButtonTeam.dataset.isEventMap = isEvent.toString();
+                const mapType = isComp ? "competitive" : isEvent ? "event" : "casual";
+                this.modesMap[mapType].push(mode.mapName);
 
-                    dropdownContainerTeam?.appendChild(newButtonTeam);
-                }
+                const mapModeSoloButton = document.createElement("a");
+                mapModeSoloButton.className = "btn-green btn-darken menu-option";
+                mapModeSoloButton.id = `btn-start-mode-${i}`;
+                mapModeSoloButton.textContent = formattedMapName;
+                mapModeSoloButton.dataset.mapName = mode.mapName;
+                mapModeSoloButton.dataset.mapType = isComp
+                    ? "competitive"
+                    : isEvent
+                      ? "event"
+                      : "casual";
+
+                mapModeDropdownContainer?.appendChild(mapModeSoloButton);
+
+                const mapModeTeamMenuButton = document.createElement("a");
+                mapModeTeamMenuButton.className =
+                    "btn-green btn-darken menu-option team-selection";
+                mapModeTeamMenuButton.id = `btn-start-mode-team-${i}`;
+                mapModeTeamMenuButton.textContent = formattedMapName;
+
+                mapModeTeamMenuButton.dataset.mapType = mapType;
+                mapModeTeamDropdownContainer?.appendChild(mapModeTeamMenuButton);
             }
             this.buttonsCreated = true;
         }
 
         for (let i = 0; i < modes.length; i++) {
             const mode = modes[i];
-            const isEvent = eventModes.includes(mode.mapName.toLocaleLowerCase());
-            let button = document.getElementById(`btn-start-mode-${i}`);
-            if (button) {
-                button.innerHTML = getFormattedMapName(mode.mapName);
-                button.dataset.isEventMap = isEvent.toString();
-            }
-
-            button = document.getElementById(`btn-start-mode-team-${i}`);
-            if (button) {
-                button.innerHTML = getFormattedMapName(mode.mapName);
-                button.dataset.isEventMap = isEvent.toString();
-            }
-
             const mapDef = (MapDefs[mode.mapName as keyof typeof MapDefs] || MapDefs.main)
                 .desc;
             const buttonText = mapDef.buttonText
@@ -107,11 +114,38 @@ export class SiteInfo {
             });
         }
 
+        const selectedGameMode = $("[data-selected-game-mode]").attr(
+            "data-selected-game-mode",
+        )!;
+
         // hide inactive game modes
-        updateSelectedGameMode(
-            $("[data-selected-game-mode]").attr("data-selected-game-mode")!,
-        );
+        $('[id^="btn-start-mode-"]').hide();
+        $(`[data-map-type="${selectedGameMode}"]`).show();
+    
+        console.log({
+            modes: this.modesMap
+        })
         return availableModes;
+    }
+
+    getMapInGameMode(selectedGameMode: string) {
+        return this.modesMap[selectedGameMode][0];
+    }
+    resetMapModeButton(_selectedGameMode?: string) {
+        const selectedGameMode = _selectedGameMode ?? $("[data-selected-game-mode]").attr(
+            "data-selected-game-mode",
+        )!;
+        $("[data-selected-game-map-name]").attr(
+            "data-selected-game-map-name",
+            this.modesMap[selectedGameMode][0],
+        );
+        ["#btn-start-team", "#dropdown-main-button-team-1", "#dropdown-main-button-map-mode"].forEach((e) =>
+            $(e)
+                .removeClass()
+                .addClass("btn-green btn-darken menu-option")
+                .text("Select Map Mode ▼")
+                .attr("style", ""),
+        );
     }
 
     updatePageFromInfo() {
@@ -217,10 +251,14 @@ export class SiteInfo {
 }
 
 export function getFormattedMapName(mapName: string) {
-    const mapNameParts = mapName.split("_");
-    const formattedMapName =
-        mapNameParts.length > 1
-            ? mapNameParts[1].charAt(0).toUpperCase() + mapNameParts[1].slice(1)
-            : mapName.substring(0, 1).toUpperCase() + mapName.substring(1);
-    return formattedMapName;
-}
+    const mapWithCustomName = {
+        "main_spring": "Spring",
+        "main_summer": "Summer",
+        "comp_main": "Comp Main",
+    }
+    if ( mapName in mapWithCustomName ) {
+        return mapWithCustomName[mapName as keyof typeof mapWithCustomName];
+    }
+    const capitalizedName = mapName.charAt(0).toUpperCase() + mapName.slice(1);
+    return capitalizedName;
+};

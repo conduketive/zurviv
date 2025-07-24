@@ -171,6 +171,7 @@ class Room {
             }
             case "playGame": {
                 if (!player.isLeader) break;
+                console.log({ msg })
                 this.findGame(msg.data);
                 break;
             }
@@ -248,6 +249,10 @@ class Room {
         }
         this.data.region = region;
 
+
+        console.log({
+            data: JSON.stringify(data)
+        })
         const tokenMap = new Map<Player, string>();
 
         if (

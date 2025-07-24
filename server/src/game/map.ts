@@ -6,7 +6,7 @@ import type {
     ObstacleDef,
     StructureDef,
 } from "../../../shared/defs/mapObjectsTyping";
-import type { MapId } from "../../../shared/defs/types/misc";
+import { MapId } from "../../../shared/defs/types/misc";
 import { GameConfig, TeamMode } from "../../../shared/gameConfig";
 import * as net from "../../../shared/net/net";
 import { MsgStream, MsgType } from "../../../shared/net/net";
@@ -954,6 +954,12 @@ export class GameMap {
         ignoreMapSpawnReplacement?: boolean,
         hideFromMap?: boolean,
     ) {
+        // !!
+        if (this.mapId !== MapId.Gamerio) {
+            if ( type === "container_06"  ) {
+                type = "container_01";
+            }
+        }
         const def = MapObjectDefs[type];
 
         if (!def) {
@@ -1784,7 +1790,6 @@ export class GameMap {
         dontSpawnLoot?: boolean,
     ): Building {
         const def = MapObjectDefs[type] as BuildingDef;
-
         ori = ori ?? def.ori ?? util.randomInt(0, 3);
 
         const building = new Building(this.game, type, pos, ori, layer, parentId);

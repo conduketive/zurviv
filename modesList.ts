@@ -59,6 +59,11 @@ export const MODES_LIST: ConfigType["modes"] = [
 
     { mapName: "faction", teamMode: TeamMode.Squad, enabled: true },
 
+    { mapName: "comp_main", teamMode: TeamMode.Solo, enabled: true },
+    { mapName: "comp_main", teamMode: TeamMode.Duo, enabled: true },
+    { mapName: "comp_main", teamMode: TeamMode.Trio, enabled: true },
+    { mapName: "comp_main", teamMode: TeamMode.Squad, enabled: true },
+
     // Events
     { mapName: "GG", teamMode: TeamMode.Solo, enabled: true },
     { mapName: "GG", teamMode: TeamMode.Duo, enabled: true },

@@ -10,7 +10,7 @@ export const zFindGameBody = z.object({
     gameModeIdx: z.number(),
     turnstileToken: z.string().optional(),
     mapName: z.string().toLowerCase(),
-    mode: z.enum(["casual", "competitive", "event"]).catch("casual"),
+    mode: z.enum(["casual", "competitive", "event"]).catch("casual").transform(v => v.toLowerCase()),
 });
 
 export type FindGameBody = z.infer<typeof zFindGameBody>;

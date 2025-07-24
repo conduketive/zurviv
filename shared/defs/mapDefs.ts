@@ -1,6 +1,7 @@
 import type { Vec2 } from "../utils/v2";
 import { Main } from "./maps/baseDefs";
 import { Cobalt } from "./maps/cobaltDefs";
+import { CompMain } from "./maps/comp/compBaseDefs";
 import { Desert } from "./maps/desertDefs";
 import { Faction } from "./maps/factionDefs";
 import { Gamerio } from "./maps/gamerio";
@@ -52,6 +53,8 @@ export const MapDefs = {
     savannah: Savannah,
     cobalt: Cobalt,
     turkey: Turkey,
+
+    comp_main: CompMain,
 } satisfies Record<string, MapDef>;
 
 export interface MapDef {

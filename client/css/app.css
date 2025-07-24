@@ -7162,14 +7162,14 @@ input [type="image"]:focus {
   display: inline-block;
 }
 
-#dropdown-main-button-1,
+#dropdown-main-button-map-mode,
 #dropdown-main-button-team-1 {
   cursor: pointer;
   position: relative;
   z-index: 1;
 }
 
-.dropdown-buttons-1,
+.dropdown-buttons-map-mode,
 .dropdown-buttons-team-1 {
   display: none;
   position: absolute;
