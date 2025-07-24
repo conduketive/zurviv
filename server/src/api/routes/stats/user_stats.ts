@@ -1,13 +1,17 @@
-import { type SQL, and, eq, gte, max, sql, sum } from "drizzle-orm";
+import { and, eq, gte, max, type SQL, sql, sum } from "drizzle-orm";
 import { Hono } from "hono";
-import type { Context } from "../..";
 import {
+    ALL_MAPS,
     type UserStatsRequest,
     type UserStatsResponse,
     zUserStatsRequest,
 } from "../../../../../shared/types/stats";
-import { databaseEnabledMiddleware, rateLimitMiddleware } from "../../auth/middleware";
-import { validateParams } from "../../auth/middleware";
+import type { Context } from "../..";
+import {
+    databaseEnabledMiddleware,
+    rateLimitMiddleware,
+    validateParams,
+} from "../../auth/middleware";
 import { db } from "../../db";
 import { matchDataTable, usersTable } from "../../db/schema";
 
@@ -88,7 +92,7 @@ async function userStatsSqlQuery(
             .where(
                 and(
                     eq(matchDataTable.userId, userId),
-                    mapIdFilter !== "-1"
+                    mapIdFilter !== ALL_MAPS
                         ? eq(matchDataTable.mapId, parseInt(mapIdFilter))
                         : undefined,
                     interval in intervalFilter ? intervalFilter[interval] : undefined,

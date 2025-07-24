@@ -1,15 +1,17 @@
-import { isIP } from "net";
+import type { HttpRequest, HttpResponse } from "uWebSockets.js";
 import type { Context } from "hono";
+import { hc } from "hono/client";
+import { isIP } from "net";
 import {
     DataSet,
-    RegExpMatcher,
     englishDataset,
     englishRecommendedTransformers,
     pattern,
+    RegExpMatcher,
 } from "obscenity";
 import ProxyCheck, { type IPAddressInfo } from "proxycheck-ts";
-import type { HttpRequest, HttpResponse } from "uWebSockets.js";
 import { Constants } from "../../../shared/net/net";
+import type { PrivateRouteApp } from "../api/routes/private/private";
 import { Config } from "../config";
 import { defaultLogger } from "./logger";
 
@@ -394,38 +396,14 @@ export async function verifyTurnsStile(token: string, ip: string): Promise<boole
     return true;
 }
 
-export async function fetchApiServer<
-    Body extends object = object,
-    Res extends object = object,
->(route: string, body: Body): Promise<Res | undefined> {
-    const url = `${Config.gameServer.apiServerUrl}/${route}`;
-
-    try {
-        const res = await fetch(url, {
-            method: "post",
-            headers: {
-                "content-type": "application/json",
-                "survev-api-key": Config.secrets.SURVEV_API_KEY,
-            },
-            body: JSON.stringify(body),
-            signal: AbortSignal.timeout(5000),
-        });
-
-        if (res.ok) {
-            return res as Res;
-        }
-
-        defaultLogger.warn(
-            `Error fetching API server ${route}`,
-            res.status,
-            res.statusText,
-        );
-    } catch (err) {
-        defaultLogger.error(`Error fetching API server ${route}`, err);
-    }
-
-    return undefined;
-}
+export const apiPrivateRouter = hc<PrivateRouteApp>(
+    `${Config.gameServer.apiServerUrl}/private`,
+    {
+        headers: {
+            "survev-api-key": Config.secrets.SURVEV_API_KEY,
+        },
+    },
+);
 
 export async function logErrorToWebhook(from: "server" | "client", ...messages: any[]) {
     if (!Config.errorLoggingWebhook) return;

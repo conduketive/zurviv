@@ -527,6 +527,13 @@
             </div>
             <img class="ui-armor-image ui-loot-image" src="">
           </div>
+          <div id="ui-perk-3" class="ui-armor-counter tooltip-perk ui-outline-hover">
+            <div class="tooltip-text">
+              <div class="tooltip-title"></div>
+              <div class="tooltip-desc"></div>
+            </div>
+            <img class="ui-armor-image ui-loot-image" src="">
+          </div>
         </div>
         <div id="ui-bottom-center-right" class="js-ui-map-hidden">
           <div id="ui-armor-helmet" class="ui-armor-counter ui-outline-hover">
@@ -762,7 +769,7 @@
                 </div>
               </div>
             </div>
-             <div class="account-overview">
+            <div class="account-overview">
               <div class="account-details-user account-details-block">
                 <div class="account-details">
                   <div class="account-avatar"></div>
@@ -1041,7 +1048,15 @@
                 <div id="news-block" class="menu-block">
                   <div id="news">
                     <h3 class="news-header">What's New!</h3>
-                    <div id="news-current" data-date="2025-05-19">
+                    <div id="news-current" data-date="2025-07-23">
+                      <small class="news-date">July 23, 2025</small>
+                      <p class="news-paragraph"><strong>New Leadership</strong></p>
+                      <p class="news-paragraph">50v50 is back for another round, and getting straight to fighting is easier than ever: select guns are now <span class="highlight">bundled with ammo</span>.</p>
+                      <p class="news-paragraph">Additionally, if a team leader fails to fire their flare soon after being promoted, it will now be <span class="highlight">auto-fired</span>.</p>
+                      <p class="news-paragraph">A new role, the <span class="highlight">Captain</span>, has joined the ranks, but promotion to this role is not as easy as it seems. Lone Survivrs have also picked up a new perk: <span class="highlight">AP Rounds</span>.</p>
+                      <p class="news-paragraph">Enjoy a selection of role buffs and new gun world images. Let us know your thoughts by hopping into our <a href="https://discord.gg/6uRdCdkTPt">Discord server!</a></p>
+                    </div>
+                    <div data-date="2025-05-19">
                       <small class="news-date">May 19, 2025</small>
                       <p class="news-paragraph"><strong>Class-ified Logs</strong></p>
                       <p class="news-paragraph">Project COBALT has begun once again on the Island! Pick from one of <span class="highlight">six classes</span> and spawn in with special perks, then find <span class="highlight">class-pods</span> to gather unique class loot.</p>
@@ -1053,7 +1068,7 @@
                       <small class="news-date">April 01, 2025</small>
                       <p class="news-paragraph"><strong>Boiled potato</strong></p>
                       <p class="news-paragraph">As spring continues to progress on the island, so does the regrowth of vegetation. PARMA's FSTMS division have once again started up more testing on the fan-favorite <span class="highlight">potatoes</span>.</p>
-                      <p class="news-paragraph">Don’t worry, there’s plenty to go around, and is that…. Is that… An <span class="highlight">egg</span>?</p>
+                      <p class="news-paragraph">Don't worry, there's plenty to go around, and is that…. Is that… An <span class="highlight">egg</span>?</p>
                     </div>
                     <div data-date="2025-03-15">
                       <small class="news-date">March 15, 2025</small>
@@ -1075,20 +1090,6 @@
                       <p class="news-paragraph">Join up alone or with a squad, and you'll be drafted into the Red Army or the Blue Group. Once both teams have locked in, one Leader will be randomly chosen for each side. Leader get a variety of perks, including a new gun and a new melee weapon! Leader pings are also visible and audible to every member of your team.</p>
                       <p class="news-paragraph">The enemy team isn't the only new danger in 50v50. Strike aircraft have been tasked with making frequent air strikes and you do not want to be caught in the bombing zone. Head indoors for relative safety, or attempt your best safety dance as the bombs fall around you.</p>
                       <p class="news-paragraph">Will you rout the Red Army with a devastating flanking maneuver? Or will the Blue Group be crushed under the weight of a decisive pincer attack? Tell us your best war story on our <a href="https://discord.gg/6uRdCdkTPt">Discord server</a></p>
-                    </div>
-                    <div data-date="2025-01-05">
-                      <small class="news-date">January 5, 2025</small>
-                      <p class="news-paragraph"><strong>It's snover</strong></p>
-                      <p class="news-paragraph">The snow drifts no more, once more. As previously mentioned, the Red Army and the Blue Group will soon start drafting ...</p>
-                      <p class="news-paragraph">We've also upgraded the servers in Asia, join our <a href="https://discord.gg/6uRdCdkTPt">Discord server</a> to squad up with people from there!</p>
-                    </div>
-                    <div data-date="2024-12-04">
-                      <small class="news-date">December 4, 2024</small>
-                      <p class="news-paragraph"><strong>Cold take</strong></p>
-                      <p class="news-paragraph">Winter has once again come to the Island! And with snowfall, comes <span class="highlight">snowballs</span>.</p>
-                      <p class="news-paragraph">Hitting an enemy with a snowball deals a little damage, slows them briefly, and also causes them to drop a random item! "Cook" or charge a snowball for a heavy hitting throwable that deals more damage and slows for a longer duration.</p>
-                      <p class="news-paragraph">Look out, as hidden somewhere in the snow lies the <span class="highlight">OTs-38 revolver</span>.</p>
-                      <p class="news-paragraph">Looking for squads? Join our <a href="https://discord.gg/6uRdCdkTPt">Discord server</a> to find the perfect squadmates!</p>
                     </div>
                   </div>
                 </div>
@@ -1295,6 +1296,9 @@
             <div id="modal-settings-interp" class="modal-settings-item">
               <input id="interpolation" type="checkbox"><p class="modal-settings-checkbox-text" data-l10n="index-client-side-interp">Client side interpolation</p>
             </div>
+              <div id="modal-settings-rotation" class="modal-settings-item hide-on-mobile">
+              <input id="localRotation" type="checkbox"><p class="modal-settings-checkbox-text" data-l10n="index-client-side-rotation">Client side player rotation</p>
+            </div>
             <div class="modal-settings-item hide-on-mobile">
               <input id="screenShake" type="checkbox"><p class="modal-settings-checkbox-text" data-l10n="index-screen-shake">Screen shake</p>
             </div>
@@ -1429,10 +1433,12 @@
             </div>
             <div class="modal-footer modal-footer-name modal-footer-round">
               <h3 class="close close-footer" data-l10n="index-confirm">Confirm</h3>
+              <h3 class='close close-footer' data-l10n='index-confirm-all' data-confirm-all="true">Confirm All</h3>
             </div>
           </div>
         </div>
       </div>
     </div>
     <script type="module" src="src/main.ts"></script>
+  </body>
 </html>

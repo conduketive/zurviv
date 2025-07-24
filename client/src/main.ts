@@ -19,7 +19,7 @@ import { errorLogManager } from "./errorLogs";
 import { Game } from "./game";
 import { helpers } from "./helpers";
 import { InputHandler } from "./input";
-import { InputBindUi, InputBinds } from "./inputBinds";
+import { InputBinds, InputBindUi } from "./inputBinds";
 import { PingTest } from "./pingTest";
 import { proxy } from "./proxy";
 import { ResourceManager } from "./resources";
@@ -334,7 +334,7 @@ class Application {
                 if (errMsg) {
                     this.showErrorModal(errMsg);
                 }
-
+                console.error("Quitting", errMsg);
                 SDK.gamePlayStop();
             };
             this.game = new Game(
@@ -836,8 +836,9 @@ class Application {
         const typeText: Record<string, string> = {
             // TODO: translate those?
             behind_proxy: this.localization.translate("index-behind-proxy"),
-            ip_banned: `Your IP has been banned`,
+            ip_banned: this.localization.translate("index-ip-banned"),
         };
+
         const text = typeText[err];
 
         if (text) {

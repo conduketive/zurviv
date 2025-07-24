@@ -3,9 +3,9 @@ import { type Vec2, v2 } from "./../utils/v2";
 import { type AbstractMsg, type BitStream, Constants } from "./net";
 import {
     ObjectSerializeFns,
-    type ObjectType,
     type ObjectsFullData,
     type ObjectsPartialData,
+    type ObjectType,
 } from "./objectSerializeFns";
 
 function serializeActivePlayer(s: BitStream, data: LocalDataWithDirty) {
@@ -406,6 +406,7 @@ export class UpdateMsg implements AbstractMsg {
                     s.writeBoolean(bullet.shotAlt);
                     s.writeBoolean(bullet.splinter);
                     s.writeBoolean(bullet.trailSaturated);
+                    s.writeBoolean(bullet.apRounds);
                     s.writeBoolean(bullet.trailSmall);
                     s.writeBoolean(bullet.trailThick);
                 }
@@ -632,6 +633,7 @@ export class UpdateMsg implements AbstractMsg {
                     bullet.shotAlt = s.readBoolean();
                     bullet.splinter = s.readBoolean();
                     bullet.trailSaturated = s.readBoolean();
+                    bullet.apRounds = s.readBoolean();
                     bullet.trailSmall = s.readBoolean();
                     bullet.trailThick = s.readBoolean();
                 }
@@ -745,6 +747,7 @@ export interface Bullet {
     shotAlt: boolean;
     splinter: boolean;
     trailSaturated: boolean;
+    apRounds: boolean;
     trailSmall: boolean;
     trailThick: boolean;
 }

@@ -2,8 +2,7 @@ import { randomBytes } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import hjson from "hjson";
-import type { ConfigType } from "./configType";
-import type { PartialConfig } from "./configType";
+import type { ConfigType, PartialConfig } from "./configType";
 import { TeamMode } from "./shared/gameConfig";
 import { util } from "./shared/utils/util";
 
@@ -20,7 +19,7 @@ export function getConfig(isProduction: boolean, dir: string) {
         gameServer: {
             host: "0.0.0.0",
             port: 8001,
-            apiServerUrl: "http://127.0.0.1:8000",
+            apiServerUrl: "",
             thisRegion: "local",
         },
         vite: {
@@ -133,6 +132,11 @@ export function getConfig(isProduction: boolean, dir: string) {
         config.oauthRedirectURI = `http://${config.vite.host}:${config.vite.port}`;
     }
     const baseUrl = new URL(config.oauthRedirectURI);
+
+    if (!config.gameServer.apiServerUrl) {
+        // same as above, provide a more accurate default value if not set manually
+        config.gameServer.apiServerUrl = `http://${config.apiServer.host}:${config.apiServer.port}`;
+    }
 
     const googleLogin = !!(
         config.secrets.GOOGLE_CLIENT_ID && config.secrets.GOOGLE_SECRET_ID

@@ -17,6 +17,7 @@ import { errorLogManager } from "../errorLogs";
 import type { Game } from "../game";
 import { type Gas, GasRenderer, GasSafeZoneRenderer } from "../gas";
 import { helpers } from "../helpers";
+import type { InputBinds, InputBindUi } from "./../inputBinds";
 import type { SoundHandle } from "../lib/createJS";
 import type { Map } from "../map";
 import { MapIndicatorBarn } from "../objects/mapIndicator";
@@ -25,7 +26,6 @@ import type { ParticleBarn } from "../objects/particles";
 import type { PlaneBarn } from "../objects/plane";
 import type { Player, PlayerBarn } from "../objects/player";
 import { SDK } from "../sdk";
-import type { InputBindUi, InputBinds } from "./../inputBinds";
 import type { Localization } from "./localization";
 import { PieTimer } from "./pieTimer";
 import type { Touch } from "./touch";
@@ -1013,12 +1013,12 @@ export class UiManager {
 
             // Add the inner dot sprite
             let texture = "player-map-inner.img";
-            if (customMapIcon) {
-                texture = roleDef.mapIcon!.alive;
+            if (customMapIcon && roleDef.mapIcon?.alive) {
+                texture = roleDef.mapIcon.alive;
             }
             if (playerStatus.dead) {
                 texture = "skull-outlined.img";
-                if (customMapIcon) {
+                if (roleDef?.mapIcon?.dead) {
                     texture = roleDef.mapIcon!.dead;
                 }
             } else if (playerStatus.downed) {

@@ -4,7 +4,7 @@ import { GameObjectDefs } from "../../../shared/defs/gameObjectDefs";
 import { EmoteCategory, type EmoteDef } from "../../../shared/defs/gameObjects/emoteDefs";
 import type { MeleeDef } from "../../../shared/defs/gameObjects/meleeDefs";
 import type { UnlockDef } from "../../../shared/defs/gameObjects/unlockDefs";
-import { EmoteSlot } from "../../../shared/gameConfig";
+import { EmoteSlot, Rarity } from "../../../shared/gameConfig";
 import type { ItemStatus } from "../../../shared/utils/loadout";
 import { type Crosshair, type Loadout, loadout } from "../../../shared/utils/loadout";
 import { util } from "../../../shared/utils/util";
@@ -33,15 +33,15 @@ function itemSort(sortFn: (a: Item, b: Item) => void) {
     return function (a: Item, b: Item) {
         // Always put stock items at the front of the list;
         // if not stock, sort by the given sort routine
-        const rarityA = (GameObjectDefs[a.type] as EmoteDef).rarity || 0;
-        const rarityB = (GameObjectDefs[b.type] as EmoteDef).rarity || 0;
-        if (rarityA == 0 && rarityB == 0) {
+        const rarityA = (GameObjectDefs[a.type] as EmoteDef).rarity || Rarity.Stock;
+        const rarityB = (GameObjectDefs[b.type] as EmoteDef).rarity || Rarity.Stock;
+        if (rarityA == Rarity.Stock && rarityB == Rarity.Stock) {
             return sortAlphabetical(a, b);
         }
-        if (rarityA == 0) {
+        if (rarityA == Rarity.Stock) {
             return -1;
         }
-        if (rarityB == 0) {
+        if (rarityB == Rarity.Stock) {
             return 1;
         }
         return sortFn(a, b);
@@ -68,8 +68,8 @@ function sortAlphabetical(a: Item, b: Item) {
 }
 
 function sortRarity(a: Item, b: Item) {
-    const rarityA = (GameObjectDefs[a.type] as EmoteDef).rarity || 0;
-    const rarityB = (GameObjectDefs[b.type] as EmoteDef).rarity || 0;
+    const rarityA = (GameObjectDefs[a.type] as EmoteDef).rarity || Rarity.Stock;
+    const rarityB = (GameObjectDefs[b.type] as EmoteDef).rarity || Rarity.Stock;
     if (rarityA == rarityB) {
         return sortAlphabetical(a, b);
     }
@@ -238,12 +238,16 @@ export class LoadoutMenu {
         const displayBlockingElem = function () {
             $("#modal-screen-block").fadeIn(200);
         };
-        const confirmNextNewItem = () => {
-            this.confirmNextItem();
-        };
         this.confirmItemModal = new MenuModal($("#modal-item-confirm"));
         this.confirmItemModal.onShow(displayBlockingElem);
-        this.confirmItemModal.onHide(confirmNextNewItem);
+        this.confirmItemModal.onHide((e) => {
+            const confirmAll = e?.target?.dataset?.confirmAll;
+            if (confirmAll) {
+                this.confirmAllItems();
+                return;
+            }
+            this.confirmNextItem();
+        });
         account.addEventListener("request", this.onRequest.bind(this));
         account.addEventListener("loadout", this.onLoadout.bind(this));
         account.addEventListener("items", this.onItems.bind(this));
@@ -525,6 +529,11 @@ export class LoadoutMenu {
         }
     }
 
+    confirmAllItems() {
+        this.clearConfirmItemModal();
+        $("#modal-screen-block").fadeOut(300);
+    }
+
     confirmNextItem() {
         // Confirm all pending new items in one shot upon displaying
         // the first item
@@ -535,7 +544,7 @@ export class LoadoutMenu {
             const objDef = GameObjectDefs[currentNewItem.type] as EmoteDef;
             const itemInfo = {
                 type: currentNewItem.type,
-                rarity: objDef.rarity || 0,
+                rarity: objDef.rarity || Rarity.Stock,
                 displayName: objDef.name!,
                 category: objDef.type,
             };
@@ -865,7 +874,7 @@ export class LoadoutMenu {
             const itemInfo: EquippedItem = {
                 loadoutType: "emote",
                 type,
-                rarity: emoteDef.rarity || 0,
+                rarity: emoteDef.rarity || Rarity.Stock,
                 displayName: emoteDef.name!,
                 displayLore: emoteDef.lore,
                 subcat: emoteDef.category,
@@ -968,7 +977,7 @@ export class LoadoutMenu {
             const itemInfo: ItemInfo = {
                 loadoutType: category.loadoutType,
                 type: item.type,
-                rarity: objDef.rarity || 0,
+                rarity: objDef.rarity || Rarity.Stock,
                 displayName: objDef.name,
                 displaySource: getItemSourceName(item.source),
                 displayLore: objDef.lore!,
