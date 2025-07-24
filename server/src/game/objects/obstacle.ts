@@ -457,15 +457,13 @@ export class Obstacle extends BaseGameObject {
                     "soda",
                     "painkiller",
                 ];
-                if ( doubleLoot.includes(name) ) {
-                    return util.weightedRandom([
-                        { percentage: 1, weight: 5 },
-                        { percentage: 2, weight: 3.5 },
-                        { percentage: 3, weight: 1 },
-                        { percentage: 4, weight: 0.5 },
-                    ]).percentage
-                }
-                return 1;
+                if ( !doubleLoot.includes(name) || !this.game.mapName.startsWith("comp_" )) return 1;
+                return util.weightedRandom([
+                    { percentage: 1, weight: 5 },
+                    { percentage: 2, weight: 3.5 },
+                    { percentage: 3, weight: 1 },
+                    { percentage: 4, weight: 0.5 },
+                ]).percentage
             };
 
             if ("tier" in lootTierOrItem) {
