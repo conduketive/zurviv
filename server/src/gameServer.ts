@@ -168,7 +168,9 @@ app.post("/api/find_game", (res, req) => {
             }
         },
         () => {
+            if (res.aborted) return;
             res.cork(() => {
+                if (res.aborted) return;
                 res.writeStatus("500 Internal Server Error");
                 res.write("500 Internal Server Error");
                 res.end();

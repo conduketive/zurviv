@@ -714,7 +714,16 @@ export class Player implements AbstractObject {
 
     m_getPanSegment() {
         const panSurface = this.m_netData.m_wearingPan ? "unequipped" : "equipped";
-        return (GameObjectDefs.pan as MeleeDef).reflectSurface?.[panSurface];
+        let surface = (GameObjectDefs.pan as MeleeDef).reflectSurface![panSurface];
+
+        if (panSurface === "unequipped") {
+            surface = {
+                p0: v2.mul(surface.p0, this.m_rad),
+                p1: v2.mul(surface.p1, this.m_rad),
+            };
+        } // TODO: fix scaled hitbox when pan is equipped too
+
+        return surface;
     }
 
     canInteract(map: Map) {
@@ -1339,6 +1348,16 @@ export class Player implements AbstractObject {
             } else if (weapDef.type === "melee") {
                 const coll = this.getMeleeCollider();
                 debugLines.addCollider(coll, 0xff0000, 0.1);
+            }
+            if (this.m_netData.m_wearingPan || this.m_netData.m_activeWeapon == "pan") {
+                const pan = this.m_getPanSegment();
+                const { p1, p0 } = math.transformSegment(
+                    pan.p0,
+                    pan.p1,
+                    this.m_pos,
+                    this.m_dir,
+                );
+                debugLines.addLine(p0, p1, 0xff00ff);
             }
         }
     }

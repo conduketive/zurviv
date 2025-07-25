@@ -15,7 +15,7 @@ import {
     type ScopeDef,
 } from "../../../../shared/defs/gameObjects/gearDefs";
 import type { GunDef } from "../../../../shared/defs/gameObjects/gunDefs";
-import { type MeleeDef, MeleeDefs } from "../../../../shared/defs/gameObjects/meleeDefs";
+import type { MeleeDef } from "../../../../shared/defs/gameObjects/meleeDefs";
 import type { OutfitDef } from "../../../../shared/defs/gameObjects/outfitDefs";
 import { PerkProperties } from "../../../../shared/defs/gameObjects/perkDefs";
 import type { RoleDef } from "../../../../shared/defs/gameObjects/roleDefs";
@@ -1161,8 +1161,16 @@ export class Player extends BaseGameObject {
     }
 
     getPanSegment() {
-        const type = this.wearingPan ? "unequipped" : "equipped";
-        return MeleeDefs.pan.reflectSurface![type];
+        const panSurface = this.wearingPan ? "unequipped" : "equipped";
+        let surface = (GameObjectDefs.pan as MeleeDef).reflectSurface![panSurface];
+        if (panSurface === "unequipped") {
+            surface = {
+                p0: v2.mul(surface.p0, this.rad),
+                p1: v2.mul(surface.p1, this.rad),
+            };
+        }
+
+        return surface;
     }
 
     socketId: string;

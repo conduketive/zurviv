@@ -1005,7 +1005,6 @@ class Application {
         this.resourceManager!.update(dt);
         this.audioManager.update(dt);
         this.ambience.update(dt, this.audioManager, !this.active);
-        this.teamMenu.update(dt);
 
         // Game update
         if (this.game?.initialized && this.game.m_playing) {

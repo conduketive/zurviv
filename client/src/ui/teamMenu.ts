@@ -218,6 +218,12 @@ export class TeamMenu {
                 });
             });
         }
+
+        setTimeout(() => {
+            if (this.joined) {
+                this.sendMessage("keepAlive", {});
+            }
+        }, 45 * 1000);
     }
 
     setupDropdown(
@@ -338,16 +344,6 @@ export class TeamMenu {
         return this.players.find((x) => {
             return x.playerId == playerId;
         });
-    }
-
-    update(dt: number) {
-        if (this.joined) {
-            this.keepAliveTimeout -= dt;
-            if (this.keepAliveTimeout < 0) {
-                this.keepAliveTimeout = 45;
-                this.sendMessage("keepAlive", {});
-            }
-        }
     }
 
     connect(create: boolean, roomUrl: string) {

@@ -404,7 +404,7 @@ export class TeamMenu {
                 // kick players that haven't sent a keep alive msg in over a minute
                 // client sends it every 45 seconds
                 for (const player of room.players) {
-                    if (player.lastMsgTime < Date.now() - 5 * 60 * 1000) {
+                    if (player.lastMsgTime < Date.now() - 8 * 60 * 1000) {
                         player.send("error", { type: "lost_conn" });
                         room.removePlayer(player);
                     }
@@ -427,8 +427,8 @@ export class TeamMenu {
             console.log("running init");
             const teamMenu = this;
 
-            const httpRateLimit = new HTTPRateLimit(1, 2000);
-            const wsRateLimit = new WebSocketRateLimit(5, 1000, 5);
+            const httpRateLimit = new HTTPRateLimit(5, 2000);
+            const wsRateLimit = new WebSocketRateLimit(50, 1000, 5);
 
             app.get(
                 "/team_v2",
@@ -638,7 +638,7 @@ export class TeamMenu {
         // if we don't have a room at this point it meant both creation and joining failed
         // so close the socket
         if (!player.room) {
-            this.logger.warn("Player not in room, closing socket.");
+            this.logger.debug("Player not in room, closing socket.");
             ws.close();
             return;
         }
@@ -651,7 +651,7 @@ export class TeamMenu {
         const player = ws.raw?.player;
 
         if (!player) {
-            this.logger.warn("Player not found, closing socket.");
+            this.logger.debug("Player not found, closing socket.");
             ws.close();
             return;
         }

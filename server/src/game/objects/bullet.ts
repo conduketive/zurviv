@@ -21,14 +21,6 @@ import { Player } from "./player";
 // NOTE: most of this code was copied from surviv client and bit heroes arena client
 // to get bullet collision the most accurate possible
 
-function transformSegment(p0: Vec2, p1: Vec2, pos: Vec2, dir: Vec2) {
-    const ang = Math.atan2(dir.y, dir.x);
-    return {
-        p0: v2.add(pos, v2.rotate(p0, ang)),
-        p1: v2.add(pos, v2.rotate(p1, ang)),
-    };
-}
-
 interface BulletCollision {
     type: "obstacle" | "player" | "pan";
     obj?: Player | Obstacle;
@@ -455,13 +447,13 @@ export class Bullet {
                 if (obj.hasActivePan()) {
                     const p = obj;
                     const panSeg = p.getPanSegment()!;
-                    const oldSegment = transformSegment(
+                    const oldSegment = math.transformSegment(
                         panSeg.p0,
                         panSeg.p1,
                         p.posOld,
                         p.dirOld,
                     );
-                    const newSegment = transformSegment(
+                    const newSegment = math.transformSegment(
                         panSeg.p0,
                         panSeg.p1,
                         p.pos,
