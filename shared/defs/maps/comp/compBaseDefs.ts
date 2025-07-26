@@ -64,8 +64,8 @@ export const CompMain: MapDef = {
                 },
             ],
             crates: [
-                { name: "airdrop_crate_01", weight: 10 },
-                { name: "airdrop_crate_02", weight: 1 },
+                { name: "airdrop_crate_01", weight: 8 },
+                { name: "airdrop_crate_02", weight: 2 },
             ],
         },
         bagSizes: {},   
@@ -275,6 +275,7 @@ export const CompMain: MapDef = {
             { name: "backpack03", count: 1, weight: 0.25 },
         ],
         tier_ring_case: [
+            { name: "vector45", count: 1, weight: 0.75 }, // ?
             { name: "grozas", count: 1, weight: 0.75 }, // ?
             { name: "ots38_dual", count: 1, weight: 0.15 }, // ?
             { name: "pkp", count: 1, weight: 0.1 }, // ?
@@ -433,6 +434,7 @@ export const CompMain: MapDef = {
         ],
         tier_guns_rare_assault: [
             { name: "scar", count: 1, weight: 1 },
+            { name: "vector45", count: 1, weight: 1 },
             { name: "grozas", count: 1, weight: 1 },
             { name: "m4a1", count: 1, weight: 1 },
             { name: "an94", count: 1, weight: 0.5 },
@@ -457,6 +459,7 @@ export const CompMain: MapDef = {
             { name: "scorpion", count: 1, weight: 1 },
             { name: "m4a1", count: 1, weight: 1 },
             { name: "garand", count: 1, weight: 1 },
+            { name: "vector45", count: 1, weight: 1 },
             { name: "grozas", count: 1, weight: 1 },
             { name: "flare_gun", count: 1, weight: 1 },
             // { name: "awc", count: 1, weight: 1 },
