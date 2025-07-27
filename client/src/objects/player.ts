@@ -192,8 +192,6 @@ export class Player implements AbstractObject {
     __id!: number;
     __type!: ObjectType.Player;
     active!: boolean;
-    isSpectating: boolean = false;
-    activeId: number = -1;
 
     bodySprite = createSprite();
     chestSprite = createSprite();
@@ -831,8 +829,6 @@ export class Player implements AbstractObject {
         this.layer = this.m_netData.m_layer;
         this.downed = this.m_netData.m_downed;
         this.m_rad = this.m_netData.m_scale * GameConfig.player.radius;
-        this.isSpectating = isSpectating;
-        this.activeId = activeId;
 
         // interpolation
         if (camera.m_interpEnabled) {
@@ -852,8 +848,6 @@ export class Player implements AbstractObject {
                     1,
                 );
                 this.m_visualDir = v2.lerp(dirT, this.m_visualDirOld, this.m_dir);
-            } else {
-                this.m_visualDir = v2.copy(this.m_dir);
             }
         } else {
             this.m_visualPos = v2.copy(this.m_pos);
