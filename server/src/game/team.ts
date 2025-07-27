@@ -67,7 +67,7 @@ export class Team {
                 dir: p.dir,
                 source: p.downedBy,
             });
-            i--; //kill() removes the player from the array so we dont want to skip players
+            i--; // kill() removes the player from the array so we dont want to skip players
         }
     }
     checkAndApplyLastMan() {

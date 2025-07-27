@@ -167,7 +167,7 @@ export class PlayerBarn {
         let pos: Vec2;
         let layer: number;
         if (this.game.map.perkMode && this.game.map.perkModeTwinsBunker) {
-            //intermediate spawn point while the player chooses a role before theyre moved to their real spawn point
+            // intermediate spawn point while the player chooses a role before theyre moved to their real spawn point
             const spawnBuilding = this.game.map.perkModeTwinsBunker;
             pos = spawnBuilding.pos;
             layer = spawnBuilding.layer;
@@ -840,8 +840,8 @@ export class Player extends BaseGameObject {
         }
         if (this.role === role) return;
 
-        //switching from one role to another
-        //need to delete any non-droppables so they can be overwritten
+        // switching from one role to another
+        // need to delete any non-droppables so they can be overwritten
         if (this.role) {
             if (this.helmet && (GameObjectDefs[this.helmet] as HelmetDef).noDrop)
                 this.helmet = "";
@@ -890,7 +890,7 @@ export class Player extends BaseGameObject {
             for (const [key, value] of Object.entries(roleDef.defaultItems.inventory)) {
                 if (value == 0) continue; // prevents overwriting existing inventory
 
-                //only sets scope if scope in inventory is higher than current scope
+                // only sets scope if scope in inventory is higher than current scope
                 const invDef = GameObjectDefs[key];
                 if (
                     invDef.type == "scope" &&
@@ -1013,12 +1013,12 @@ export class Player extends BaseGameObject {
     roleSelect(role: string): void {
         if (!this.game.map.perkModeTwinsBunker || this.role) return;
 
-        //so the client can't be manipulated to send lone survivr or something
+        // so the client can't be manipulated to send lone survivr or something
         if (!this.game.map.mapDef.gameMode.perkModeRoles!.includes(role)) return;
 
         this.roleMenuTicker = 0;
         this.promoteToRole(role);
-        //v2.set() necessary since this.collider.pos is linked to this.pos by reference
+        // v2.set() necessary since this.collider.pos is linked to this.pos by reference
         v2.set(this.pos, this.game.map.getSpawnPos(this.group, this.team));
         if (this.group && !this.group.spawnPosition) {
             this.group.spawnPosition = v2.copy(this.pos);
@@ -1163,11 +1163,23 @@ export class Player extends BaseGameObject {
     getPanSegment() {
         const panSurface = this.wearingPan ? "unequipped" : "equipped";
         let surface = (GameObjectDefs.pan as MeleeDef).reflectSurface![panSurface];
-        if (panSurface === "unequipped") {
-            surface = {
-                p0: v2.mul(surface.p0, this.rad),
-                p1: v2.mul(surface.p1, this.rad),
-            };
+
+        const scale = this.scale;
+
+        if (scale !== 1) {
+            if (panSurface === "unequipped") {
+                surface = {
+                    p0: v2.mul(surface.p0, scale),
+                    p1: v2.mul(surface.p1, scale),
+                };
+            } else {
+                const s = (scale - 1) * 0.75;
+                const off = v2.create(s, -s);
+                surface = {
+                    p0: v2.add(surface.p0, off),
+                    p1: v2.add(surface.p1, off),
+                };
+            }
         }
 
         return surface;
@@ -1740,9 +1752,9 @@ export class Player extends BaseGameObject {
             this.pos,
             GameConfig.player.maxVisualRadius * this.scale + this.speed * dt,
         );
-        //can't collide with objects in spectator mode
+        // can't collide with objects in spectator mode
         const objs = this.debug.spectatorMode
-            ? //so spectators can go underground, need to be able to interact with stairs
+            ? // so spectators can go underground, need to be able to interact with stairs
               this.game.grid
                   .intersectCollider(circle)
                   .filter(
@@ -1887,7 +1899,7 @@ export class Player extends BaseGameObject {
         let zoomRegionZoom = lowestZoom;
         let insideNoZoomRegion = true;
         let insideSmoke = false;
-        //building player is currently inside of
+        // building player is currently inside of
         let occupiedBuilding: Building | undefined;
 
         for (let i = 0; i < objs.length; i++) {
@@ -1897,7 +1909,7 @@ export class Player extends BaseGameObject {
                     !this.downed &&
                     obj.healRegions &&
                     util.sameLayer(this.layer, obj.layer) &&
-                    !this.game.gas.isInGas(this.pos) //heal regions don't work in gas
+                    !this.game.gas.isInGas(this.pos) // heal regions don't work in gas
                 ) {
                     const effectiveHealRegions = obj.healRegions.filter((hr) => {
                         return coldet.testPointAabb(
@@ -1988,7 +2000,7 @@ export class Player extends BaseGameObject {
             }
         }
 
-        //only dirty if healEffect changed from last tick to current tick (leaving or entering a heal region)
+        // only dirty if healEffect changed from last tick to current tick (leaving or entering a heal region)
         if (oldHealEffect != this.healEffect) {
             this.setDirty();
         }
@@ -2046,7 +2058,7 @@ export class Player extends BaseGameObject {
 
         if (!v2.eq(this.pos, this.posOld)) {
             this.setPartDirty();
-            //player doesn't exist in grid while in spectator mode
+            // player doesn't exist in grid while in spectator mode
             if (!this.debug.spectatorMode) this.game.grid.updateObject(this);
 
             //
@@ -2108,7 +2120,7 @@ export class Player extends BaseGameObject {
 
                 if (!util.sameLayer(o.layer, this.layer)) return false;
                 if (o.__type == ObjectType.Obstacle && o.dead) return false;
-                //if inside building, can only select one of its children
+                // if inside building, can only select one of its children
                 if (this.indoors && !childIds?.has(o.__id)) return false;
                 return true;
             })
@@ -2499,11 +2511,17 @@ export class Player extends BaseGameObject {
                 const teamExistsOrAlive =
                     this.game.map.factionMode && this.team!.livingPlayers.length > 0;
                 const aliveKiller = this.getAliveKiller();
-
                 const shouldSpecRandom =
                     groupExistsOrAlive || teamExistsOrAlive || !aliveKiller;
+
                 playerToSpec = shouldSpecRandom
-                    ? spectatablePlayers[util.randomInt(0, spectatablePlayers.length - 1)]
+                    ? this.game.map.factionMode && groupExistsOrAlive
+                        ? this.group!.livingPlayers[
+                              util.randomInt(0, this.group!.livingPlayers.length - 1)
+                          ]
+                        : spectatablePlayers[
+                              util.randomInt(0, spectatablePlayers.length - 1)
+                          ]
                     : aliveKiller;
                 break;
             case spectateMsg.specNext:
@@ -2821,13 +2839,13 @@ export class Player extends BaseGameObject {
             this.team!.checkAndApplyLastMan();
             this.team!.checkAndApplyCaptain();
 
-            //golden airdrops depend on alive counts, so we only do this logic on kill
+            // golden airdrops depend on alive counts, so we only do this logic on kill
             if (this.game.planeBarn.canDropSpecialAirdrop()) {
                 this.game.planeBarn.addSpecialAirdrop();
             }
         }
 
-        //params.gameSourceType check ensures player didnt die by bleeding out
+        // params.gameSourceType check ensures player didnt die by bleeding out
         if (
             this.game.map.potatoMode &&
             this.lastDamagedBy &&
@@ -3049,12 +3067,12 @@ export class Player extends BaseGameObject {
 
     /** returns player to revive if can revive */
     getPlayerToRevive(): Player | undefined {
-        if (this.actionType != GameConfig.Action.None) return undefined; //action in progress already
+        if (this.actionType != GameConfig.Action.None) return undefined; // action in progress already
 
         if (this.downed && this.hasPerk("self_revive")) return this;
 
-        if (!this.game.modeManager.isReviveSupported()) return undefined; //no revives in solos
-        if (this.downed) return undefined; //can't revive players while downed
+        if (!this.game.modeManager.isReviveSupported()) return undefined; // no revives in solos
+        if (this.downed) return undefined; // can't revive players while downed
 
         const nearbyDownedTeammates = this.game.grid
             .intersectCollider(
@@ -3065,7 +3083,7 @@ export class Player extends BaseGameObject {
                     obj.__type == ObjectType.Player &&
                     obj.teamId == this.teamId &&
                     obj.downed &&
-                    //can't revive someone already being revived or self reviving (medic)
+                    // can't revive someone already being revived or self reviving (medic)
                     obj.actionType != GameConfig.Action.Revive,
             );
 
@@ -3264,7 +3282,7 @@ export class Player extends BaseGameObject {
 
         this.mousePos = v2.add(this.pos, v2.mul(this.dir, this.toMouseLen));
 
-        //spectators are only allowed to send movement related inputs
+        // spectators are only allowed to send movement related inputs
         if (this.debug.spectatorMode) return;
 
         this.shootHold = msg.shootHold;
@@ -3325,7 +3343,7 @@ export class Player extends BaseGameObject {
                     this.weaponManager.setCurWeapIndex(this.weaponManager.lastWeaponIdx);
                     break;
                 case GameConfig.Input.EquipOtherGun:
-                    //priority list of slots to swap to
+                    // priority list of slots to swap to
                     const slotTargets = [
                         GameConfig.WeaponSlot.Primary,
                         GameConfig.WeaponSlot.Secondary,
@@ -3734,7 +3752,7 @@ export class Player extends BaseGameObject {
                         gunType = def.dualWieldType;
                     }
 
-                    //replaces the gun
+                    // replaces the gun
 
                     let newAmmo = 0;
 
@@ -3744,14 +3762,14 @@ export class Player extends BaseGameObject {
                                 ? this.weapons[newGunIdx].ammo
                                 : 0;
 
-                        //inverted logic, there is only 1 case where the old gun should not drop
-                        //when youre holding a pistol, and you pick up the same single pistol from the ground
-                        //it should turn it into its dual pistol version and drop nothing
+                        // inverted logic, there is only 1 case where the old gun should not drop
+                        // when youre holding a pistol, and you pick up the same single pistol from the ground
+                        // it should turn it into its dual pistol version and drop nothing
                         const shouldDrop = !(
                             (
-                                oldWeapDef.dualWieldType && //verifies it's a dual wieldable pistol
+                                oldWeapDef.dualWieldType && // verifies it's a dual wieldable pistol
                                 this.weapons[newGunIdx].type == obj.type
-                            ) //verifies the old gun and new gun are the same
+                            ) // verifies the old gun and new gun are the same
                         );
                         if (shouldDrop) {
                             this.weaponManager.dropGun(newGunIdx);
@@ -3783,7 +3801,7 @@ export class Player extends BaseGameObject {
                         }
                     }
 
-                    //can only reload on pickup if gun empty OR if reload was already in progress
+                    // can only reload on pickup if gun empty OR if reload was already in progress
                     if (
                         newGunIdx === this.curWeapIdx &&
                         (this.weapons[newGunIdx].ammo <= 0 ||
@@ -3815,7 +3833,7 @@ export class Player extends BaseGameObject {
                     const thisLevel = this.getGearLevel(thisType);
                     amountLeft = 1;
 
-                    //role helmets and perk helmets can't be dropped in favor of another helmet, they're the "highest" tier
+                    // role helmets and perk helmets can't be dropped in favor of another helmet, they're the "highest" tier
                     if (
                         def.type == "helmet" &&
                         (this.hasRoleHelmet || (thisDef && (thisDef as HelmetDef).perk))
@@ -3834,7 +3852,7 @@ export class Player extends BaseGameObject {
                         this[def.type] = obj.type;
                         pickupMsg.type = net.PickupMsgType.Success;
 
-                        //removes roles/perks associated with the dropped role/perk helmet
+                        // removes roles/perks associated with the dropped role/perk helmet
                         if (thisDef && thisDef.type == "helmet" && thisDef.perk) {
                             this.removePerk(thisDef.perk);
                         }
@@ -3843,7 +3861,7 @@ export class Player extends BaseGameObject {
                             this.removeRole();
                         }
 
-                        //adds roles/perks associated with the picked up role/perk helmet
+                        // adds roles/perks associated with the picked up role/perk helmet
                         if (def.type == "helmet" && def.role) {
                             this.promoteToRole(def.role);
                         }
@@ -4002,7 +4020,7 @@ export class Player extends BaseGameObject {
 
         if (oldWeaponDef.noPotatoSwap) return;
         const weaponDefs = WeaponTypeToDefs[oldWeaponDef.type];
-        //necessary for type safety since Object.entries() is not type safe and just returns "any"
+        // necessary for type safety since Object.entries() is not type safe and just returns "any"
         const enumerableDefs = Object.entries(weaponDefs) as [
             string,
             GunDef | ThrowableDef | MeleeDef,
@@ -4028,10 +4046,10 @@ export class Player extends BaseGameObject {
         }
 
         if (index == -1) {
-            //defaults if we can't figure out what slot was used to "trigger" the weapon swap
+            // defaults if we can't figure out what slot was used to "trigger" the weapon swap
             switch (oldWeaponDef.type) {
                 case "gun":
-                    //arbitrary choice
+                    // arbitrary choice
                     index = GameConfig.WeaponSlot.Primary;
                     break;
                 case "melee":
@@ -4323,13 +4341,13 @@ export class Player extends BaseGameObject {
 
         this.debug.baseSpeedOverride = math.clamp(msg.speed, 1, 10000);
 
-        //only accept ground or underground
+        // only accept ground or underground
         if ((msg.layer == 0 || msg.layer == 1) && this.layer != msg.layer) {
             this.layer = msg.layer;
             this.setDirty();
         }
 
-        //removed from grid while in spectator mode so other players can't see/interact with the player
+        // removed from grid while in spectator mode so other players can't see/interact with the player
         if (this.debug.spectatorMode != msg.spectatorMode) {
             msg.spectatorMode
                 ? this.game.grid.remove(this)
@@ -4555,7 +4573,7 @@ export class Player extends BaseGameObject {
         if (this.debug.baseSpeedOverride != -1) {
             this.speed = this.debug.baseSpeedOverride;
         } else if (this.actionType == GameConfig.Action.Revive) {
-            //prevents self reviving players from getting an unnecessary speed boost
+            // prevents self reviving players from getting an unnecessary speed boost
             if (this.action.targetId && !(this.downed && this.hasPerk("self_revive"))) {
                 // player reviving
                 this.speed = GameConfig.player.downedMoveSpeed + 2; // not specified in game config so i just estimated

@@ -523,7 +523,7 @@ export class GameMap {
                     continue;
                 }
 
-                //building
+                // building
                 const unlockables = unlockObject.childObjects.filter(
                     (o) => o instanceof Obstacle && o.door && o.door.locked,
                 ) as Obstacle[];
@@ -652,7 +652,7 @@ export class GameMap {
         ).widths;
 
         for (let i = 0; i < widths.length; i++) {
-            //in factions mode, we always assume the first width in widths is the main faction river
+            // in factions mode, we always assume the first width in widths is the main faction river
             const isFactionRiver = this.factionMode;
 
             this.trySpawn(`river_${widths[i]}`, () => {
@@ -726,7 +726,7 @@ export class GameMap {
             return "xlarge";
         }
 
-        //maximum amount of a specific bridge that can spawn
+        // maximum amount of a specific bridge that can spawn
         const maxBridges: Record<BridgeSize, number> = {
             medium: 3,
             large: 2,
@@ -813,7 +813,7 @@ export class GameMap {
             });
 
         this.timerStart();
-        //buildings that contain bridges such as ocean/river shacks and river town
+        // buildings that contain bridges such as ocean/river shacks and river town
         const bridgeTypes = [];
         for (let i = 0; i < types.length; i++) {
             const type = types[i];
@@ -1372,8 +1372,8 @@ export class GameMap {
             const spawnAabb = collider.createAabb(spawnMin, spawnMax);
 
             if (this.factionMode) {
-                //obstacles, buildings, and structures that need to spawn on either team's side
-                //doesn't matter which team, just as long as theyre grouped with the team specific buildings
+                // obstacles, buildings, and structures that need to spawn on either team's side
+                // doesn't matter which team, just as long as theyre grouped with the team specific buildings
                 const edgeObjects = [
                     "warehouse_01f",
                     "house_red_01",
@@ -1381,24 +1381,24 @@ export class GameMap {
                     "barn_01",
                 ];
 
-                //obstacles, buildings, and structures that need to spawn away from the sides and closer to the center river
+                // obstacles, buildings, and structures that need to spawn away from the sides and closer to the center river
                 const centerObjects = [
                     "greenhouse_01",
-                    "bunker_structure_03", //storm bunker
+                    "bunker_structure_03", // storm bunker
                 ];
 
                 const divisions = 10;
                 let divisionIdx: number;
                 if ("teamId" in def && def.teamId) {
                     const teamId = def.teamId;
-                    //picks either of the furthest divisions from the center
+                    // picks either of the furthest divisions from the center
                     divisionIdx = (teamId - 1) * (divisions - 1);
                 } else if (edgeObjects.includes(type)) {
                     const teamId = util.randomInt(1, 2);
-                    //picks either of the furthest divisions from the center
+                    // picks either of the furthest divisions from the center
                     divisionIdx = (teamId - 1) * (divisions - 1);
                 } else if (centerObjects.includes(type)) {
-                    //picks any "non-furthest" division
+                    // picks any "non-furthest" division
                     divisionIdx = util.randomInt(1, divisions - 2);
                 } else {
                     return util.randomPointInAabb(spawnAabb);
@@ -2032,7 +2032,7 @@ export class GameMap {
                 const vec = v2.create(Math.cos(rad), Math.sin(rad));
                 const idx = team.teamId - 1;
 
-                //farthest fifth from the center of the team's half. 1/5 * 1/2 = 1/10 hence the 10 divisions
+                // farthest fifth from the center of the team's half. 1/5 * 1/2 = 1/10 hence the 10 divisions
                 const divisions = 10;
                 spawnAabb = coldet.divideAabb(spawnAabb, vec, divisions)[
                     idx * (divisions - 1)

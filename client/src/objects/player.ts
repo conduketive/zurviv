@@ -716,12 +716,23 @@ export class Player implements AbstractObject {
         const panSurface = this.m_netData.m_wearingPan ? "unequipped" : "equipped";
         let surface = (GameObjectDefs.pan as MeleeDef).reflectSurface![panSurface];
 
-        if (panSurface === "unequipped") {
-            surface = {
-                p0: v2.mul(surface.p0, this.m_rad),
-                p1: v2.mul(surface.p1, this.m_rad),
-            };
-        } // TODO: fix scaled hitbox when pan is equipped too
+        const scale = this.m_netData.m_scale;
+
+        if (scale !== 1) {
+            if (panSurface === "unequipped") {
+                surface = {
+                    p0: v2.mul(surface.p0, scale),
+                    p1: v2.mul(surface.p1, scale),
+                };
+            } else {
+                const s = (scale - 1) * 0.75;
+                const off = v2.create(s, -s);
+                surface = {
+                    p0: v2.add(surface.p0, off),
+                    p1: v2.add(surface.p1, off),
+                };
+            }
+        }
 
         return surface;
     }
@@ -828,7 +839,12 @@ export class Player implements AbstractObject {
             this.posInterpTicker += dt;
             const posT = math.clamp(this.posInterpTicker / camera.m_interpInterval, 0, 1);
             this.m_visualPos = v2.lerp(posT, this.m_visualPosOld, this.m_pos);
-            if (!camera.m_localRotationEnabled || !isActivePlayer) {
+            if (
+                !camera.m_localRotationEnabled ||
+                !isActivePlayer ||
+                isSpectating ||
+                displayingStats
+            ) {
                 this.dirInterpolationTicker += dt;
                 const dirT = math.clamp(
                     this.dirInterpolationTicker / camera.m_interpInterval,
@@ -1862,7 +1878,8 @@ export class Player implements AbstractObject {
         }
         this.handLContainer.position.x -= this.gunRecoilL * 1.125;
         this.handRContainer.position.x -= this.gunRecoilR * 1.125;
-        //Local Rotation
+
+        // Local Rotation
         const mouseY = inputManager.mousePos.y;
         const mouseX = inputManager.mousePos.x;
         if (

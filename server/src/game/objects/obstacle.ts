@@ -394,7 +394,7 @@ export class Obstacle extends BaseGameObject {
 
         if (def.destroyType) {
             let destroyType: string;
-            //in cobalt, class shells need to spawn a pod that corresponds to the player's class (role)
+            // in cobalt, class shells need to spawn a pod that corresponds to the player's class (role)
             if (
                 def.smartLoot &&
                 this.interactedBy &&
@@ -409,7 +409,7 @@ export class Obstacle extends BaseGameObject {
             this.game.map.genAuto(destroyType, this.pos, this.layer, this.ori);
         }
 
-        //potatos in potato mode
+        // potatos in potato mode
         if (def.swapWeaponOnDestroy && params.source?.__type === ObjectType.Player) {
             params.source.randomWeaponSwap(params);
         }

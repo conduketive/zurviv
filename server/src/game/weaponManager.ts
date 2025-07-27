@@ -178,7 +178,7 @@ export class WeaponManager {
             );
         }
 
-        //can't wear pan if you're replacing it with another melee
+        // can't wear pan if you're replacing it with another melee
         if (this.weapons[idx].type == "pan") {
             this.player.wearingPan = false;
             this.player.setDirty();
@@ -704,7 +704,7 @@ export class WeaponManager {
         const shouldApplyChambered =
             this.player.hasPerk("chambered") &&
             itemDef.ammo !== "12gauge" &&
-            (weapon.ammo === 0 || //ammo count already decremented
+            (weapon.ammo === 0 || // ammo count already decremented
                 weapon.ammo === this.getTrueAmmoStats(itemDef).trueMaxClip - 1);
 
         let damageMult = 1;

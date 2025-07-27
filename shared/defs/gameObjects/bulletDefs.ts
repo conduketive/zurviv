@@ -696,7 +696,7 @@ export const BaseDefs: Record<string, BulletDef> = {
         maxFlareScale: 2,
         skipCollision: true,
     },
-    //used for guns that shoot projectiles since they still technically have to shoot a bullet of some kind
+    // used for guns that shoot projectiles since they still technically have to shoot a bullet of some kind
     bullet_invis: {
         type: "bullet",
         damage: 0,

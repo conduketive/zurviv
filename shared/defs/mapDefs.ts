@@ -144,8 +144,8 @@ export interface MapDef {
         };
         unlocks?: {
             timings: Array<{
-                type: string; //can either be a building with the door(s) to unlock OR the door itself, no support for structures yet
-                stagger: number; //only for buildings with multiple unlocks, will stagger the unlocks instead of doing them all at once
+                type: string; // can either be a building with the door(s) to unlock OR the door itself, no support for structures yet
+                stagger: number; // only for buildings with multiple unlocks, will stagger the unlocks instead of doing them all at once
                 circleIdx: number;
                 wait: number;
             }>;
