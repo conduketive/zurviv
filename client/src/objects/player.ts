@@ -1806,6 +1806,7 @@ export class Player implements AbstractObject {
         } else {
             this.visorSprite.visible = false;
         }
+        this.bodyContainer.scale.set(bodyScale, bodyScale);
         if (outfitImg.frontSprite) {
             this.frontSprite.texture = PIXI.Texture.from(outfitImg.frontSprite);
             this.frontSprite.scale.set(bodyScale * 0.25);
