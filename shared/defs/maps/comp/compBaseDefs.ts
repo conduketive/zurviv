@@ -806,6 +806,7 @@ export const CompMain: MapDef = {
                 club_complex_01: 1,
             },
         ],
+        randomSpawns: [], 
         spawnReplacements: [{}],
         importantSpawns: ["club_complex_01"],
     },
