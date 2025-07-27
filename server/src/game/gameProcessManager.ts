@@ -202,6 +202,17 @@ export class GameProcessManager implements GameManager {
         }, 5000);
     }
 
+    closeGamesByMapName(mapName: string) {
+        let count = 0;
+        for ( const p of this.processes) {
+            if (p.mapName === mapName) {
+                this.killProcess(p!);
+                ++count;
+            }
+        }
+        return `Closed ${count} games`;
+    }
+
     getPlayerCount(): number {
         return this.processes.reduce((a, b) => {
             return a + b.aliveCount;

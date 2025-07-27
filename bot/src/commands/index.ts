@@ -6,6 +6,7 @@ import {
 import {
     zBanAccountParams,
     zBanIpParams,
+    zCloseGamesParams,
     zSetAccountNameParams,
     zSetMatchDataNameParams,
     zUnbanAccountParams,
@@ -153,6 +154,19 @@ const commands = {
             {
                 name: "current_slug",
                 description: "The current slug of the account",
+                required: true,
+                type: ApplicationCommandOptionType.String,
+            },
+        ],
+    }),
+    [Command.CloseGames]: createCommand({
+        name: Command.CloseGames,
+        description: "close games",
+        optionValidator: zCloseGamesParams,
+        options: [
+            {
+                name: "map_name",
+                description: "The map name to close games for",
                 required: true,
                 type: ApplicationCommandOptionType.String,
             },

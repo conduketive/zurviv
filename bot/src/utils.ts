@@ -20,6 +20,7 @@ export const enum Command {
     UnbanIp = "unban_ip",
     SetMatchDataName = "set_match_data_name",
     SetAccountName = "set_account_name",
+    CloseGames = "close_games"
 }
 
 export const honoClient = hc<PrivateRouteApp>(API_URL, {

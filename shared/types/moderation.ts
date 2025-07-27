@@ -43,3 +43,7 @@ export const zSetAccountNameParams = z.object({
     new_name: z.string(),
     current_slug: z.string(),
 });
+
+export const zCloseGamesParams = z.object({
+    map_name: z.string(),
+});

@@ -6,6 +6,7 @@ import { MapId, TeamModeToString } from "../../../../../shared/defs/types/misc";
 import {
     zBanAccountParams,
     zBanIpParams,
+    zCloseGamesParams,
     zGetPlayerIpParams,
     zSetAccountNameParams,
     zSetMatchDataNameParams,
@@ -358,7 +359,29 @@ export const ModerationRouter = new Hono()
 
             return c.json({ message: `Deleted ${res.rowCount} rows` }, 200);
         },
-    );
+    ).post("/close_games", validateParams(zCloseGamesParams), async (c) => {
+        const { map_name } = c.req.valid("json");
+
+        const gameServerUrl = Config.regions[Config.gameServer.thisRegion];
+
+        if ( !gameServerUrl ) return c.json({ message: "No address found for this region" }, 200);
+
+        const res = await fetch(`${gameServerUrl.https ? "https" : "http"}://${gameServerUrl.address}/api/close_games`, {
+            method: "POST",
+            headers: {
+                "content-type": "application/json",
+                "survev-api-key": Config.secrets.SURVEV_API_KEY,
+            },
+            body: JSON.stringify({
+                map_name
+            }),
+        });
+
+        if (res.ok) {
+            return c.json({ message: "Closed games" }, 200);
+        }
+        return c.json({ message: "Failed to close games" }, 200);
+    });
 
 async function banAccount(userId: string, banReason: string, executorId: string) {
     await db

@@ -3,9 +3,7 @@ import { randomUUID } from "crypto";
 import { version } from "../../package.json";
 import { GameConfig } from "../../shared/gameConfig";
 import * as net from "../../shared/net/net";
-import { Config } from "./config";
-import { SingleThreadGameManager } from "./game/gameManager";
-import { GameProcessManager } from "./game/gameProcessManager";
+import { Config } from "./config";import { GameProcessManager } from "./game/gameProcessManager";
 import { GIT_VERSION } from "./utils/gitRevision";
 import { Logger } from "./utils/logger";
 import {
@@ -27,6 +25,7 @@ import {
     type GameSocketData,
     zFindGamePrivateBody,
 } from "./utils/types";
+import z from "zod";
 
 process.on("uncaughtException", async (err) => {
     console.error(err);
@@ -42,10 +41,7 @@ class GameServer {
     readonly region = Config.regions[Config.gameServer.thisRegion];
     readonly regionId = Config.gameServer.thisRegion;
 
-    readonly manager =
-        Config.processMode === "single"
-            ? new SingleThreadGameManager()
-            : new GameProcessManager();
+    readonly manager = new GameProcessManager();
 
     async findGame(body: FindGamePrivateBody): Promise<FindGamePrivateRes> {
         const parsed = zFindGamePrivateBody.safeParse(body);
@@ -85,6 +81,16 @@ class GameServer {
             hosts: [this.region.address],
             addrs: [this.region.address],
         };
+    }
+
+    closeGames(mapName: string) {
+        try {
+            const message = this.manager.closeGamesByMapName(mapName);
+            return { success: true, message };
+        } catch (err) {
+            this.logger.error(`Failed to close games: `, err);
+            return { success: false };
+        }
     }
 
     async sendData() {
@@ -176,6 +182,52 @@ app.post("/api/find_game", (res, req) => {
                 res.end();
             });
             server.logger.warn("/api/find_game: Error retrieving body");
+        },
+    );
+});
+
+app.options("/api/close_games", (res) => {
+    cors(res);
+    res.end();
+});
+
+
+app.post("/api/close_games", (res, req) => {
+    res.onAborted(() => {
+        res.aborted = true;
+    });
+
+    if (req.getHeader("survev-api-key") !== Config.secrets.SURVEV_API_KEY) {
+        forbidden(res);
+        return;
+    }
+
+    readPostedJSON(
+        res,
+        (body: FindGamePrivateBody) => {
+            try {
+                if (res.aborted) return;
+
+                const parsed = z.object({ map_name: z.string() }).safeParse(body); 
+                if (!parsed.success || !parsed.data) {
+                    returnJson(res, { error: "failed_to_parse_body" });
+                    return;
+                }
+
+                returnJson(res, server.closeGames(parsed.data.map_name));
+            } catch (error) {
+                server.logger.warn("API find_game error: ", error);
+            }
+        },
+        () => {
+            if (res.aborted) return;
+            res.cork(() => {
+                if (res.aborted) return;
+                res.writeStatus("500 Internal Server Error");
+                res.write("500 Internal Server Error");
+                res.end();
+            });
+            server.logger.warn("/api/close_games: Error retrieving body");
         },
     );
 });
