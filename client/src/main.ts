@@ -170,7 +170,7 @@ class Application {
                     if (button.id === "dropdown-main-button-map-mode") {
                         button.innerHTML = `Map Mode: ${selectedButton.innerText} | ▼`;
 
-                        if (selectedButton.innerText.trim() === "Faction") {
+                        if (selectedButton.innerText.trim().toLocaleLowerCase().includes("faction")) {
                             blockTeamMode();
                         } else {
                             unblockTeamMode();

@@ -1,79 +1,22 @@
 import type { ConfigType } from "./configType";
 import { TeamMode } from "./shared/gameConfig";
 
-export const MODES_LIST: ConfigType["modes"] = [
-    { mapName: "main", teamMode: TeamMode.Solo, enabled: true },
-    { mapName: "main", teamMode: TeamMode.Duo, enabled: true },
-    { mapName: "main", teamMode: TeamMode.Trio, enabled: true },
-    { mapName: "main", teamMode: TeamMode.Squad, enabled: true },
+export const MODES_LIST: ConfigType["modes"] = [];
 
-    { mapName: "main_spring", teamMode: TeamMode.Solo, enabled: true },
-    { mapName: "main_spring", teamMode: TeamMode.Duo, enabled: true },
-    { mapName: "main_spring", teamMode: TeamMode.Trio, enabled: true },
-    { mapName: "main_spring", teamMode: TeamMode.Squad, enabled: true },
+const modes = [
+    "main", "main_spring", "halloween", "desert", "main_summer",
+    "potato", "snow", "woods", "savannah", "cobalt", "turkey",
+    "faction", "faction_potato", "comp_main", "GG", "gamerio"
+] as const;
 
-    { mapName: "halloween", teamMode: TeamMode.Solo, enabled: true },
-    { mapName: "halloween", teamMode: TeamMode.Duo, enabled: true },
-    { mapName: "halloween", teamMode: TeamMode.Trio, enabled: true },
-    { mapName: "halloween", teamMode: TeamMode.Squad, enabled: true },
+for (const mode of modes) {
+    if ( mode === "faction" || mode === "faction_potato" ) {
+        MODES_LIST.push({ mapName: mode, teamMode: TeamMode.Squad, enabled: true });
+        continue;
+    }
+    for ( const teamMode of [TeamMode.Solo, TeamMode.Duo, TeamMode.Trio, TeamMode.Squad]) {
+        MODES_LIST.push({ mapName: mode, teamMode, enabled: true });
+    }
+}
 
-    { mapName: "desert", teamMode: TeamMode.Solo, enabled: true },
-    { mapName: "desert", teamMode: TeamMode.Duo, enabled: true },
-    { mapName: "desert", teamMode: TeamMode.Trio, enabled: true },
-    { mapName: "desert", teamMode: TeamMode.Squad, enabled: true },
-
-    { mapName: "main_summer", teamMode: TeamMode.Solo, enabled: true },
-    { mapName: "main_summer", teamMode: TeamMode.Duo, enabled: true },
-    { mapName: "main_summer", teamMode: TeamMode.Trio, enabled: true },
-    { mapName: "main_summer", teamMode: TeamMode.Squad, enabled: true },
-
-    { mapName: "potato", teamMode: TeamMode.Solo, enabled: true },
-    { mapName: "potato", teamMode: TeamMode.Duo, enabled: true },
-    { mapName: "potato", teamMode: TeamMode.Trio, enabled: true },
-    { mapName: "potato", teamMode: TeamMode.Squad, enabled: true },
-
-    { mapName: "snow", teamMode: TeamMode.Solo, enabled: true },
-    { mapName: "snow", teamMode: TeamMode.Duo, enabled: true },
-    { mapName: "snow", teamMode: TeamMode.Trio, enabled: true },
-    { mapName: "snow", teamMode: TeamMode.Squad, enabled: true },
-
-    { mapName: "woods", teamMode: TeamMode.Solo, enabled: true },
-    { mapName: "woods", teamMode: TeamMode.Duo, enabled: true },
-    { mapName: "woods", teamMode: TeamMode.Trio, enabled: true },
-    { mapName: "woods", teamMode: TeamMode.Squad, enabled: true },
-
-    { mapName: "savannah", teamMode: TeamMode.Solo, enabled: true },
-    { mapName: "savannah", teamMode: TeamMode.Duo, enabled: true },
-    { mapName: "savannah", teamMode: TeamMode.Trio, enabled: true },
-    { mapName: "savannah", teamMode: TeamMode.Squad, enabled: true },
-
-    { mapName: "cobalt", teamMode: TeamMode.Solo, enabled: true },
-    { mapName: "cobalt", teamMode: TeamMode.Duo, enabled: true },
-    { mapName: "cobalt", teamMode: TeamMode.Trio, enabled: true },
-    { mapName: "cobalt", teamMode: TeamMode.Squad, enabled: true },
-
-    { mapName: "turkey", teamMode: TeamMode.Solo, enabled: true },
-    { mapName: "turkey", teamMode: TeamMode.Duo, enabled: true },
-    { mapName: "turkey", teamMode: TeamMode.Trio, enabled: true },
-    { mapName: "turkey", teamMode: TeamMode.Squad, enabled: true },
-
-    { mapName: "faction", teamMode: TeamMode.Squad, enabled: true },
-
-    { mapName: "comp_main", teamMode: TeamMode.Solo, enabled: true },
-    { mapName: "comp_main", teamMode: TeamMode.Duo, enabled: true },
-    { mapName: "comp_main", teamMode: TeamMode.Trio, enabled: true },
-    { mapName: "comp_main", teamMode: TeamMode.Squad, enabled: true },
-
-    // Events
-    { mapName: "GG", teamMode: TeamMode.Solo, enabled: true },
-    { mapName: "GG", teamMode: TeamMode.Duo, enabled: true },
-    { mapName: "GG", teamMode: TeamMode.Trio, enabled: true },
-    { mapName: "GG", teamMode: TeamMode.Squad, enabled: true },
-
-    { mapName: "gamerio", teamMode: TeamMode.Solo, enabled: true },
-    { mapName: "gamerio", teamMode: TeamMode.Duo, enabled: true },
-    { mapName: "gamerio", teamMode: TeamMode.Trio, enabled: true },
-    { mapName: "gamerio", teamMode: TeamMode.Squad, enabled: true },
-];
-
-export const EVENT_MODES = ["GG", "gamerio"].map((t) => t.toLocaleLowerCase());
+export const EVENT_MODES = ["GG", "gamerio", "faction_potato"].map((t) => t.toLocaleLowerCase());

@@ -16,6 +16,7 @@ export enum MapId {
     // custom zurviv modes starts at 100+
     GG = 100,
     Gamerio = 101,
+    FactionPotato = 102,
 }
 
 export const TeamModeToString = {

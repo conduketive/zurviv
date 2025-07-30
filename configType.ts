@@ -285,11 +285,6 @@ export interface ConfigType {
         GOOGLE_SECRET_ID?: string;
 
         /**
-         * Discord bot token.
-         */
-        DISCORD_BOT_TOKEN?: string;
-
-        /**
          * Enables proxycheck.io to ban VPNs and proxies from connecting.
          *
          */

@@ -5,7 +5,7 @@ import type { Info } from "../../shared/types/api";
 import { api } from "./api";
 import type { ConfigManager } from "./config";
 import { device } from "./device";
-import { updateSelectedGameMode } from "./gameMod";
+import { EVENT_MODES } from "../../modesList";
 import type { Localization } from "./ui/localization";
 
 export class SiteInfo {
@@ -49,7 +49,7 @@ export class SiteInfo {
         event: [],
     };
     getGameModeStyles() {
-        const eventModes = ["GG", "gamerio"].map((t) => t.toLocaleLowerCase());
+        const eventModes = EVENT_MODES;
         const availableModes = [];
         const modes = this.info.modes || [];
         const mapModeDropdownContainer = document.querySelector(
@@ -255,6 +255,7 @@ export function getFormattedMapName(mapName: string) {
         "main_spring": "Spring",
         "main_summer": "Summer",
         "comp_main": "Comp Main",
+        "faction_potato": "Faction Potato",
     }
     if ( mapName in mapWithCustomName ) {
         return mapWithCustomName[mapName as keyof typeof mapWithCustomName];
