@@ -363,7 +363,7 @@ const proxyCheckCache = new Map<
     }
 >();
 
-export async function isBehindProxy(ip: string): Promise<boolean> {
+export async function isBehindProxy(ip: string, vpn: 0 | 1 | 2 | 3): Promise<boolean> {
     if (!proxyCheck) return false;
 
     let info: IPAddressInfo | undefined = undefined;
@@ -374,7 +374,7 @@ export async function isBehindProxy(ip: string): Promise<boolean> {
     if (!info) {
         try {
             const proxyRes = await proxyCheck.checkIP(ip, {
-                vpn: 3,
+                vpn,
             });
             switch (proxyRes.status) {
                 case "ok":
@@ -437,7 +437,9 @@ export const apiPrivateRouter = hc<PrivateRouteApp>(
 );
 
 export async function logErrorToWebhook(from: "server" | "client", ...messages: any[]) {
-    if (!Config.errorLoggingWebhook) return;
+    const url =
+        from === "server" ? Config.errorLoggingWebhook : Config.clientErrorLoggingWebhook;
+    if (!url) return;
 
     try {
         const msg = messages
@@ -446,25 +448,29 @@ export async function logErrorToWebhook(from: "server" | "client", ...messages: 
                     return `\`\`\`${msg.cause}\n${msg.stack}\`\`\``;
                 }
                 if (typeof msg == "object") {
-                    return `\`\`\`json\n${JSON.stringify(msg, null, 2)}\`\`\``;
+                    return `\`\`\`json\n${JSON.stringify(msg, null, 2).replaceAll("`", "\\`")}\`\`\``;
                 }
-                return `\`${msg}\``;
+                return `${msg}`;
             })
             .join("\n");
 
-        let content = `Error from: \`${from}\`
-Region: \`${Config.gameServer.thisRegion}\`
-Timestamp: \`${new Date().toISOString()}\`
-`;
-        content += msg;
-
-        await fetch(Config.errorLoggingWebhook, {
+        await fetch(url, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                content,
+                embeds: [
+                    {
+                        color: 0xff0000,
+                        title: `${from} error`,
+                        timestamp: new Date().toISOString(),
+                        description: msg,
+                        footer: {
+                            text: `Region: ${Config.gameServer.thisRegion}`,
+                        },
+                    },
+                ],
             }),
         });
     } catch (err) {

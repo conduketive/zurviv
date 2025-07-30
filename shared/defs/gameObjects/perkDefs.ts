@@ -9,7 +9,7 @@ export const PerkProperties = {
     },
     steelskin: {
         scale: 0.4,
-        damageReduction: 0.4,
+        damageReduction: 0.45,
     },
     flak_jacket: {
         scale: 0.1,
@@ -21,10 +21,10 @@ export const PerkProperties = {
     },
     splinter: {
         mainDamageMult: 0.6,
-        splitsDamageMult: 0.45,
+        splitsDamageMult: 0.5,
     },
     ap_rounds: {
-        armorPenetration: 0.85,
+        armorPenetration: 0.8,
         obstacleMult: 1.5,
     },
     trick_size: {

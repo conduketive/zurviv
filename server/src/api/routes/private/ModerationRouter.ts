@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { and, desc, eq, lt, ne } from "drizzle-orm";
+import { and, desc, eq, inArray, lt, ne } from "drizzle-orm";
 import { Hono } from "hono";
 import { z } from "zod";
 import { MapId, TeamModeToString } from "../../../../../shared/defs/types/misc";
@@ -7,6 +7,7 @@ import {
     zBanAccountParams,
     zBanIpParams,
     zCloseGamesParams,
+    zFindDiscordUserSlugParams,
     zGetPlayerIpParams,
     zSetAccountNameParams,
     zSetMatchDataNameParams,
@@ -144,7 +145,7 @@ export const ModerationRouter = new Hono()
     })
     .post("/ban_ip", validateParams(zBanIpParams), async (c) => {
         const {
-            ip,
+            ips,
             is_encoded,
             permanent,
             ban_associated_account,
@@ -152,18 +153,20 @@ export const ModerationRouter = new Hono()
             ban_reason,
             executor_id,
         } = c.req.valid("json");
+
         const expiresIn = new Date(Date.now() + ip_ban_duration * 24 * 60 * 60 * 1000);
-        const encodedIp = is_encoded ? ip : hashIp(ip);
+        const encodedIps = is_encoded ? ips : ips.map(hashIp);
+        const values = encodedIps.map((encodedIp) => ({
+            encodedIp,
+            expiresIn,
+            permanent,
+            reason: ban_reason,
+            bannedBy: executor_id,
+        }));
 
         await db
             .insert(bannedIpsTable)
-            .values({
-                encodedIp,
-                expiresIn,
-                permanent,
-                reason: ban_reason,
-                bannedBy: executor_id,
-            })
+            .values(values)
             .onConflictDoUpdate({
                 target: bannedIpsTable.encodedIp,
                 set: {
@@ -176,7 +179,7 @@ export const ModerationRouter = new Hono()
         if (ban_associated_account) {
             const user = await db.query.ipLogsTable.findFirst({
                 where: and(
-                    eq(ipLogsTable.encodedIp, encodedIp),
+                    inArray(ipLogsTable.encodedIp, encodedIps),
                     ne(ipLogsTable.userId, ""),
                 ),
                 columns: {
@@ -188,18 +191,23 @@ export const ModerationRouter = new Hono()
             }
         }
 
-        server.teamMenu.disconnectPlayers(encodedIp);
+        for (const encodedIp of encodedIps) {
+            server.teamMenu.disconnectPlayers(encodedIp);
+        }
 
-        if (permanent) {
+        const baseMessage = permanent
+            ? "permanently banned"
+            : `banned for ${ip_ban_duration} days`;
+
+        if (encodedIps.length === 1) {
             return c.json(
-                { message: `IP ${encodedIp} has been permanently banned.` },
+                { message: `IP ${encodedIps[0]} has been ${baseMessage}.` },
                 200,
             );
         }
+
         return c.json(
-            {
-                message: `IP ${encodedIp} has been banned for ${ip_ban_duration} days.`,
-            },
+            { message: `IPs: [${encodedIps.join(", ")}] ${baseMessage}.` },
             200,
         );
     })
@@ -358,6 +366,34 @@ export const ModerationRouter = new Hono()
                 .where(eq(matchDataTable.gameId, gameId));
 
             return c.json({ message: `Deleted ${res.rowCount} rows` }, 200);
+        },
+    )
+    .post(
+        "find_discord_user_slug",
+        validateParams(zFindDiscordUserSlugParams),
+        async (c) => {
+            const { discord_user } = c.req.valid("json");
+
+            const user = await db.query.usersTable.findFirst({
+                where: and(
+                    eq(usersTable.linkedDiscord, true),
+                    eq(usersTable.authId, discord_user),
+                ),
+                columns: {
+                    slug: true,
+                },
+            });
+
+            if (!user?.slug) {
+                return c.json(
+                    {
+                        message: `User not found`,
+                    },
+                    200,
+                );
+            }
+
+            return c.json({ message: `slug: ${user.slug}` }, 200);
         },
     ).post("/close_games", validateParams(zCloseGamesParams), async (c) => {
         const { map_name } = c.req.valid("json");

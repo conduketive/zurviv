@@ -7,6 +7,7 @@ import {
     zBanAccountParams,
     zBanIpParams,
     zCloseGamesParams,
+    zFindDiscordUserSlugParams,
     zSetAccountNameParams,
     zSetMatchDataNameParams,
     zUnbanAccountParams,
@@ -26,7 +27,7 @@ const commands = {
         optionValidator: zBanIpParams,
         options: [
             {
-                name: "ip",
+                name: "ips",
                 description: "The IP to ban",
                 required: true,
                 type: ApplicationCommandOptionType.String,
@@ -169,6 +170,19 @@ const commands = {
                 description: "The map name to close games for",
                 required: true,
                 type: ApplicationCommandOptionType.String,
+            },
+        ],
+    }),
+    [Command.FindDiscordUserSlug]: createCommand({
+        name: Command.FindDiscordUserSlug,
+        description: "Find the slug for a discord user",
+        optionValidator: zFindDiscordUserSlugParams,
+        options: [
+            {
+                name: "discord_user",
+                description: "find the in game slug for a discord user",
+                required: true,
+                type: ApplicationCommandOptionType.User,
             },
         ],
     }),

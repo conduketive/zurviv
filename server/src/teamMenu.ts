@@ -441,26 +441,19 @@ export class TeamMenu {
                         this.logger.error("Failed to get IP:", err);
                     }
 
-                    let closeReason: TeamMenuErrorType | undefined;
-                    try {
-                        if (
-                            !ip ||
-                            httpRateLimit.isRateLimited(ip) ||
-                            wsRateLimit.isIpRateLimited(ip)
-                        ) {
-                            closeReason = "rate_limited";
-                        }
-                    } catch (err) {
-                        this.logger.error("Failed to check if IP is rate limited:", err);
-                    }
+                let closeReason: TeamMenuErrorType | undefined;
+                try {
+                if (
+                    !ip ||
+                    httpRateLimit.isRateLimited(ip) ||
+                    wsRateLimit.isIpRateLimited(ip)
+                ) {
+                    closeReason = "rate_limited";
+                }
+            } catch (err) {
+                this.logger.error("Failed to check if IP is rate limited:", err);
+            }
 
-                    try {
-                        if (!closeReason && (await isBehindProxy(ip!))) {
-                            closeReason = "behind_proxy";
-                        }
-                    } catch (err) {
-                        this.logger.error("Failed to check if IP is behind proxy:", err);
-                    }
 
                     if (await isBanned(ip!)) {
                         closeReason = "banned";
@@ -490,6 +483,10 @@ export class TeamMenu {
                             hasServerRole = false;
                         }
                     }
+
+                if (!closeReason && (await isBehindProxy(ip!, userId ? 0 : 3))) {
+                    closeReason = "behind_proxy";
+                }
 
                     return {
                         onOpen(_event, ws) {
