@@ -1,11 +1,11 @@
-import $, { map } from "jquery";
+import $ from "jquery";
+import { EVENT_MODES } from "../../modesList";
 import { MapDefs } from "../../shared/defs/mapDefs";
 import { TeamModeToString } from "../../shared/defs/types/misc";
 import type { Info } from "../../shared/types/api";
 import { api } from "./api";
 import type { ConfigManager } from "./config";
 import { device } from "./device";
-import { EVENT_MODES } from "../../modesList";
 import type { Localization } from "./ui/localization";
 
 export class SiteInfo {
@@ -121,10 +121,10 @@ export class SiteInfo {
         // hide inactive game modes
         $('[id^="btn-start-mode-"]').hide();
         $(`[data-map-type="${selectedGameMode}"]`).show();
-    
+
         console.log({
-            modes: this.modesMap
-        })
+            modes: this.modesMap,
+        });
         return availableModes;
     }
 
@@ -132,14 +132,18 @@ export class SiteInfo {
         return this.modesMap[selectedGameMode][0];
     }
     resetMapModeButton(_selectedGameMode?: string) {
-        const selectedGameMode = _selectedGameMode ?? $("[data-selected-game-mode]").attr(
-            "data-selected-game-mode",
-        )!;
+        const selectedGameMode =
+            _selectedGameMode ??
+            $("[data-selected-game-mode]").attr("data-selected-game-mode")!;
         $("[data-selected-game-map-name]").attr(
             "data-selected-game-map-name",
             this.modesMap[selectedGameMode][0],
         );
-        ["#btn-start-team", "#dropdown-main-button-team-1", "#dropdown-main-button-map-mode"].forEach((e) =>
+        [
+            "#btn-start-team",
+            "#dropdown-main-button-team-1",
+            "#dropdown-main-button-map-mode",
+        ].forEach((e) =>
             $(e)
                 .removeClass()
                 .addClass("btn-green btn-darken menu-option")
@@ -153,7 +157,7 @@ export class SiteInfo {
             const getGameModeStyles = this.getGameModeStyles();
             for (let i = 0; i < getGameModeStyles.length; i++) {
                 const style = getGameModeStyles[i];
-                const selector = `index-play-${style.buttonText}`;
+                const _selector = `index-play-${style.buttonText}`;
                 let btn = $(`#btn-start-mode-${i}`);
                 if (style.icon || style.buttonCss) {
                     if (i == 0) {
@@ -252,14 +256,14 @@ export class SiteInfo {
 
 export function getFormattedMapName(mapName: string) {
     const mapWithCustomName = {
-        "main_spring": "Spring",
-        "main_summer": "Summer",
-        "comp_main": "Comp Main",
-        "faction_potato": "Faction Potato",
-    }
-    if ( mapName in mapWithCustomName ) {
+        main_spring: "Spring",
+        main_summer: "Summer",
+        comp_main: "Comp Main",
+        faction_potato: "Faction Potato",
+    };
+    if (mapName in mapWithCustomName) {
         return mapWithCustomName[mapName as keyof typeof mapWithCustomName];
     }
     const capitalizedName = mapName.charAt(0).toUpperCase() + mapName.slice(1);
     return capitalizedName;
-};
+}

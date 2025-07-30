@@ -102,7 +102,7 @@ const mapDef: PartialMapDef = {
             playerGhillie: 0x4c6024,
         },
         particles: {
-            camera: "falling_potato"
+            camera: "falling_potato",
         },
         frozenSprites: ["player-mash-01.img", "player-mash-02.img", "player-mash-03.img"],
     },

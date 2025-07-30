@@ -8771,7 +8771,11 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
     }),
     chest_03: createRiverChest({
         img: { sprite: "map-chest-03.img" },
-        loot: [tierLoot("tier_chest", 3, 5), autoLoot("outfitWaterElem", 1), tierLoot("tier_model", 1, 1)],
+        loot: [
+            tierLoot("tier_chest", 3, 5),
+            autoLoot("outfitWaterElem", 1),
+            tierLoot("tier_model", 1, 1),
+        ],
     }),
     chest_03cb: createRiverChest({
         img: { sprite: "map-chest-03.img" },
@@ -29483,7 +29487,10 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
     },
     loot_tier_vault_floor: {
         type: "loot_spawner",
-        loot: [tierLoot("tier_vault_floor", 1, 1), tierLoot("tier_scout_with_structure_skins", 1, 1 )],
+        loot: [
+            tierLoot("tier_vault_floor", 1, 1),
+            tierLoot("tier_scout_with_structure_skins", 1, 1),
+        ],
     },
     loot_tier_police_floor: {
         type: "loot_spawner",
@@ -29491,7 +29498,10 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
     },
     loot_tier_mansion_floor: {
         type: "loot_spawner",
-        loot: [tierLoot("tier_mansion_floor", 1, 1), tierLoot("tier_scout_with_structure_skins", 1, 1)],
+        loot: [
+            tierLoot("tier_mansion_floor", 1, 1),
+            tierLoot("tier_scout_with_structure_skins", 1, 1),
+        ],
     },
     loot_tier_sv98: {
         type: "loot_spawner",
@@ -29571,7 +29581,10 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
     },
     loot_tier_chrys_01: {
         type: "loot_spawner",
-        loot: [tierLoot("tier_chrys_01", 1, 1), tierLoot("tier_scout_with_structure_skins", 1, 1)],
+        loot: [
+            tierLoot("tier_chrys_01", 1, 1),
+            tierLoot("tier_scout_with_structure_skins", 1, 1),
+        ],
     },
     loot_tier_chrys_02: {
         type: "loot_spawner",

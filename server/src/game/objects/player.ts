@@ -2589,7 +2589,7 @@ export class Player extends BaseGameObject {
                 false &&
                 gameSourceDef &&
                 gameSourceDef.type != "melee" &&
-                "headshotMult" in gameSourceDef 
+                "headshotMult" in gameSourceDef
             ) {
                 isHeadShot = Math.random() < GameConfig.player.headshotChance;
 

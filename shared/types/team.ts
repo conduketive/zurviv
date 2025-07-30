@@ -161,7 +161,10 @@ export const zTeamPlayGameMsg = z.object({
         region: z.string(),
         zones: z.array(z.string()),
         turnstileToken: z.string().optional(),
-        mode: z.enum(["casual", "competitive", "event"]).catch("casual").transform(v => v.toLocaleLowerCase()), 
+        mode: z
+            .enum(["casual", "competitive", "event"])
+            .catch("casual")
+            .transform((v) => v.toLocaleLowerCase()),
         mapName: z.string().toLowerCase().optional(),
     }),
 });

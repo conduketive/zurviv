@@ -12,7 +12,7 @@ export class Logger {
     constructor(public prefix: string) {}
 
     private async logToAxiom(message: any[], error?: Error): Promise<void> {
-        if (!Config.secrets.AXIOM_TOKEN || process.env.NODE_ENV !== "production" ) return; 
+        if (!Config.secrets.AXIOM_TOKEN || process.env.NODE_ENV !== "production") return;
         try {
             const logEntry = {
                 timestamp: new Date().toISOString(),

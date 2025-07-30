@@ -171,7 +171,7 @@ class Room {
             }
             case "playGame": {
                 if (!player.isLeader) break;
-                console.log({ msg })
+                console.log({ msg });
                 this.findGame(msg.data);
                 break;
             }
@@ -249,10 +249,9 @@ class Room {
         }
         this.data.region = region;
 
-
         console.log({
-            data: JSON.stringify(data)
-        })
+            data: JSON.stringify(data),
+        });
         const tokenMap = new Map<Player, string>();
 
         if (
@@ -441,19 +440,18 @@ export class TeamMenu {
                         this.logger.error("Failed to get IP:", err);
                     }
 
-                let closeReason: TeamMenuErrorType | undefined;
-                try {
-                if (
-                    !ip ||
-                    httpRateLimit.isRateLimited(ip) ||
-                    wsRateLimit.isIpRateLimited(ip)
-                ) {
-                    closeReason = "rate_limited";
-                }
-            } catch (err) {
-                this.logger.error("Failed to check if IP is rate limited:", err);
-            }
-
+                    let closeReason: TeamMenuErrorType | undefined;
+                    try {
+                        if (
+                            !ip ||
+                            httpRateLimit.isRateLimited(ip) ||
+                            wsRateLimit.isIpRateLimited(ip)
+                        ) {
+                            closeReason = "rate_limited";
+                        }
+                    } catch (err) {
+                        this.logger.error("Failed to check if IP is rate limited:", err);
+                    }
 
                     if (await isBanned(ip!)) {
                         closeReason = "banned";
@@ -475,7 +473,8 @@ export class TeamMenu {
                             }
 
                             if (userId) {
-                                hasServerRole = (await userHasRole(account.user?.authId)) ?? false;
+                                hasServerRole =
+                                    (await userHasRole(account.user?.authId)) ?? false;
                             }
                         } catch (err) {
                             this.logger.error(`Failed to validate session:`, err);
@@ -484,9 +483,9 @@ export class TeamMenu {
                         }
                     }
 
-                if (!closeReason && (await isBehindProxy(ip!, userId ? 0 : 3))) {
-                    closeReason = "behind_proxy";
-                }
+                    if (!closeReason && (await isBehindProxy(ip!, userId ? 0 : 3))) {
+                        closeReason = "behind_proxy";
+                    }
 
                     return {
                         onOpen(_event, ws) {
@@ -582,7 +581,7 @@ export class TeamMenu {
             zTeamClientMsg.parse(msg);
         } catch {
             this.logger.warn("Failed to parse message, closing socket.");
-            console.log({ })
+            console.log({});
             ws.close();
             return;
         }

@@ -1,9 +1,11 @@
 import { App, SSLApp, type WebSocket } from "uWebSockets.js";
 import { randomUUID } from "crypto";
+import z from "zod";
 import { version } from "../../package.json";
 import { GameConfig } from "../../shared/gameConfig";
 import * as net from "../../shared/net/net";
-import { Config } from "./config";import { GameProcessManager } from "./game/gameProcessManager";
+import { Config } from "./config";
+import { GameProcessManager } from "./game/gameProcessManager";
 import { GIT_VERSION } from "./utils/gitRevision";
 import { Logger } from "./utils/logger";
 import {
@@ -18,14 +20,12 @@ import {
     returnJson,
     WebSocketRateLimit,
 } from "./utils/serverHelpers";
-
 import {
     type FindGamePrivateBody,
     type FindGamePrivateRes,
     type GameSocketData,
     zFindGamePrivateBody,
 } from "./utils/types";
-import z from "zod";
 
 process.on("uncaughtException", async (err) => {
     console.error(err);
@@ -191,7 +191,6 @@ app.options("/api/close_games", (res) => {
     res.end();
 });
 
-
 app.post("/api/close_games", (res, req) => {
     res.onAborted(() => {
         res.aborted = true;
@@ -208,7 +207,7 @@ app.post("/api/close_games", (res, req) => {
             try {
                 if (res.aborted) return;
 
-                const parsed = z.object({ map_name: z.string() }).safeParse(body); 
+                const parsed = z.object({ map_name: z.string() }).safeParse(body);
                 if (!parsed.success || !parsed.data) {
                     returnJson(res, { error: "failed_to_parse_body" });
                     return;
@@ -335,7 +334,7 @@ app.ws<GameSocketData>("/play", {
     },
 });
 
-const pingHTTPRateLimit = new HTTPRateLimit(1, 3000);
+const _pingHTTPRateLimit = new HTTPRateLimit(1, 3000);
 const pingWsRateLimit = new WebSocketRateLimit(50, 1000, 10);
 
 interface pingSocketData {

@@ -1,4 +1,3 @@
-import { string } from "zod";
 import { GameObjectDefs } from "../../../../shared/defs/gameObjectDefs";
 import { MapObjectDefs } from "../../../../shared/defs/mapObjectDefs";
 import type { ObstacleDef } from "../../../../shared/defs/mapObjectsTyping";
@@ -451,19 +450,15 @@ export class Obstacle extends BaseGameObject {
 
         for (const lootTierOrItem of loot) {
             const num = (name: string) => {
-                const doubleLoot = [
-                    "bandage",
-                    "healthkit",
-                    "soda",
-                    "painkiller",
-                ];
-                if ( !doubleLoot.includes(name) || !this.game.mapName.startsWith("comp_" )) return 1;
+                const doubleLoot = ["bandage", "healthkit", "soda", "painkiller"];
+                if (!doubleLoot.includes(name) || !this.game.mapName.startsWith("comp_"))
+                    return 1;
                 return util.weightedRandom([
                     { percentage: 1, weight: 5 },
                     { percentage: 2, weight: 3.5 },
                     { percentage: 3, weight: 1 },
                     { percentage: 4, weight: 0.5 },
-                ]).percentage
+                ]).percentage;
             };
 
             if ("tier" in lootTierOrItem) {
@@ -472,7 +467,7 @@ export class Obstacle extends BaseGameObject {
                 for (let i = 0; i < count; i++) {
                     const items = this.game.lootBarn.getLootTable(lootTierOrItem.tier!);
                     for (const item of items) {
-                        console.log({item: item.name, count: item.count});
+                        console.log({ item: item.name, count: item.count });
                         this.game.lootBarn.addLoot(
                             item.name,
                             v2.add(lootPos, v2.mul(v2.randomUnit(), 0.2)),

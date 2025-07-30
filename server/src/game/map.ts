@@ -987,7 +987,7 @@ export class GameMap {
     ) {
         // !!
         if (this.mapId !== MapId.Gamerio) {
-            if ( type === "container_06"  ) {
+            if (type === "container_06") {
                 type = "container_01";
             }
         }

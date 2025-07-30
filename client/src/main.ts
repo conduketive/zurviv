@@ -170,7 +170,12 @@ class Application {
                     if (button.id === "dropdown-main-button-map-mode") {
                         button.innerHTML = `Map Mode: ${selectedButton.innerText} | ▼`;
 
-                        if (selectedButton.innerText.trim().toLocaleLowerCase().includes("faction")) {
+                        if (
+                            selectedButton.innerText
+                                .trim()
+                                .toLocaleLowerCase()
+                                .includes("faction")
+                        ) {
                             blockTeamMode();
                         } else {
                             unblockTeamMode();
@@ -667,7 +672,7 @@ class Application {
         });
         this.serverWarning.html(this.errorMessage);
 
-        const updateButton = (ele: JQuery<HTMLElement>, gameModeIdx: number) => {
+        const _updateButton = (ele: JQuery<HTMLElement>, gameModeIdx: number) => {
             ele.html(
                 this.quickPlayPendingModeIdx === gameModeIdx
                     ? '<div class="ui-spinner"></div>'

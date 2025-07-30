@@ -29,43 +29,43 @@ export async function getUserRolesInServer(
         return cachedRoles;
     }
 
-        try {
-            const response = await fetch(
-                `https://discord.com/api/guilds/${guildId}/members/${userId}`,
-                {
-                    headers: {
-                        Authorization: `Bot ${Config.secrets.DISCORD_BOT_TOKEN}`,
-                        "Content-Type": "application/json",
-                    },
+    try {
+        const response = await fetch(
+            `https://discord.com/api/guilds/${guildId}/members/${userId}`,
+            {
+                headers: {
+                    Authorization: `Bot ${Config.secrets.DISCORD_BOT_TOKEN}`,
+                    "Content-Type": "application/json",
                 },
-            );
+            },
+        );
 
-            if (!response.ok) {
-                if (response.status === 404) {
-                    console.error("User not found in server");
-                    return [];
-                }
-                throw new Error(`Discord API error: ${response.status}`);
+        if (!response.ok) {
+            if (response.status === 404) {
+                console.error("User not found in server");
+                return [];
             }
+            throw new Error(`Discord API error: ${response.status}`);
+        }
 
-            const memberData = (await response.json()) as {
-                roles: string[];
-                user: {
-                    id: string;
-                    username: string;
-                };
+        const memberData = (await response.json()) as {
+            roles: string[];
+            user: {
+                id: string;
+                username: string;
             };
+        };
 
-            userRolesCache.set(userId, memberData.roles);
-            return memberData.roles;
-        } catch (error) {
-            server.logger.warn(
-                "Error fetching user roles:",
-                {
-                    userId,
-                },
-                error,
-            );
+        userRolesCache.set(userId, memberData.roles);
+        return memberData.roles;
+    } catch (error) {
+        server.logger.warn(
+            "Error fetching user roles:",
+            {
+                userId,
+            },
+            error,
+        );
         return [];
     }
 }
@@ -75,7 +75,7 @@ export async function userHasRole(
     guildId = GUILD_ID,
     roleId = ROLE_ID,
 ): Promise<boolean> {
-    if ( !userId ) {
+    if (!userId) {
         return false;
     }
     const roles = await getUserRolesInServer(userId, guildId);

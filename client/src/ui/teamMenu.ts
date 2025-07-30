@@ -274,7 +274,12 @@ export class TeamMenu {
                 this.selectedMode =
                     this.modeOptions[selectedButton.innerText.trim()] || 0;
 
-                if (selectedButton.innerText.trim().toLocaleLowerCase().includes("faction")) {
+                if (
+                    selectedButton.innerText
+                        .trim()
+                        .toLocaleLowerCase()
+                        .includes("faction")
+                ) {
                     this.blockTeamMode();
                     this.selectedTeam = 0;
                 } else {
