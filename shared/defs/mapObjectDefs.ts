@@ -29489,18 +29489,24 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
         type: "loot_spawner",
         loot: [
             tierLoot("tier_vault_floor", 1, 1),
-            tierLoot("tier_scout_with_structure_skins", 1, 1),
+            tierLoot("tier_scout", 1, 1),
+            tierLoot("tier_blr", 1, 1),
         ],
     },
     loot_tier_police_floor: {
         type: "loot_spawner",
-        loot: [tierLoot("tier_police_floor", 1, 1), tierLoot("tier_blr", 1, 1)],
+        loot: [
+            tierLoot("tier_police_floor", 1, 1),
+            tierLoot("tier_blr", 1, 1)
+        ],
     },
     loot_tier_mansion_floor: {
         type: "loot_spawner",
         loot: [
             tierLoot("tier_mansion_floor", 1, 1),
-            tierLoot("tier_scout_with_structure_skins", 1, 1),
+            tierLoot("tier_mosin", 1, 1),
+            tierLoot("tier_scout", 1, 1),
+            tierLoot("tier_blr", 1, 1),
         ],
     },
     loot_tier_sv98: {
@@ -29583,7 +29589,8 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
         type: "loot_spawner",
         loot: [
             tierLoot("tier_chrys_01", 1, 1),
-            tierLoot("tier_scout_with_structure_skins", 1, 1),
+            tierLoot("tier_scout", 1, 1),
+            tierLoot("tier_blr", 1, 1),
         ],
     },
     loot_tier_chrys_02: {
