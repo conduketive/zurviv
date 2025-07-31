@@ -656,6 +656,10 @@ export const CompMain: MapDef = {
             { name: "", count: 1, weight: 5 },
             { name: "mosin", count: 1, weight: 1 },
         ],
+        tier_scout: [
+            { name: "", count: 1, weight: 5 },
+            { name: "scout_elite", count: 1, weight: 1 },
+        ],
         tier_blr: [
             { name: "", count: 1, weight: 5 },
             { name: "blr", count: 1, weight: 1 },
@@ -663,11 +667,6 @@ export const CompMain: MapDef = {
         tier_model: [
             { name: "", count: 1, weight: 5 },
             { name: "model94", count: 1, weight: 1 },
-        ],
-        tier_scout_with_structure_skins: [
-            { name: "", count: 1, weight: 5 },
-            { name: "scout_elite", count: 1, weight: 1 },
-            { name: "blr", count: 1, weight: 1 },
         ],
     },
     mapGen: {
