@@ -1126,7 +1126,7 @@ const SkinDefs: Record<string, MeleeDef> = {
         },
     }),
     karambit_winner: defineMeleeSkin("karambit", {
-        name: "Karambit Winner",
+        name: "Season 0 Winner",
         rarity: Rarity.Epic,
         noPotatoSwap: false,
         lootImg: {
