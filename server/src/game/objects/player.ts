@@ -2594,6 +2594,7 @@ export class Player extends BaseGameObject {
                 isHeadShot = Math.random() < GameConfig.player.headshotChance;
 
                 if (isHeadShot) {
+                    // @ts-expect-error go away
                     finalDamage *= gameSourceDef.headshotMult;
                 }
             }
