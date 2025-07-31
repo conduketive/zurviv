@@ -53,3 +53,7 @@ export const zSetAccountNameParams = z.object({
 export const zCloseGamesParams = z.object({
     map_name: z.string(),
 });
+
+export const zFindDiscordUserSlugParams = z.object({
+    discord_user: z.string(),
+});
