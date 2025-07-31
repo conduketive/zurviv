@@ -195,7 +195,8 @@ export const CompMain: MapDef = {
             // { name: "15xscope", count: 1, weight: 0.1 }, // ?
         ],
         tier_chrys_case: [
-            { name: "tier_katanas", count: 1, weight: 6 }, // ?
+            { name: "", count: 1, weight: 6 },
+            { name: "tier_katanas", count: 1, weight: 3 }, // ?
             { name: "naginata", count: 1, weight: 1 }, // ?
         ],
         tier_eye_02: [{ name: "stonehammer", count: 1, weight: 1 }],
@@ -652,21 +653,21 @@ export const CompMain: MapDef = {
             { name: "tier_perks", count: 1, weight: 1 },
         ],
         tier_mosin: [
-            { name: "", count: 1, weight: 0.9 },
-            { name: "mosin", count: 1, weight: 0.1 },
+            { name: "", count: 1, weight: 5 },
+            { name: "mosin", count: 1, weight: 1 },
         ],
         tier_blr: [
-            { name: "", count: 1, weight: 0.9 },
-            { name: "blr", count: 1, weight: 0.1 },
+            { name: "", count: 1, weight: 5 },
+            { name: "blr", count: 1, weight: 1 },
         ],
         tier_model: [
-            { name: "", count: 1, weight: 0.95 },
-            { name: "model94", count: 1, weight: 0.05 },
+            { name: "", count: 1, weight: 5 },
+            { name: "model94", count: 1, weight: 1 },
         ],
         tier_scout_with_structure_skins: [
-            { name: "", count: 1, weight: 0.8 },
-            { name: "scout_elite", count: 1, weight: 0.1 },
-            { name: "blr", count: 1, weight: 0.1 },
+            { name: "", count: 1, weight: 5 },
+            { name: "scout_elite", count: 1, weight: 1 },
+            { name: "blr", count: 1, weight: 1 },
         ],
     },
     mapGen: {
