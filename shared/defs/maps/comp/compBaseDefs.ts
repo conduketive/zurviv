@@ -247,7 +247,10 @@ export const CompMain: MapDef = {
             { name: "model94", count: 1, weight: 1 },
         ],
         tier_woodaxe: [{ name: "woodaxe", count: 1, weight: 1 }],
-        tier_club_melee: [{ name: "machete_taiga", count: 1, weight: 1 }],
+        tier_club_melee: [
+            { name: "machete_taiga", count: 1, weight: 1 }
+            { name: "tier_blr", count: 1, weight: 1 }
+        ],
         tier_guns: [
             { name: "famas", count: 1, weight: 1 },
             { name: "hk416", count: 1, weight: 4 },
