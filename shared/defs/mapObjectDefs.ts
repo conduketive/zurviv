@@ -29490,7 +29490,7 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
         loot: [
             tierLoot("tier_vault_floor", 1, 1),
             tierLoot("tier_scout", 1, 1),
-            tierLoot("tier_blr", 1, 1),,
+            tierLoot("tier_blr", 1, 1),
         ],
     },
     loot_tier_police_floor: {
