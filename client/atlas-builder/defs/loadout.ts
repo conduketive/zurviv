@@ -662,7 +662,7 @@ export const LoadoutAtlas: AtlasDef = {
         "guns/gun-m134-01.svg",
         "loot/loot-weapon-m134.svg",
         "guns/gun-pkm-01.svg",
-        "/loot/loot-weapon-pkm.svg",
+        "/loot/loot-weapon-pkm-lmg.svg",
         // remove
         "player/player-hands-outfitFireball.svg",
         "player/player-accessory-outfitFireball.svg",

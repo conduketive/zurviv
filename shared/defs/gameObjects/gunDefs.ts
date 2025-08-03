@@ -3377,7 +3377,7 @@ export const GunDefs: Record<string, GunDef> = {
         headshotMult: 1,
         speed: { equip: 0, attack: -3.5 },
         lootImg: {
-            sprite: "loot-weapon-pkm.img",
+            sprite: "loot-weapon-pkm-lmg.img",
             tint: 65280,
             border: "loot-circle-outer-01.img",
             borderTint: 0,
