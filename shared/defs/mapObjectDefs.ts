@@ -9110,7 +9110,11 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
     }),
     crate_09: createCrate({
         health: 140,
-        loot: [tierLoot("tier_chest", 2, 3), tierLoot("tier_conch_extra", 1, 1), tierLoot("tier_conch", 1, 1)],
+        loot: [
+            tierLoot("tier_chest", 2, 3),
+            tierLoot("tier_conch_extra", 1, 1),
+            tierLoot("tier_conch", 1, 1),
+        ],
         map: { display: false },
         terrain: { grass: true, beach: false },
         img: { sprite: "map-crate-09.img" },
@@ -10365,7 +10369,11 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
     stone_02: createStone({
         map: { display: false },
         img: { tint: 0xe5e5e5 },
-        loot: [tierLoot("tier_surviv", 2, 3), tierLoot("tier_rock_cache_extra", 1, 1), autoLoot("ak47", 1)],
+        loot: [
+            tierLoot("tier_surviv", 2, 3),
+            tierLoot("tier_rock_cache_extra", 1, 1),
+            autoLoot("ak47", 1),
+        ],
     }),
     stone_02sv: createStone({
         map: { display: false },
@@ -29490,17 +29498,11 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
     },
     loot_tier_vault_floor: {
         type: "loot_spawner",
-        loot: [
-            tierLoot("tier_vault_floor", 1, 1),
-            tierLoot("tier_bank_extra", 1, 1),
-        ],
+        loot: [tierLoot("tier_vault_floor", 1, 1), tierLoot("tier_bank_extra", 1, 1)],
     },
     loot_tier_police_floor: {
         type: "loot_spawner",
-        loot: [
-            tierLoot("tier_police_floor", 1, 1),
-            tierLoot("tier_police_extra", 1, 1),
-        ],
+        loot: [tierLoot("tier_police_floor", 1, 1), tierLoot("tier_police_extra", 1, 1)],
     },
     loot_tier_mansion_floor: {
         type: "loot_spawner",
@@ -29539,10 +29541,7 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
     },
     loot_tier_club_melee: {
         type: "loot_spawner",
-        loot: [
-            tierLoot("tier_club_melee", 1, 1),
-            tierLoot("tier_club_extra", 1, 1),
-        ],
+        loot: [tierLoot("tier_club_melee", 1, 1), tierLoot("tier_club_extra", 1, 1)],
     },
     loot_tier_leaf_pile: {
         type: "loot_spawner",
@@ -29590,10 +29589,7 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
     },
     loot_tier_chrys_01: {
         type: "loot_spawner",
-        loot: [
-            tierLoot("tier_chrys_01", 1, 1),
-            tierLoot("tier_glasshouse_extra", 1, 1),
-        ],
+        loot: [tierLoot("tier_chrys_01", 1, 1), tierLoot("tier_glasshouse_extra", 1, 1)],
     },
     loot_tier_chrys_02: {
         type: "loot_spawner",

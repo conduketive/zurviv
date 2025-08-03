@@ -84,7 +84,7 @@ export const CompMain: MapDef = {
             { name: "tier_armor", count: 1, weight: 0.15 }, // ?
             { name: "tier_medical", count: 1, weight: 0.15 }, // ?
             { name: "tier_throwables", count: 1, weight: 0.05 }, // ?
-            { name: "tier_packs", count: 1, weight: 0.10 }, // ?
+            { name: "tier_packs", count: 1, weight: 0.1 }, // ?
         ],
         tier_surviv: [
             { name: "tier_guns", count: 1, weight: 0.3 }, // TODO get more data on this from original
@@ -93,7 +93,7 @@ export const CompMain: MapDef = {
             { name: "tier_armor", count: 1, weight: 0.15 }, // ?
             { name: "tier_medical", count: 1, weight: 0.15 }, // ?
             { name: "tier_throwables", count: 1, weight: 0.05 }, // ?
-            { name: "tier_packs", count: 1, weight: 0.10 }, // ?
+            { name: "tier_packs", count: 1, weight: 0.1 }, // ?
         ],
         tier_container: [
             { name: "tier_guns", count: 1, weight: 0.3 }, // TODO get more data on this from original
@@ -102,16 +102,16 @@ export const CompMain: MapDef = {
             { name: "tier_armor", count: 1, weight: 0.15 }, // ?
             { name: "tier_medical", count: 1, weight: 0.15 }, // ?
             { name: "tier_throwables", count: 1, weight: 0.05 }, // ?
-            { name: "tier_packs", count: 1, weight: 0.10 }, // ?
+            { name: "tier_packs", count: 1, weight: 0.1 }, // ?
         ],
         tier_leaf_pile: [
             { name: "tier_guns", count: 1, weight: 0.25 }, // TODO get more data on this from original
             { name: "tier_ammo", count: 1, weight: 0.05 }, // ?
             { name: "tier_scopes", count: 1, weight: 0.15 }, // ?
-            { name: "tier_armor", count: 1, weight: 0.20 }, // ?
-            { name: "tier_medical", count: 1, weight: 0.10 }, // ?
+            { name: "tier_armor", count: 1, weight: 0.2 }, // ?
+            { name: "tier_medical", count: 1, weight: 0.1 }, // ?
             { name: "tier_throwables", count: 1, weight: 0.05 }, // ?
-            { name: "tier_packs", count: 1, weight: 0.10 }, // ?
+            { name: "tier_packs", count: 1, weight: 0.1 }, // ?
         ],
         tier_soviet: [
             { name: "tier_guns", count: 1, weight: 4 }, // ?
@@ -319,7 +319,8 @@ export const CompMain: MapDef = {
             { name: "pkm", count: 1, weight: 0.2 },
             // { name: "8xscope", count: 1, weight: 0.25 },
         ],
-        tier_chest_comp: [ //same as the loottable above but used to damage other modes lootbalance less
+        tier_chest_comp: [
+            //same as the loottable above but used to damage other modes lootbalance less
             { name: "famas", count: 1, weight: 2.5 },
             { name: "mk12", count: 1, weight: 1.5 },
             { name: "m249", count: 1, weight: 0.25 },
@@ -700,7 +701,7 @@ export const CompMain: MapDef = {
             { name: "blr", count: 1, weight: 0.4 },
         ],
         tier_glasshouse_extra: [
-            { name: "l86a", count: 1, weight: 0.25 },  
+            { name: "l86a", count: 1, weight: 0.25 },
             { name: "scout_elite", count: 1, weight: 0.25 },
             { name: "svd", count: 1, weight: 0.25 },
             { name: "blr", count: 1, weight: 0.25 },
@@ -714,26 +715,22 @@ export const CompMain: MapDef = {
             { name: "an94", count: 1, weight: 0.4 },
             { name: "", count: 1, weight: 0.6 },
         ],
-        tier_river_bunker_extra:  [
+        tier_river_bunker_extra: [
             { name: "m249", count: 1, weight: 0.35 },
             { name: "ots38_dual", count: 1, weight: 0.5 },
             { name: "m249", count: 1, weight: 0.15 },
         ],
-        tier_barrel_cache_extra:  [
-            { name: "spas12", count: 1, weight: 1 },
-        ],
-        tier_rock_cache_extra:  [
+        tier_barrel_cache_extra: [{ name: "spas12", count: 1, weight: 1 }],
+        tier_rock_cache_extra: [
             { name: "m249", count: 1, weight: 0.8 },
             { name: "pkm", count: 1, weight: 0.2 },
         ],
-        tier_ak_bunker_extra:  [
-            { name: "an94", count: 1, weight: 0.45},
+        tier_ak_bunker_extra: [
+            { name: "an94", count: 1, weight: 0.45 },
             { name: "scar", count: 1, weight: 0.45 },
             { name: "m134", count: 1, weight: 0.1 },
         ],
-        tier_ot_crate_extra:  [
-            { name: "ots38_dual", count: 1, weight: 1 },
-        ],
+        tier_ot_crate_extra: [{ name: "ots38_dual", count: 1, weight: 1 }],
     },
     mapGen: {
         map: {
