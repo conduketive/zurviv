@@ -213,6 +213,11 @@ export function getIp(res: HttpResponse, req: HttpRequest, proxyHeader?: string)
         : textDecoder.decode(res.getRemoteAddressAsText());
 
     if (!ip || isIP(ip) == 0) return undefined;
+   console.log({
+        ip,
+        proxyHeader,
+        textDecoder: textDecoder.decode(res.getRemoteAddressAsText()),
+   })
     return ip;
 }
 
