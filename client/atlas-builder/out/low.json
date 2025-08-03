@@ -7100,6 +7100,46 @@
             "h": 116
           }
         },
+        "gun-pkm-01.img": {
+          "frame": {
+            "x": 1224,
+            "y": 1,
+            "w": 50,
+            "h": 161
+          },
+          "rotated": false,
+          "trimmed": true,
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 50,
+            "h": 161
+          },
+          "sourceSize": {
+            "w": 50,
+            "h": 161
+          }
+        },
+        "gun-m134-01.img": {
+          "frame": {
+            "x": 1150,
+            "y": 3,
+            "w": 56,
+            "h": 155
+          },
+          "rotated": false,
+          "trimmed": true,
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 56,
+            "h": 155
+          },
+          "sourceSize": {
+            "w": 56,
+            "h": 155
+          }
+        },
         "gun-potato-cannon-01.img": {
           "frame": {
             "x": 468,
@@ -11778,6 +11818,46 @@
           "sourceSize": {
             "w": 64,
             "h": 64
+          }
+        },
+        "loot-weapon-pkm.img": {
+          "frame": {
+            "x": 1177,
+            "y": 168,
+            "w": 60,
+            "h": 63
+          },
+          "rotated": false,
+          "trimmed": true,
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 60,
+            "h": 63
+          },
+          "sourceSize": {
+            "w": 60,
+            "h": 63
+          }
+        },
+        "loot-weapon-m134.img": {
+          "frame": {
+            "x": 1109,
+            "y": 166,
+            "w": 63,
+            "h": 63
+          },
+          "rotated": false,
+          "trimmed": true,
+          "spriteSourceSize": {
+            "x": 0,
+            "y": 0,
+            "w": 63,
+            "h": 63
+          },
+          "sourceSize": {
+            "w": 63,
+            "h": 63
           }
         },
         "loot-weapon-potato-cannon.img": {
