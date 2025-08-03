@@ -986,7 +986,7 @@ export class GameMap {
         hideFromMap?: boolean,
     ) {
         // !!
-        if (this.mapId !== MapId.Gamerio) {
+        if (this.mapId === MapId.CompMain) {
             if (type === "container_06") {
                 type = "container_01";
             }
