@@ -152,8 +152,6 @@ class Application {
                 net.Constants.PlayerNameMaxLen;
 
             window.onload = () => {
-                let modes = this.siteInfo.info.modes;
-
                 function updateButtonText(
                     buttonId: string,
                     selectedButton: HTMLElement,
@@ -280,6 +278,8 @@ class Application {
                     squad: 3,
                 };
                 $("#play-button-menu").click(() => {
+                    const modes = this.siteInfo.info.modes ?? [];
+                    
                     const selectedMode = $("#dropdown-main-button-map-mode").attr(
                         "data-selected-game-map-name",
                     );
