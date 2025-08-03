@@ -657,6 +657,12 @@ export const LoadoutAtlas: AtlasDef = {
         "proj/proj-strobe-arming.svg",
         "proj/proj-strobe-unarmed.svg",
         "proj/proj-wedge-01.svg",
+
+        // new guns
+        "guns/gun-m134-01.svg",
+        "loot/loot-weapon-m134.svg",
+        "guns/gun-pkm-01.svg",
+        "/loot/loot-weapon-pkm.svg",
         // remove
         "player/player-hands-outfitFireball.svg",
         "player/player-accessory-outfitFireball.svg",
