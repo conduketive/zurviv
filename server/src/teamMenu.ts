@@ -255,9 +255,10 @@ class Room {
         const tokenMap = new Map<Player, string>();
 
         if (
-            EVENT_MODES.includes(data?.mapName!) ||
-            data.mode === "competitive" ||
-            data.mode === "event"
+            true
+            // EVENT_MODES.includes(data?.mapName!) ||
+            // data.mode === "competitive" ||
+            // data.mode === "event"
         ) {
             for (const player of this.players) {
                 if (!player.hasServerRole) {

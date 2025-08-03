@@ -138,9 +138,10 @@ app.post("/api/find_game", validateParams(zFindGameBody), async (c) => {
     }
     const body = c.req.valid("json");
     if (
-        body.mode === "event" ||
-        body.mode === "competitive" ||
-        EVENT_MODES.includes(body.mapName)
+        true
+        // body.mode === "event" ||
+        // body.mode === "competitive" ||
+        // EVENT_MODES.includes(body.mapName)
     ) {
         if (!hasServerRole) {
             return c.json<FindGameResponse>({ error: "invalid_role" });
