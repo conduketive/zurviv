@@ -29547,7 +29547,10 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
     },
     loot_tier_club_melee: {
         type: "loot_spawner",
-        loot: [tierLoot("tier_club_melee", 1, 1), tierLoot("tier_club_extra", 1, 1)],
+        loot: [
+            tierLoot("tier_club_melee", 1, 1),
+            tierLoot("tier_club_extra", 1, 1),
+        ],
     },
     loot_tier_leaf_pile: {
         type: "loot_spawner",
