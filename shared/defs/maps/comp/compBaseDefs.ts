@@ -699,12 +699,12 @@ export const CompMain: MapDef = {
             { name: "blr", count: 1, weight: 0.3 },
             { name: "mkg45", count: 1, weight: 0.4 },
         ],
-        tier_bank_extra: [
+        tier_vault_extra: [
             { name: "scout_elite", count: 1, weight: 0.2 },
             { name: "blr", count: 1, weight: 0.3 },
             { name: "vss", count: 1, weight: 0.5 },
         ],
-        tier_glasshouse_extra: [
+        tier_chrys_extra: [
             { name: "scout_elite", count: 1, weight: 0.2 },
             { name: "blr", count: 1, weight: 0.3 },
             { name: "l86", count: 1, weight: 0.5 },
