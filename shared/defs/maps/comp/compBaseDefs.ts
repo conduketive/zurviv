@@ -203,8 +203,6 @@ export const CompMain: MapDef = {
         tier_eye_block: [
             { name: "garand", count: 1, weight: 4 },
             { name: "an94", count: 1, weight: 2 },
-            { name: "pkm", count: 1, weight: 1 },
-            { name: "m134", count: 1, weight: 1 },
             { name: "sv98", count: 1, weight: 1 },
             { name: "mosin", count: 1, weight: 2 },
             { name: "scout_elite", count: 1, weight: 4 },
@@ -226,8 +224,6 @@ export const CompMain: MapDef = {
         tier_eye_stone: [
             { name: "garand", count: 1, weight: 4 },
             { name: "an94", count: 1, weight: 2 },
-            { name: "pkm", count: 1, weight: 1 },
-            { name: "m134", count: 1, weight: 1 },
             { name: "sv98", count: 1, weight: 1 },
             { name: "mosin", count: 1, weight: 2 },
             { name: "scout_elite", count: 1, weight: 4 },
@@ -307,7 +303,6 @@ export const CompMain: MapDef = {
             { name: "scorpion", count: 1, weight: 8 },
             { name: "bar", count: 1, weight: 2 }, // ?
             { name: "qbb97", count: 1, weight: 2 }, // ?
-            { name: "m134", count: 1, weight: 1 },
             { name: "vector", count: 1, weight: 4 },
             { name: "scar", count: 1, weight: 2 },
         ],
@@ -334,7 +329,6 @@ export const CompMain: MapDef = {
             { name: "chest02", count: 1, weight: 1 },
             { name: "chest03", count: 1, weight: 0.2 },
             { name: "4xscope", count: 1, weight: 0.5 },
-            { name: "pkm", count: 1, weight: 0.2 },
             // { name: "8xscope", count: 1, weight: 0.25 },
         ],
         tier_chest_comp: [
@@ -382,7 +376,6 @@ export const CompMain: MapDef = {
             { name: "model94", count: 1, weight: 2 },
             { name: "pkp", count: 1, weight: 1 },
             { name: "m249", count: 1, weight: 1 },
-            { name: "m134", count: 1, weight: 1 },
         ],
         tier_lmgs: [
             { name: "dp28", count: 1, weight: 2 }, // ?
@@ -559,8 +552,6 @@ export const CompMain: MapDef = {
             { name: "m4a1", count: 1, weight: 1 },
             { name: "scorpion", count: 1, weight: 1 },
             { name: "garand", count: 1, weight: 1 },
-            { name: "pkm", count: 1, weight: 1 },
-            { name: "m134", count: 1, weight: 1 },
             // { name: "awc", count: 1, weight: 0.1 }, // ?
         ],
         tier_airdrop_mythic: [
@@ -754,13 +745,11 @@ export const CompMain: MapDef = {
         tier_barrel_cache_extra: [{ name: "spas12", count: 1, weight: 1 }],
         tier_rock_cache_extra: [
             { name: "m249", count: 1, weight: 0.25 },
-            { name: "pkm", count: 1, weight: 0.25 },
             { name: "model94", count: 1, weight: 0.5 },
         ],
         tier_ak_bunker_extra: [
             { name: "an94", count: 1, weight: 0.4 },
             { name: "scar", count: 1, weight: 0.4 },
-            { name: "m134", count: 1, weight: 0.2 },
         ],
         tier_ot_crate_extra: [{ name: "ots38_dual", count: 1, weight: 1 }],
     },
