@@ -78,40 +78,40 @@ export const CompMain: MapDef = {
     // ! are uncertain data based on leak
     lootTable: {
         tier_world: [
-            { name: "tier_guns", count: 1, weight: 0.30 }, // TODO get more data on this from original
+            { name: "tier_guns", count: 1, weight: 0.3 }, // TODO get more data on this from original
             { name: "tier_ammo", count: 1, weight: 0.05 }, // ?
             { name: "tier_scopes", count: 1, weight: 0.15 }, // ?
-            { name: "tier_armor", count: 1, weight: 0.20 }, // ?
+            { name: "tier_armor", count: 1, weight: 0.2 }, // ?
             { name: "tier_medical", count: 1, weight: 0.15 }, // ?
             { name: "tier_throwables", count: 1, weight: 0.05 }, // ?
-            { name: "tier_packs", count: 1, weight: 0.10 }, // ?
+            { name: "tier_packs", count: 1, weight: 0.1 }, // ?
         ],
         tier_surviv: [
-            { name: "tier_guns", count: 1, weight: 0.30 }, // TODO get more data on this from original
+            { name: "tier_guns", count: 1, weight: 0.3 }, // TODO get more data on this from original
             { name: "tier_ammo", count: 1, weight: 0.05 }, // ?
             { name: "tier_scopes", count: 1, weight: 0.15 }, // ?
-            { name: "tier_armor", count: 1, weight: 0.20 }, // ?
+            { name: "tier_armor", count: 1, weight: 0.2 }, // ?
             { name: "tier_medical", count: 1, weight: 0.15 }, // ?
             { name: "tier_throwables", count: 1, weight: 0.05 }, // ?
-            { name: "tier_packs", count: 1, weight: 0.10 }, // ?
+            { name: "tier_packs", count: 1, weight: 0.1 }, // ?
         ],
         tier_container: [
-            { name: "tier_guns", count: 1, weight: 0.30 }, // TODO get more data on this from original
+            { name: "tier_guns", count: 1, weight: 0.3 }, // TODO get more data on this from original
             { name: "tier_ammo", count: 1, weight: 0.05 }, // ?
             { name: "tier_scopes", count: 1, weight: 0.15 }, // ?
-            { name: "tier_armor", count: 1, weight: 0.20 }, // ?
+            { name: "tier_armor", count: 1, weight: 0.2 }, // ?
             { name: "tier_medical", count: 1, weight: 0.15 }, // ?
             { name: "tier_throwables", count: 1, weight: 0.05 }, // ?
-            { name: "tier_packs", count: 1, weight: 0.10 }, // ?
+            { name: "tier_packs", count: 1, weight: 0.1 }, // ?
         ],
         tier_leaf_pile: [
-            { name: "tier_guns", count: 1, weight: 0.30 }, // TODO get more data on this from original
+            { name: "tier_guns", count: 1, weight: 0.3 }, // TODO get more data on this from original
             { name: "tier_ammo", count: 1, weight: 0.05 }, // ?
             { name: "tier_scopes", count: 1, weight: 0.15 }, // ?
-            { name: "tier_armor", count: 1, weight: 0.20 }, // ?
+            { name: "tier_armor", count: 1, weight: 0.2 }, // ?
             { name: "tier_medical", count: 1, weight: 0.15 }, // ?
             { name: "tier_throwables", count: 1, weight: 0.05 }, // ?
-            { name: "tier_packs", count: 1, weight: 0.10 }, // ?
+            { name: "tier_packs", count: 1, weight: 0.1 }, // ?
         ],
         tier_soviet: [
             { name: "tier_guns", count: 1, weight: 4 }, // ?
@@ -121,9 +121,9 @@ export const CompMain: MapDef = {
         tier_toilet: [
             { name: "tier_guns", count: 1, weight: 0.15 }, // TODO get more data on this from original
             { name: "tier_ammo", count: 1, weight: 0.05 }, // ?
-            { name: "tier_scopes", count: 1, weight: 0.10 }, // ?
-            { name: "tier_armor", count: 1, weight: 0.10 }, // ?
-            { name: "tier_medical", count: 1, weight: 0.50 }, // ?
+            { name: "tier_scopes", count: 1, weight: 0.1 }, // ?
+            { name: "tier_armor", count: 1, weight: 0.1 }, // ?
+            { name: "tier_medical", count: 1, weight: 0.5 }, // ?
             { name: "tier_throwables", count: 1, weight: 0.05 }, // ?
             { name: "tier_packs", count: 1, weight: 0.05 }, // ?
         ],

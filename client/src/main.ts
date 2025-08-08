@@ -279,7 +279,7 @@ class Application {
                 };
                 $("#play-button-menu").click(() => {
                     const modes = this.siteInfo.info.modes ?? [];
-                    
+
                     const selectedMode = $("#dropdown-main-button-map-mode").attr(
                         "data-selected-game-map-name",
                     );
