@@ -138,7 +138,7 @@ app.post("/api/find_game", validateParams(zFindGameBody), async (c) => {
     }
     const body = c.req.valid("json");
     if (
-        true
+        process.env.NODE_ENV === "production"
         // body.mode === "event" ||
         // body.mode === "competitive" ||
         // EVENT_MODES.includes(body.mapName)

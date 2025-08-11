@@ -255,7 +255,7 @@ class Room {
         const tokenMap = new Map<Player, string>();
 
         if (
-            true
+            process.env.NODE_ENV === "production"
             // EVENT_MODES.includes(data?.mapName!) ||
             // data.mode === "competitive" ||
             // data.mode === "event"
