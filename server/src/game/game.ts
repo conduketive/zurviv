@@ -466,6 +466,15 @@ export class Game {
         if (player.canDespawn()) {
             player.game.playerBarn.removePlayer(player);
         }
+        this.checkIfAllPlayersDisconnected();
+    }
+
+    private checkIfAllPlayersDisconnected() {
+        const atLeastOnePlayerConnected = this.playerBarn.players.some(p => !p.disconnected);
+        if (this.stopped || atLeastOnePlayerConnected ) return;
+        
+        this.logger.info("All players disconnected, stopping game.");
+        this.stop(false);
     }
 
     broadcastMsg(type: net.MsgType, msg: net.Msg) {
@@ -518,7 +527,7 @@ export class Game {
         });
     }
 
-    stop(): void {
+    private stop(saveToDb = true): void {
         if (this.stopped) return;
         this.stopped = true;
         this.allowJoin = false;
@@ -529,7 +538,7 @@ export class Game {
         }
         this.logger.info("Game Ended");
         this.updateData();
-        this._saveGameToDatabase();
+        if ( saveToDb ) this._saveGameToDatabase();
     }
 
     private async _saveGameToDatabase() {
