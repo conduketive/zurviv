@@ -126,8 +126,22 @@ export class PlayerBarn {
         return livingPlayers[util.randomInt(0, livingPlayers.length - 1)];
     }
 
-    addPlayer(socketId: string, joinMsg: net.JoinMsg, ip: string) {
-        const joinData = this.game.joinTokens.get(joinMsg.matchPriv);
+    addSpectator(socketId: string) {
+        this.addPlayer(socketId, new net.JoinMsg(), "", true);
+    }
+
+    addPlayer(socketId: string, joinMsg: net.JoinMsg, ip: string, isSpectator = true) {
+        const joinData = isSpectator ? this.game.joinTokens.get(joinMsg.matchPriv) : {
+            expiresAt: Date.now() + 10000,
+            userId: null,
+            findGameIp: ip,
+            groupData: {
+                autoFill: true,
+                playerCount: 1,
+                groupHashToJoin: "",
+            },
+        } as JoinTokenData
+
 
         if (!joinData || joinData.expiresAt < Date.now()) {
             this.game.closeSocket(socketId);
@@ -206,6 +220,11 @@ export class PlayerBarn {
             joinData.findGameIp,
             joinData.userId,
         );
+
+        const spectateMsg = new net.SpectateMsg();
+        spectateMsg.specBegin = true;
+        player.dead = true;
+        player.spectate(spectateMsg)
 
         this.socketIdToPlayer.set(socketId, player);
 

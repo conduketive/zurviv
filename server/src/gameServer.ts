@@ -93,6 +93,16 @@ class GameServer {
         }
     }
 
+    getGamesToSpectate() {
+        try {
+            const message = this.manager.getActiveGames();
+            return { success: true, message };
+        } catch (err) {
+            this.logger.error(`Failed to close games: `, err);
+            return { success: false };
+        }
+    }  
+
     async sendData() {
         try {
             await apiPrivateRouter.update_region.$post({
@@ -227,6 +237,51 @@ app.post("/api/close_games", (res, req) => {
                 res.end();
             });
             server.logger.warn("/api/close_games: Error retrieving body");
+        },
+    );
+});
+
+app.options("/api/get_spectable_games", (res) => {
+    cors(res);
+    res.end();
+});
+
+app.post("/api/get_spectable_games", (res, req) => {
+    res.onAborted(() => {
+        res.aborted = true;
+    });
+
+    if (req.getHeader("survev-api-key") !== Config.secrets.SURVEV_API_KEY) {
+        forbidden(res);
+        return;
+    }
+
+    readPostedJSON(
+        res,
+        (body: FindGamePrivateBody) => {
+            try {
+                if (res.aborted) return;
+
+                const parsed = z.any().safeParse(body);
+                if (!parsed.success || !parsed.data) {
+                    returnJson(res, { error: "failed_to_parse_body" });
+                    return;
+                }
+
+                returnJson(res, server.getGamesToSpectate());
+            } catch (error) {
+                server.logger.warn("API find_game error: ", error);
+            }
+        },
+        () => {
+            if (res.aborted) return;
+            res.cork(() => {
+                if (res.aborted) return;
+                res.writeStatus("500 Internal Server Error");
+                res.write("500 Internal Server Error");
+                res.end();
+            });
+            server.logger.warn("/api/get_spectable_games: Error retrieving body");
         },
     );
 });
