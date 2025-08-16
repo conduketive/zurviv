@@ -574,6 +574,8 @@ export class Game {
                 rank: rank,
                 ip: player.ip,
                 findGameIp: player.findGameIp,
+                timesKnocked: player.downedCount,
+                downedPlayers: player.downedPlayers,
             };
         });
 

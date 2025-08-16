@@ -1,5 +1,5 @@
 {
-  "id": "34c224cc-04dc-4476-b9fa-588269d6d6e7",
+  "id": "9a6059bf-2b0d-4107-b0c8-2b7cbc804936",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -40,6 +40,13 @@
           "primaryKey": false,
           "notNull": true,
           "default": "''"
+        },
+        "banned_by": {
+          "name": "banned_by",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'admin'"
         }
       },
       "indexes": {},
@@ -103,6 +110,13 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "team_mode": {
+          "name": "team_mode",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 1
         },
         "ip": {
           "name": "ip",
@@ -344,6 +358,20 @@
           "type": "integer[]",
           "primaryKey": false,
           "notNull": true
+        },
+        "times_knocked": {
+          "name": "times_knocked",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "downed_players": {
+          "name": "downed_players",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
         }
       },
       "indexes": {
@@ -562,6 +590,13 @@
           "notNull": true,
           "default": "''"
         },
+        "banned_by": {
+          "name": "banned_by",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "''"
+        },
         "username": {
           "name": "username",
           "type": "text",
@@ -616,6 +651,13 @@
           "primaryKey": false,
           "notNull": true,
           "default": "'{\"outfit\":\"outfitBase\",\"melee\":\"fists\",\"heal\":\"heal_basic\",\"boost\":\"boost_basic\",\"player_icon\":\"\",\"crosshair\":{\"type\":\"crosshair_default\",\"color\":16777215,\"size\":\"1.00\",\"stroke\":\"0.00\"},\"emotes\":[\"emote_happyface\",\"emote_thumbsup\",\"emote_surviv\",\"emote_sadface\",\"\",\"\"]}'::json"
+        },
+        "has_server_role": {
+          "name": "has_server_role",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
         }
       },
       "indexes": {},

@@ -55,6 +55,8 @@ matchHistoryRouter.post(
                 damage_dealt: matchDataTable.damageDealt,
                 damage_taken: matchDataTable.damageTaken,
                 slug: usersTable.slug,
+                times_knocked: matchDataTable.timesKnocked,
+                downed_players: matchDataTable.downedPlayers,
             })
             .from(matchDataTable)
             .groupBy(
@@ -70,6 +72,8 @@ matchHistoryRouter.post(
                 matchDataTable.kills,
                 matchDataTable.damageDealt,
                 matchDataTable.damageTaken,
+                matchDataTable.timesKnocked,
+                matchDataTable.downedPlayers,
                 usersTable.slug,
             )
             .leftJoin(

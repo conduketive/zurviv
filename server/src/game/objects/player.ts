@@ -760,6 +760,8 @@ export class Player extends BaseGameObject {
     dead = false;
     downed = false;
 
+    // how many players you knocked down
+    downedPlayers = 0;
     downedCount = 0;
     /**
      * players have a buffer where they can't take damage immediately after being downed
@@ -2718,6 +2720,7 @@ export class Player extends BaseGameObject {
         downedMsg.downed = true;
 
         if (params.source instanceof Player) {
+            params.source.downedPlayers++;
             this.downedBy = params.source;
             downedMsg.killerId = params.source.__id;
             downedMsg.killCreditId = params.source.__id;

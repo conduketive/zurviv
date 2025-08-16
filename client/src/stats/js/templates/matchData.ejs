@@ -18,6 +18,8 @@
                   <th class='match-header-player' scope="col" data-l10n='stats-player' data-caps='true'>PLAYER</th>
                   <th class='match-header-stat' scope="col" data-l10n='stats-kills' data-caps='true'>KILLS</th>
                   <th class='match-header-stat hide-xs' scope="col" data-l10n='stats-damage' data-caps='true'>DAMAGE</th>
+                  <th class='match-header-stat hide-xs' scope="col" data-l10n='stats-damage' data-caps='true'>DOWNED</th>
+                  <th class='match-header-stat hide-xs' scope="col" data-l10n='stats-damage' data-caps='true'>KNOCKS</th>
                   <th class='match-header-stat' scope="col" data-l10n='stats-survived' data-caps='true'>SURVIVED</th>
               </tr>
           </thead>
@@ -77,6 +79,8 @@
                   </td>
                   <td><%= d.kills %></td>
                   <td class='hide-xs'><%= d.damage_dealt %></td>
+                  <td class='hide-xs'><%= d.times_knocked %></td>
+                  <td class='hide-xs'><%= d.downed_players %></td>
                   <td>
                       <%= env.formatTime(d.time_alive) %>
                   </td>

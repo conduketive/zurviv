@@ -1,1 +1,0 @@
-ALTER TABLE "users" ADD COLUMN "banned_by" text DEFAULT '' NOT NULL;

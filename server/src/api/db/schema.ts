@@ -90,6 +90,8 @@ export const matchDataTable = pgTable(
         damageTaken: integer("damage_taken").notNull(),
         killerId: integer("killer_id").notNull(),
         killedIds: integer("killed_ids").array().notNull(),
+        timesKnocked: integer("times_knocked").notNull().default(0),
+        downedPlayers: integer("downed_players").notNull().default(0),
     },
     (table) => [
         index("idx_match_data_user_stats").on(
