@@ -432,7 +432,8 @@ void (() => {
                         playerCount: 1,
                         version: GameConfig.protocolVersion,
                         zones: [config.region],
-                        // @ts-expect-error update me sometime
+                        mapName: "main",
+                        mode: "casual",
                     } satisfies FindGameBody),
                 })
             ).json()) as FindGameResponse;

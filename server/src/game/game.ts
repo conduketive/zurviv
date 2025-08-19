@@ -511,7 +511,7 @@ export class Game {
                 groupData,
                 findGameIp: token.ip,
             });
-        }
+        };
     }
 
     addSpectatorToken(data: string) {

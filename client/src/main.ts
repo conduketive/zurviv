@@ -34,6 +34,7 @@ import { Pass } from "./ui/pass";
 import { ProfileUi } from "./ui/profileUi";
 import { TeamMenu } from "./ui/teamMenu";
 import { loadStaticDomImages } from "./ui/ui2";
+import { match } from "assert";
 
 class Application {
     nameInput = $("#player-name-input-solo");
@@ -103,6 +104,7 @@ class Application {
             this.localization,
             this.loadoutMenu,
             this.errorModal,
+            (data, sectate) => this.joinGame(data, sectate)
         );
         this.siteInfo = new SiteInfo(false, this.config, this.localization);
 
@@ -874,10 +876,11 @@ class Application {
         );
     }
 
-    joinGame(matchData: FindGameMatchData) {
+    joinGame(matchData: FindGameMatchData, spectate = false) {
+        console.log({ matchData})
         if (!this.game) {
             setTimeout(() => {
-                this.joinGame(matchData);
+                this.joinGame(matchData, spectate);
             }, 250);
             return;
         }
@@ -885,7 +888,7 @@ class Application {
         const urls: string[] = [];
         for (let i = 0; i < hosts.length; i++) {
             urls.push(
-                `ws${matchData.useHttps ? "s" : ""}://${hosts[i]}/play?gameId=${
+                `ws${matchData.useHttps ? "s" : ""}://${hosts[i]}/${spectate ? "spectate" : "play"}?gameId=${
                     matchData.gameId
                 }`,
             );
@@ -905,6 +908,7 @@ class Application {
                 this.account.loadoutPriv,
                 this.account.questPriv,
                 onFailure,
+                spectate
             );
         };
         joinGameImpl(urls, matchData);

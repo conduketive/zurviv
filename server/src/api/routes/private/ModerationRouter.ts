@@ -422,31 +422,6 @@ export const ModerationRouter = new Hono()
             return c.json({ message: "Closed games" }, 200);
         }
         return c.json({ message: "Failed to close games" }, 200);
-    })
-    .post("/get_spectable_games", validateParams(z.any()), async (c) => {
-        const gameServerUrl = Config.regions[Config.gameServer.thisRegion];
-
-        if (!gameServerUrl)
-            return c.json({ message: "No address found for this region" }, 200);
-
-        const res = await fetch(
-            `${gameServerUrl.https ? "https" : "http"}://${gameServerUrl.address}/api/get_spectable_games`,
-            {
-                method: "POST",
-                headers: {
-                    "content-type": "application/json",
-                    "survev-api-key": Config.secrets.SURVEV_API_KEY,
-                },
-                body: JSON.stringify({}),
-            },
-        );
-
-        const body = await res.json();
-
-        if (res.ok) {
-            return c.json({ message: body }, 200);
-        }
-        return c.json({ message: "Failed to close games" }, 200);
     });
 
 async function banAccount(userId: string, banReason: string, executorId: string) {

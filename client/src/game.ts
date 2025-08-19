@@ -144,6 +144,7 @@ export class Game {
         loadoutPriv: string,
         questPriv: string,
         onConnectFail: () => void,
+        spctating = false
     ) {
         if (!this.connecting && !this.connected && !this.initialized) {
             if (this.m_ws) {
@@ -175,6 +176,7 @@ export class Game {
                     joinMessage.useTouch = device.touch;
                     joinMessage.isMobile = device.mobile || window.mobile!;
                     joinMessage.bot = false;
+                    joinMessage.spectating = spctating;
                     joinMessage.loadout = this.m_config.get("loadout")!;
                     this.m_sendMessage(net.MsgType.Join, joinMessage, 8192);
                 };

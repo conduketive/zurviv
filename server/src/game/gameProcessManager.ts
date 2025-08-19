@@ -16,6 +16,7 @@ import {
 } from "../utils/types";
 import type { GameManager } from "./gameManager";
 import { Config } from "../config";
+import { TeamModeToString } from "../../../shared/defs/types/misc";
 
 let path: string;
 if (process.env.NODE_ENV === "production") {
@@ -223,12 +224,16 @@ export class GameProcessManager implements GameManager {
     }
 
     getActiveGames(){
+        const region = Config.regions[Config.gameServer.thisRegion];
         return this.processes.filter(p => !p.stopped).map(p => ({
             id: p.id,
             mapName: p.mapName,
             teamMode: p.teamMode,
             aliveCount: p.aliveCount,
-            message: `[${[Config.gameServer.thisRegion]}][${p.mapName}]`
+            useHttps: region.https,
+            host: region.address,
+            region: Config.gameServer.thisRegion,
+            message: `[${[Config.gameServer.thisRegion]}][${p.mapName}][${TeamModeToString[p.teamMode]}] ${p.aliveCount} alive`
         }));
     }
 
