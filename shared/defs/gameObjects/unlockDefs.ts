@@ -62,6 +62,7 @@ const _allowedOutfits = [
     "outfitWhite",
 ];
 const _allowedEmotes = [
+    "emote_4xscope",
     "emote_thumbsup",
     "emote_sadface",
     "emote_happyface",

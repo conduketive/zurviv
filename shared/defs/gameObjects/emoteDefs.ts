@@ -1634,7 +1634,7 @@ export const EmotesDefs: Record<string, EmoteDef> = {
         channel: "ui",
         teamOnly: false,
         category: EmoteCategory.Other,
-    },
+},
     emote_logotwins: {
         type: "emote",
         name: "The Twins",
@@ -1644,5 +1644,15 @@ export const EmotesDefs: Record<string, EmoteDef> = {
         channel: "ui",
         teamOnly: false,
         category: EmoteCategory.Logos,
+    },
+    emote_4xscope: {
+        type: "emote",
+        name: "4x scope",
+        rarity: Rarity.Common,
+        texture: "loot-scope-02.img",
+        sound: "emote_01",
+        channel: "ui",
+        teamOnly: false,
+        category: EmoteCategory.Default,
     },
 };

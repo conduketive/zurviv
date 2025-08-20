@@ -1,6 +1,7 @@
 import { Rarity } from "../../gameConfig";
 import { defineSkin } from "../../utils/util";
 import type { Vec2 } from "../../utils/v2";
+import type { DeepPartial } from "../maps/baseDefs";
 
 export interface MeleeDef {
     readonly type: "melee";
@@ -76,8 +77,8 @@ export interface Img {
     renderOnHand?: boolean;
 }
 
-function defineMeleeSkin(baseType: string, params: any) {
-    return defineSkin<MeleeDef>(BaseDefs, baseType, params);
+function defineMeleeSkin(baseType: string, params: DeepPartial<MeleeDef>) {
+    return defineSkin<MeleeDef>(BaseDefs, baseType, params as MeleeDef);
 }
 
 const BaseDefs: Record<string, MeleeDef> = {
@@ -1242,6 +1243,16 @@ const SkinDefs: Record<string, MeleeDef> = {
         worldImg: {
             sprite: "loot-melee-katana-rusted.img",
         },
+    }),
+    katana_hacker_whacker: defineMeleeSkin("katana", {
+        name: "Hacker Whacker",
+        lootImg: { sprite: "loot-melee-katana-hacker-whacker.img" },
+        worldImg: {
+            sprite: "loot-melee-katana-hacker-whacker.img",
+        },
+        damage: 1000,
+        noDropOnDeath: true,
+        noPotatoSwap: true,
     }),
     katana_orchid: defineMeleeSkin("katana", {
         name: "Katana Orchid",
