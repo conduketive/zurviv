@@ -225,7 +225,7 @@ export class GameProcessManager implements GameManager {
 
     getActiveGames(){
         const region = Config.regions[Config.gameServer.thisRegion];
-        return this.processes.filter(p => !p.stopped).map(p => ({
+        return this.processes.filter(p => !p.stopped && p.aliveCount > 1).map(p => ({
             id: p.id,
             mapName: p.mapName,
             teamMode: p.teamMode,

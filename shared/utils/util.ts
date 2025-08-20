@@ -322,6 +322,11 @@ export const util = {
         return arr.at(index % arr.length) as T;
     },
 
+    randomItem<T>(array: T[]): T | undefined {
+        if (array.length === 0) return undefined;
+        return array[util.randomInt(0, array.length - 1)];
+    },
+    
     weightedRandom<T extends Object>(
         items: Array<T & { weight: number }>,
         rand = Math.random,

@@ -94,6 +94,7 @@ export class ProfileUi {
     userSettingsModal: MenuModal | null = null;
     loginOptionsModal: MenuModal | null = null;
     createAccountModal: MenuModal | null = null;
+    spectateGamesModal!: MenuModal ;
 
     loginOptionsModalMobile!: MenuModal;
     modalMobileAccount!: MenuModal;
@@ -282,10 +283,10 @@ export class ProfileUi {
         });
         $("#modal-account-spectate-games").click((e) => {
             if ( e.target.hasAttribute("data-game-id") ) {
-                const gameId = e.target.getAttribute("data-game-id");
+                const gameId = e.target.getAttribute("data-game-id")!;
                 const useHttps = e.target.getAttribute("data-use-https") === "true";
-                const host = e.target.getAttribute("data-host");
-                const zone = e.target.getAttribute("data-zone");
+                const host = e.target.getAttribute("data-host")!;
+                const zone = e.target.getAttribute("data-zone")!;
                 this.joinGame({
                     gameId,
                     useHttps: useHttps,
@@ -314,14 +315,14 @@ export class ProfileUi {
                     }
 
                     const content = data.message.data.length === 0 ? `<div>No games to spectate</div>` : 
-                    data.message.data.map((game) => `<div>
-                        ${game.message}
+                    data.message.data.map((game: any) => `<div>
+                        <p style="font-size:18px;">${game.message}</p>
                         <button style="inline:block;margin-left:auth;"
                         data-game-id="${game.id}"
                         data-use-https="${game.useHttps}"
                         data-host="${game.host}"
                         data-zone="${game.zone}"
-                        class="btn-spectate-game">Spectate</button>
+                        class="btn-spectate-game btn-green btn-darken menu-option">Spectate</button>
                     </div>`);
 
                     $("#modal-account-spectate-games .modal-body").html(
