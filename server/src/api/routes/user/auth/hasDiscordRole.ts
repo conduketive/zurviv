@@ -75,7 +75,7 @@ export async function userHasRole(
     guildId = GUILD_ID,
     roleId = ROLE_ID,
 ): Promise<boolean> {
-    if ( process.env.NODE_ENV !== "production" ) {
+    if (process.env.NODE_ENV !== "production") {
         return true;
     }
 

@@ -101,7 +101,7 @@ class GameServer {
             this.logger.error(`Failed to close games: `, err);
             return { success: false };
         }
-    }  
+    }
 
     async sendData() {
         try {
@@ -250,7 +250,7 @@ app.post("/api/get_spectable_games", (res, req) => {
     res.onAborted(() => {
         res.aborted = true;
     });
-    
+
     readPostedJSON(
         res,
         (body: FindGamePrivateBody) => {
@@ -383,7 +383,6 @@ app.ws<GameSocketData>("/play", {
         gameWsRateLimit.ipDisconnected(data.ip);
     },
 });
-
 
 app.ws<GameSocketData>("/spectate", {
     idleTimeout: 30,

@@ -326,7 +326,7 @@ export const util = {
         if (array.length === 0) return undefined;
         return array[util.randomInt(0, array.length - 1)];
     },
-    
+
     weightedRandom<T extends Object>(
         items: Array<T & { weight: number }>,
         rand = Math.random,

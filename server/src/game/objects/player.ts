@@ -221,7 +221,7 @@ export class PlayerBarn {
 
         this.socketIdToPlayer.set(socketId, player);
 
-        if ( !joinMsg.spectating ) {
+        if (!joinMsg.spectating) {
             if (team && group) {
                 team.addPlayer(player);
                 group.addPlayer(player);
@@ -269,13 +269,10 @@ export class PlayerBarn {
                 player.dead = true;
                 player.spectate(spectateMsg);
 
-                this.livingPlayers.splice(
-                    this.livingPlayers.indexOf(player),
-                    1,
-                );
+                this.livingPlayers.splice(this.livingPlayers.indexOf(player), 1);
 
                 this.aliveCountDirty = true;
-                player.setDirty()
+                player.setDirty();
             }, 150);
         }
         this.game.updateData();

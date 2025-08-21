@@ -1,4 +1,5 @@
 import $ from "jquery";
+import type { FindGameMatchData } from "../../../shared/types/api";
 import loadout from "../../../shared/utils/loadout";
 import type { Account } from "../account";
 import { api } from "../api";
@@ -9,7 +10,6 @@ import { SDK } from "../sdk";
 import type { LoadoutMenu } from "./loadoutMenu";
 import type { Localization } from "./localization";
 import { MenuModal } from "./menuModal";
-import type { FindGameMatchData } from "../../../shared/types/api";
 
 function createLoginOptions(
     parentElem: JQuery<HTMLElement>,
@@ -94,7 +94,7 @@ export class ProfileUi {
     userSettingsModal: MenuModal | null = null;
     loginOptionsModal: MenuModal | null = null;
     createAccountModal: MenuModal | null = null;
-    spectateGamesModal!: MenuModal ;
+    spectateGamesModal!: MenuModal;
 
     loginOptionsModalMobile!: MenuModal;
     modalMobileAccount!: MenuModal;
@@ -104,7 +104,7 @@ export class ProfileUi {
         public localization: Localization,
         public loadoutMenu: LoadoutMenu,
         public errorModal: MenuModal,
-        public joinGame: (matchData: FindGameMatchData, spectate: boolean) => void
+        public joinGame: (matchData: FindGameMatchData, spectate: boolean) => void,
     ) {
         this.account = account;
         this.localization = localization;
@@ -282,19 +282,22 @@ export class ProfileUi {
             this.spectateGamesModal.hide();
         });
         $("#modal-account-spectate-games").click((e) => {
-            if ( e.target.hasAttribute("data-game-id") ) {
+            if (e.target.hasAttribute("data-game-id")) {
                 const gameId = e.target.getAttribute("data-game-id")!;
                 const useHttps = e.target.getAttribute("data-use-https") === "true";
                 const host = e.target.getAttribute("data-host")!;
                 const zone = e.target.getAttribute("data-zone")!;
-                this.joinGame({
-                    gameId,
-                    useHttps: useHttps,
-                    hosts: [host],
-                    addrs: [host],
-                    zone,
-                    data: ""
-                }, true);
+                this.joinGame(
+                    {
+                        gameId,
+                        useHttps: useHttps,
+                        hosts: [host],
+                        addrs: [host],
+                        zone,
+                        data: "",
+                    },
+                    true,
+                );
             }
         });
         $(".spectate-games-button").click(() => {
@@ -309,13 +312,16 @@ export class ProfileUi {
                     });
                     const data = await res.json();
 
-                    if ( !data.message.success ) {
+                    if (!data.message.success) {
                         this.errorModal.show();
                         return;
                     }
 
-                    const content = data.message.data.length === 0 ? `<div>No games to spectate</div>` : 
-                    data.message.data.map((game: any) => `<div>
+                    const content =
+                        data.message.data.length === 0
+                            ? `<div>No games to spectate</div>`
+                            : data.message.data.map(
+                                  (game: any) => `<div>
                         <p style="font-size:18px;">${game.message}</p>
                         <button style="inline:block;margin-left:auth;"
                         data-game-id="${game.id}"
@@ -323,11 +329,10 @@ export class ProfileUi {
                         data-host="${game.host}"
                         data-zone="${game.zone}"
                         class="btn-spectate-game btn-green btn-darken menu-option">Spectate</button>
-                    </div>`);
+                    </div>`,
+                              );
 
-                    $("#modal-account-spectate-games .modal-body").html(
-                        content 
-                    )
+                    $("#modal-account-spectate-games .modal-body").html(content);
                     this.spectateGamesModal.show();
                 } else {
                     this.showLoginMenu({

@@ -1634,7 +1634,7 @@ export const EmotesDefs: Record<string, EmoteDef> = {
         channel: "ui",
         teamOnly: false,
         category: EmoteCategory.Other,
-},
+    },
     emote_logotwins: {
         type: "emote",
         name: "The Twins",

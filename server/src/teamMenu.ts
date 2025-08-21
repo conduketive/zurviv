@@ -2,7 +2,6 @@ import { randomUUID } from "crypto";
 import type { Hono } from "hono";
 import { getCookie } from "hono/cookie";
 import type { UpgradeWebSocket, WSContext } from "hono/ws";
-import { EVENT_MODES } from "../../modesList";
 import type { FindGameError } from "../../shared/types/api";
 import {
     type ClientRoomData,

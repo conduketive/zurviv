@@ -144,7 +144,7 @@ export class Game {
         loadoutPriv: string,
         questPriv: string,
         onConnectFail: () => void,
-        spctating = false
+        spctating = false,
     ) {
         if (!this.connecting && !this.connected && !this.initialized) {
             if (this.m_ws) {

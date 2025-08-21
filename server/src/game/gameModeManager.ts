@@ -183,10 +183,13 @@ export class GameModeManager {
 
     getSpectatablePlayers(player: Player): Player[] {
         // livingPlayers is used here instead of a more "efficient" option because its sorted while other options are not
-        return this.game.playerBarn.livingPlayers.filter((p) => (
-            player != p && !p.disconnected
-            && (this.getPlayerAlivePlayersContext(player).length === 0 || p.teamId == player.teamId)
-        ));
+        return this.game.playerBarn.livingPlayers.filter(
+            (p) =>
+                player != p &&
+                !p.disconnected &&
+                (this.getPlayerAlivePlayersContext(player).length === 0 ||
+                    p.teamId == player.teamId),
+        );
     }
 
     getPlayerStatusPlayers(player: Player): Player[] | undefined {

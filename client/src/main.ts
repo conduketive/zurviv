@@ -34,7 +34,6 @@ import { Pass } from "./ui/pass";
 import { ProfileUi } from "./ui/profileUi";
 import { TeamMenu } from "./ui/teamMenu";
 import { loadStaticDomImages } from "./ui/ui2";
-import { match } from "assert";
 
 class Application {
     nameInput = $("#player-name-input-solo");
@@ -104,7 +103,7 @@ class Application {
             this.localization,
             this.loadoutMenu,
             this.errorModal,
-            (data, sectate) => this.joinGame(data, sectate)
+            (data, sectate) => this.joinGame(data, sectate),
         );
         this.siteInfo = new SiteInfo(false, this.config, this.localization);
 
@@ -877,7 +876,7 @@ class Application {
     }
 
     joinGame(matchData: FindGameMatchData, spectate = false) {
-        console.log({ matchData})
+        console.log({ matchData });
         if (!this.game) {
             setTimeout(() => {
                 this.joinGame(matchData, spectate);
@@ -908,7 +907,7 @@ class Application {
                 this.account.loadoutPriv,
                 this.account.questPriv,
                 onFailure,
-                spectate
+                spectate,
             );
         };
         joinGameImpl(urls, matchData);

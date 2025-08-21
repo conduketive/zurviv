@@ -470,9 +470,11 @@ export class Game {
     }
 
     private checkIfAllPlayersDisconnected() {
-        const atLeastOnePlayerConnected = this.playerBarn.players.some(p => !p.disconnected);
-        if (this.stopped || atLeastOnePlayerConnected ) return;
-        
+        const atLeastOnePlayerConnected = this.playerBarn.players.some(
+            (p) => !p.disconnected,
+        );
+        if (this.stopped || atLeastOnePlayerConnected) return;
+
         this.logger.info("All players disconnected, stopping game.");
         this.stop(false);
     }
@@ -511,7 +513,7 @@ export class Game {
                 groupData,
                 findGameIp: token.ip,
             });
-        };
+        }
     }
 
     addSpectatorToken(data: string) {
@@ -543,7 +545,7 @@ export class Game {
         }
         this.logger.info("Game Ended");
         this.updateData();
-        if ( saveToDb ) this._saveGameToDatabase();
+        if (saveToDb) this._saveGameToDatabase();
     }
 
     private async _saveGameToDatabase() {

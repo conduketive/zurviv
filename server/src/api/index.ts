@@ -7,7 +7,6 @@ import { getCookie } from "hono/cookie";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
-import { EVENT_MODES } from "../../../modesList";
 import { version } from "../../../package.json";
 import {
     type FindGameResponse,

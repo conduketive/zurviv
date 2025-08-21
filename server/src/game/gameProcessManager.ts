@@ -2,8 +2,10 @@ import type { WebSocket } from "uWebSockets.js";
 import { type ChildProcess, fork } from "child_process";
 import { randomUUID } from "crypto";
 import { type MapDef, MapDefs } from "../../../shared/defs/mapDefs";
+import { TeamModeToString } from "../../../shared/defs/types/misc";
 import type { TeamMode } from "../../../shared/gameConfig";
 import * as net from "../../../shared/net/net";
+import { Config } from "../config";
 import { Logger } from "../utils/logger";
 import {
     type FindGamePrivateBody,
@@ -15,8 +17,6 @@ import {
     type SpectateGameBody,
 } from "../utils/types";
 import type { GameManager } from "./gameManager";
-import { Config } from "../config";
-import { TeamModeToString } from "../../../shared/defs/types/misc";
 
 let path: string;
 if (process.env.NODE_ENV === "production") {
@@ -223,18 +223,20 @@ export class GameProcessManager implements GameManager {
         return `Closed ${count} games`;
     }
 
-    getActiveGames(){
+    getActiveGames() {
         const region = Config.regions[Config.gameServer.thisRegion];
-        return this.processes.filter(p => !p.stopped && p.aliveCount > 1).map(p => ({
-            id: p.id,
-            mapName: p.mapName,
-            teamMode: p.teamMode,
-            aliveCount: p.aliveCount,
-            useHttps: region.https,
-            host: region.address,
-            region: Config.gameServer.thisRegion,
-            message: `[${[Config.gameServer.thisRegion]}][${p.mapName}][${TeamModeToString[p.teamMode]}] ${p.aliveCount} alive`
-        }));
+        return this.processes
+            .filter((p) => !p.stopped && p.aliveCount > 1)
+            .map((p) => ({
+                id: p.id,
+                mapName: p.mapName,
+                teamMode: p.teamMode,
+                aliveCount: p.aliveCount,
+                useHttps: region.https,
+                host: region.address,
+                region: Config.gameServer.thisRegion,
+                message: `[${[Config.gameServer.thisRegion]}][${p.mapName}][${TeamModeToString[p.teamMode]}] ${p.aliveCount} alive`,
+            }));
     }
 
     getPlayerCount(): number {
@@ -351,11 +353,13 @@ export class GameProcessManager implements GameManager {
         return game.id;
     }
 
-    spectateGame(body: { gameId: string}) {
-        const game = this.processes.find((proc) => {proc.id === body.gameId});
-        if ( !game ) {
+    spectateGame(body: { gameId: string }) {
+        const game = this.processes.find((proc) => {
+            proc.id === body.gameId;
+        });
+        if (!game) {
             console.log(`Failed to find game ${body.gameId}`);
-            return "Failed to find game"
+            return "Failed to find game";
         }
         game?.addSpectatorToken({ token: randomUUID() });
 
