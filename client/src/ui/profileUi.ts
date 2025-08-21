@@ -9,6 +9,7 @@ import { SDK } from "../sdk";
 import type { LoadoutMenu } from "./loadoutMenu";
 import type { Localization } from "./localization";
 import { MenuModal } from "./menuModal";
+import type { FindGameMatchData } from "../../../shared/types/api";
 
 function createLoginOptions(
     parentElem: JQuery<HTMLElement>,
@@ -93,6 +94,7 @@ export class ProfileUi {
     userSettingsModal: MenuModal | null = null;
     loginOptionsModal: MenuModal | null = null;
     createAccountModal: MenuModal | null = null;
+    spectateGamesModal!: MenuModal ;
 
     loginOptionsModalMobile!: MenuModal;
     modalMobileAccount!: MenuModal;
@@ -102,6 +104,7 @@ export class ProfileUi {
         public localization: Localization,
         public loadoutMenu: LoadoutMenu,
         public errorModal: MenuModal,
+        public joinGame: (matchData: FindGameMatchData, spectate: boolean) => void
     ) {
         this.account = account;
         this.localization = localization;
@@ -248,6 +251,7 @@ export class ProfileUi {
         // Main-menu buttons
         //
 
+        this.loginOptionsModalMobile = new MenuModal($("#account-login-options-mobile"));
         // Leaderboard
         $(".account-leaderboard-link").click((_e) => {
             window.open("/stats", "_blank");
@@ -262,6 +266,69 @@ export class ProfileUi {
                     } else {
                         this.setNameModal!.show(true);
                     }
+                } else {
+                    this.showLoginMenu({
+                        modal: true,
+                    });
+                }
+            });
+            return false;
+        });
+
+        // Spectate button
+        this.spectateGamesModal = new MenuModal($("#modal-account-spectate-games"));
+        this.spectateGamesModal.onHide(() => {
+            console.log("hide");
+            this.spectateGamesModal.hide();
+        });
+        $("#modal-account-spectate-games").click((e) => {
+            if ( e.target.hasAttribute("data-game-id") ) {
+                const gameId = e.target.getAttribute("data-game-id")!;
+                const useHttps = e.target.getAttribute("data-use-https") === "true";
+                const host = e.target.getAttribute("data-host")!;
+                const zone = e.target.getAttribute("data-zone")!;
+                this.joinGame({
+                    gameId,
+                    useHttps: useHttps,
+                    hosts: [host],
+                    addrs: [host],
+                    zone,
+                    data: ""
+                }, true);
+            }
+        });
+        $(".spectate-games-button").click(() => {
+            this.waitOnLogin(async () => {
+                if (this.account.loggedIn) {
+                    const res = await fetch("/api/get_spectable_games", {
+                        method: "POST",
+                        headers: {
+                            "content-type": "application/json",
+                        },
+                        body: JSON.stringify({}),
+                    });
+                    const data = await res.json();
+
+                    if ( !data.message.success ) {
+                        this.errorModal.show();
+                        return;
+                    }
+
+                    const content = data.message.data.length === 0 ? `<div>No games to spectate</div>` : 
+                    data.message.data.map((game: any) => `<div>
+                        <p style="font-size:18px;">${game.message}</p>
+                        <button style="inline:block;margin-left:auth;"
+                        data-game-id="${game.id}"
+                        data-use-https="${game.useHttps}"
+                        data-host="${game.host}"
+                        data-zone="${game.zone}"
+                        class="btn-spectate-game btn-green btn-darken menu-option">Spectate</button>
+                    </div>`);
+
+                    $("#modal-account-spectate-games .modal-body").html(
+                        content 
+                    )
+                    this.spectateGamesModal.show();
                 } else {
                     this.showLoginMenu({
                         modal: true,

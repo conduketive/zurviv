@@ -511,7 +511,12 @@ export class Game {
                 groupData,
                 findGameIp: token.ip,
             });
-        }
+        };
+    }
+
+    addSpectatorToken(data: string) {
+        console.log("addSpectatorToken", data);
+        this.playerBarn.addSpectator(data);
     }
 
     updateData() {

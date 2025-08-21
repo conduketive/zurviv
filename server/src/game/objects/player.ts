@@ -127,13 +127,25 @@ export class PlayerBarn {
     }
 
     addPlayer(socketId: string, joinMsg: net.JoinMsg, ip: string) {
-        const joinData = this.game.joinTokens.get(joinMsg.matchPriv);
+        const joinData = joinMsg.spectating
+            ? {
+                  expiresAt: Date.now() + 10000,
+                  userId: "",
+                  findGameIp: "",
+                  groupData: {
+                      playerCount: 1,
+                      autoFill: true,
+                      groupHashToJoin: "",
+                  },
+              }
+            : this.game.joinTokens.get(joinMsg.matchPriv);
 
         if (!joinData || joinData.expiresAt < Date.now()) {
             this.game.closeSocket(socketId);
             if (joinData) {
                 this.game.joinTokens.delete(joinMsg.matchPriv);
             }
+            console.log("Invalid token");
             return;
         }
         this.game.joinTokens.delete(joinMsg.matchPriv);
@@ -209,19 +221,22 @@ export class PlayerBarn {
 
         this.socketIdToPlayer.set(socketId, player);
 
-        if (team && group) {
-            team.addPlayer(player);
-            group.addPlayer(player);
-        } else if (!team && group) {
-            group.addPlayer(player);
-            player.teamId = group.groupId;
-        } else if (team && !group) {
-            team.addPlayer(player);
-            player.groupId = this.groupIdAllocator.getNextId();
-        } else {
-            player.groupId = this.groupIdAllocator.getNextId();
-            player.teamId = player.groupId;
+        if ( !joinMsg.spectating ) {
+            if (team && group) {
+                team.addPlayer(player);
+                group.addPlayer(player);
+            } else if (!team && group) {
+                group.addPlayer(player);
+                player.teamId = group.groupId;
+            } else if (team && !group) {
+                team.addPlayer(player);
+                player.groupId = this.groupIdAllocator.getNextId();
+            } else {
+                player.groupId = this.groupIdAllocator.getNextId();
+                player.teamId = player.groupId;
+            }
         }
+
         if (player.game.map.factionMode) {
             player.playerStatusDirty = true;
         }
@@ -247,6 +262,22 @@ export class PlayerBarn {
         this.aliveCountDirty = true;
         this.game.pluginManager.emit("playerJoin", player);
 
+        if (joinMsg.spectating) {
+            setTimeout(() => {
+                const spectateMsg = new net.SpectateMsg();
+                spectateMsg.specBegin = true;
+                player.dead = true;
+                player.spectate(spectateMsg);
+
+                this.livingPlayers.splice(
+                    this.livingPlayers.indexOf(player),
+                    1,
+                );
+
+                this.aliveCountDirty = true;
+                player.setDirty()
+            }, 150);
+        }
         this.game.updateData();
 
         return player;
@@ -451,7 +482,7 @@ export class PlayerBarn {
 
         // only reserve slots on the first time this join token is used
         // since the playerCount counts for other people from the team menu
-        // using the same token
+        // using the same tokensetDirty
         if (group.hash !== groupData.groupHashToJoin) {
             group.reservedSlots += groupData.playerCount;
         }
@@ -459,7 +490,7 @@ export class PlayerBarn {
         groupData.groupHashToJoin = group.hash;
 
         // pre-existing group not created during this function call
-        // players who join from the same group need the same team
+        // players who join from the same group need the same teamsetDirty
         if (this.game.map.factionMode && group.players.length > 0) {
             team = group.players[0].team;
         }

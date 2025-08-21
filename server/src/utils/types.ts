@@ -56,6 +56,12 @@ export const zFindGamePrivateBody = z.object({
     ),
 });
 
+export const zSpectateGameBody = z.object({
+    token: z.string(),
+});
+
+export type SpectateGameBody = z.infer<typeof zSpectateGameBody>;
+
 export type FindGamePrivateBody = z.infer<typeof zFindGamePrivateBody>;
 
 export type FindGamePrivateRes =
@@ -73,6 +79,7 @@ export enum ProcessMsgType {
     KeepAlive,
     UpdateData,
     AddJoinToken,
+    AddSpectatorToken,
     SocketMsg,
     SocketClose,
 }
@@ -99,6 +106,11 @@ export interface AddJoinTokenMsg {
     type: ProcessMsgType.AddJoinToken;
     autoFill: boolean;
     tokens: FindGamePrivateBody["playerData"];
+}
+
+export interface AddSpectatorTokenMsg {
+    type: ProcessMsgType.AddSpectatorToken;
+    data: SpectateGameBody;
 }
 
 /**
@@ -132,5 +144,6 @@ export type ProcessMsg =
     | KeepAliveMsg
     | UpdateDataMsg
     | AddJoinTokenMsg
+    | 
     | SocketMsgsMsg
     | SocketCloseMsg;

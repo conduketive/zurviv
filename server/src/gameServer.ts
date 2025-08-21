@@ -93,6 +93,16 @@ class GameServer {
         }
     }
 
+    getGamesToSpectate() {
+        try {
+            const data = this.manager.getActiveGames();
+            return { success: true, data };
+        } catch (err) {
+            this.logger.error(`Failed to close games: `, err);
+            return { success: false };
+        }
+    }  
+
     async sendData() {
         try {
             await apiPrivateRouter.update_region.$post({
@@ -231,6 +241,46 @@ app.post("/api/close_games", (res, req) => {
     );
 });
 
+app.options("/api/get_spectable_games", (res) => {
+    cors(res);
+    res.end();
+});
+
+app.post("/api/get_spectable_games", (res, req) => {
+    res.onAborted(() => {
+        res.aborted = true;
+    });
+    
+    readPostedJSON(
+        res,
+        (body: FindGamePrivateBody) => {
+            try {
+                if (res.aborted) return;
+
+                const parsed = z.any().safeParse(body);
+                if (!parsed.success || !parsed.data) {
+                    returnJson(res, { error: "failed_to_parse_body" });
+                    return;
+                }
+
+                returnJson(res, server.getGamesToSpectate());
+            } catch (error) {
+                server.logger.warn("API find_game error: ", error);
+            }
+        },
+        () => {
+            if (res.aborted) return;
+            res.cork(() => {
+                if (res.aborted) return;
+                res.writeStatus("500 Internal Server Error");
+                res.write("500 Internal Server Error");
+                res.end();
+            });
+            server.logger.warn("/api/get_spectable_games: Error retrieving body");
+        },
+    );
+});
+
 const gameHTTPRateLimit = new HTTPRateLimit(5, 1000);
 const gameWsRateLimit = new WebSocketRateLimit(500, 1000, 5);
 
@@ -314,6 +364,106 @@ app.ws<GameSocketData>("/play", {
             return;
         }
 
+        server.manager.onOpen(data.id, socket);
+    },
+
+    message(socket: WebSocket<GameSocketData>, message) {
+        if (gameWsRateLimit.isRateLimited(socket.getUserData().rateLimit)) {
+            server.logger.warn("Game websocket rate limited, closing socket.");
+            socket.close();
+            return;
+        }
+        server.manager.onMsg(socket.getUserData().id, message);
+    },
+
+    close(socket: WebSocket<GameSocketData>) {
+        const data = socket.getUserData();
+        data.closed = true;
+        server.manager.onClose(data.id);
+        gameWsRateLimit.ipDisconnected(data.ip);
+    },
+});
+
+
+app.ws<GameSocketData>("/spectate", {
+    idleTimeout: 30,
+    maxPayloadLength: 1024,
+
+    async upgrade(res, req, context): Promise<void> {
+        res.onAborted((): void => {
+            res.aborted = true;
+        });
+        const wskey = req.getHeader("sec-websocket-key");
+        const wsProtocol = req.getHeader("sec-websocket-protocol");
+        const wsExtensions = req.getHeader("sec-websocket-extensions");
+
+        const ip = getIp(res, req, Config.gameServer.proxyIPHeader);
+
+        if (!ip) {
+            server.logger.warn(`Invalid IP Found`);
+            res.end();
+            return;
+        }
+
+        if (gameHTTPRateLimit.isRateLimited(ip) || gameWsRateLimit.isIpRateLimited(ip)) {
+            res.cork(() => {
+                res.writeStatus("429 Too Many Requests");
+                res.write("429 Too Many Requests");
+                res.end();
+            });
+            return;
+        }
+
+        const searchParams = new URLSearchParams(req.getQuery());
+        const gameId = searchParams.get("gameId");
+
+        if (!gameId || !server.manager.getById(gameId)) {
+            forbidden(res);
+            return;
+        }
+        gameWsRateLimit.ipConnected(ip);
+
+        const socketId = randomUUID();
+        let disconnectReason = "";
+
+        if (await isBehindProxy(ip, 0)) {
+            disconnectReason = "behind_proxy";
+        } else if (await server.isIpBanned(ip)) {
+            disconnectReason = "ip_banned";
+        }
+
+        if (res.aborted) return;
+        res.cork(() => {
+            if (res.aborted) return;
+            res.upgrade(
+                {
+                    gameId,
+                    id: socketId,
+                    closed: false,
+                    rateLimit: {},
+                    ip,
+                    disconnectReason,
+                },
+                wskey,
+                wsProtocol,
+                wsExtensions,
+                context,
+            );
+        });
+    },
+
+    open(socket: WebSocket<GameSocketData>) {
+        const data = socket.getUserData();
+
+        if (data.disconnectReason) {
+            const disconnectMsg = new net.DisconnectMsg();
+            disconnectMsg.reason = data.disconnectReason;
+            const stream = new net.MsgStream(new ArrayBuffer(128));
+            stream.serializeMsg(net.MsgType.Disconnect, disconnectMsg);
+            socket.send(stream.getBuffer(), true, false);
+            socket.end();
+            return;
+        }
         server.manager.onOpen(data.id, socket);
     },
 

@@ -230,6 +230,32 @@ app.post(
     },
 );
 
+app.post("/api/get_spectable_games", async (c) => {
+    const gameServerUrl = Config.regions[Config.gameServer.thisRegion];
+
+    if (!gameServerUrl)
+        return c.json({ message: "No address found for this region" }, 200);
+
+    const res = await fetch(
+        `${gameServerUrl.https ? "https" : "http"}://${gameServerUrl.address}/api/get_spectable_games`,
+        {
+            method: "POST",
+            headers: {
+                "content-type": "application/json",
+                "survev-api-key": Config.secrets.SURVEV_API_KEY,
+            },
+            body: JSON.stringify({}),
+        },
+    );
+
+    const message = await res.json();
+
+    if (res.ok) {
+        return c.json({ message }, 200);
+    }
+    return c.json({ message: "Failed to close games" }, 200);
+});
+
 // reset player count to 0 if region seems to be down
 setInterval(() => {
     for (const regionId in server.regions) {

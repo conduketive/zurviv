@@ -722,7 +722,7 @@
                 <input type="text" class="menu-option player-name-input" tabindex="0" placeholder="" id="modal-account-reset-stats-input" maxlength="16" />
               </div>
             </div>
-            <div class="modal-footer modal-footer-reset-stats modal-footer-round">
+            <div class="modal-footer modal-footer-round">
               <h3 id="modal-account-reset-stats-finish" class="finish" data-l10n="index-confirm">Confirm</h3>
             </div>
           </div>
@@ -741,6 +741,27 @@
             </div>
             <div class="modal-footer modal-footer-delete modal-footer-round">
               <h3 id="modal-account-delete-finish" class="finish" data-l10n="index-confirm">Confirm</h3>
+            </div>
+          </div>
+        </div>
+        <div id="modal-account-spectate-games" class="modal modal-account">
+          <div class="modal-content modal-close">
+            <div class="modal-header modal-header-reset-stats">
+              <span class="close close-corner"></span>
+              <h2 id="modal-account-name-title">Active Games</h2>
+            </div>
+            <div class="modal-body modal-body-reset-stats">
+              <div>No games to spectate</div>
+                <!--
+                  <div class="modal-settings-item">
+                    <p id="modal-account-reset-stats-desc" class="modal-body-text" data-l10n="index-reset-stats-desc">Enter "RESET STATS" to reset your stats:</p>
+                    <p id="modal-account-reset-stats-desc-2" class="modal-body-text" data-l10n="index-reset-stats-desc-2">(This does not reset pass progress.)</p>
+                    <input type="text" class="menu-option player-name-input" tabindex="0" placeholder="" id="modal-account-reset-stats-input" maxlength="16" />
+                  </div>
+                -->
+            </div>
+            <div class="modal-footer modal-footer-reset-stats modal-footer-round">
+              <h3 id="modal-account-spectate-games-finish" class="close" data-l10n="index-confirm">Confirm</h3>
             </div>
           </div>
         </div>
@@ -790,6 +811,11 @@
                 <div class="account-details-button-wrapper account-details-link-out menu-option btn-darken hide-on-mobile">
                   <div class="account-details-button">
                     <div class="account-link account-leaderboard-link"><span data-l10n="index-leaderboards">Leaderboards</span></div>
+                  </div>
+                </div>
+                <div class="account-details-button-wrapper account-details-spectate menu-option btn-darken hide-on-mobile">
+                  <div class="account-details-button">
+                    <div class="account-link spectate-games-button"><span data-l10n="index-spectate-games">Spectate games</span></div> 
                   </div>
                 </div>
               </div>
