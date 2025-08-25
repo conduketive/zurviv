@@ -19,7 +19,7 @@ class Region {
 
     async fetch<Data extends object>(endPoint: string, body: object) {
         const url = `http${this.data.https ? "s" : ""}://${this.data.address}/${endPoint}`;
-
+        console.log({ url });
         try {
             const res = await fetch(url, {
                 method: "POST",
@@ -42,7 +42,7 @@ class Region {
     async findGame(body: FindGamePrivateBody): Promise<FindGamePrivateRes> {
         const data = await this.fetch<FindGamePrivateRes>("api/find_game", body);
         if (!data) {
-            return { error: "failed_to_find_game" }; 
+            return { error: "find_game_failed" };
         }
         return data;
     }
