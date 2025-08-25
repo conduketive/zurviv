@@ -54,6 +54,10 @@ class GameServer {
         }
         const data = parsed.data;
 
+        console.log({
+            parsedData: parsed.data,
+        })
+
         if (data.version !== GameConfig.protocolVersion) {
             return {
                 error: "invalid_protocol",
