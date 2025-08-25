@@ -328,7 +328,7 @@ export class ProfileUi {
                         data-use-https="${game.useHttps}"
                         data-host="${game.host}"
                         data-zone="${game.zone}"
-                        class="btn-spectate-game btn-green btn-darken menu-option">Spectate</button>
+                        class="btn-spectate-game btn-custom-mode-main btn-green btn-darken menu-option btn-mode-${game.mapName}">Spectate</button>
                     </div>`,
                               );
 
