@@ -107,7 +107,8 @@ export class ApiServer {
         if (body.region in this.regions) {
             return await this.regions[body.region].findGame(body);
         }
-        return { error: "find_game_failed" };
+        console.log("findGame: Invalid region", body.region);
+        return { error: "invalid_region" };
     }
 }
 
