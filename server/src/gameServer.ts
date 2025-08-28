@@ -2,7 +2,7 @@ import { App, SSLApp, type WebSocket } from "uWebSockets.js";
 import { randomUUID } from "crypto";
 import z from "zod";
 import { version } from "../../package.json";
-import { GameConfig } from "../../shared/gameConfig";
+import { GameConfig, TeamMode } from "../../shared/gameConfig";
 import * as net from "../../shared/net/net";
 import { Config } from "./config";
 import { GameProcessManager } from "./game/gameProcessManager";
@@ -26,6 +26,7 @@ import {
     type GameSocketData,
     zFindGamePrivateBody,
 } from "./utils/types";
+import { Team } from "./game/team";
 
 process.on("uncaughtException", async (err) => {
     console.error(err);
@@ -53,10 +54,6 @@ class GameServer {
             };
         }
         const data = parsed.data;
-
-        console.log({
-            parsedData: parsed.data,
-        })
 
         if (data.version !== GameConfig.protocolVersion) {
             return {
@@ -255,6 +252,11 @@ app.post("/api/get_spectable_games", (res, req) => {
         res.aborted = true;
     });
 
+    if (req.getHeader("survev-api-key") !== Config.secrets.SURVEV_API_KEY) {
+        forbidden(res);
+        return;
+    }   
+
     readPostedJSON(
         res,
         (body: FindGamePrivateBody) => {
@@ -285,6 +287,49 @@ app.post("/api/get_spectable_games", (res, req) => {
     );
 });
 
+
+
+app.options("/api/create_private_game", (res) => {
+    cors(res);
+    res.end();
+});
+
+app.post("/api/create_private_game", (res, req) => {
+    res.onAborted(() => {
+        res.aborted = true;
+    });
+
+    if (req.getHeader("survev-api-key") !== Config.secrets.SURVEV_API_KEY) {
+        forbidden(res);
+        return;
+    }
+
+    readPostedJSON(
+        res,
+        (body: FindGamePrivateBody) => {
+            try {
+                if (res.aborted) return;
+                const game = server.manager.newGame({
+                    teamMode: TeamMode.Solo,
+                    mapName: "main"
+                });
+                returnJson(res, { gameId: game.id });
+            } catch (error) {
+                server.logger.warn("API create_private_game error: ", error);
+            }
+        },
+        () => {
+            if (res.aborted) return;
+            res.cork(() => {
+                if (res.aborted) return;
+                res.writeStatus("500 Internal Server Error");
+                res.write("500 Internal Server Error");
+                res.end();
+            });
+            server.logger.warn("/api/create_private_game: Error retrieving body");
+        },
+    );
+});
 const gameHTTPRateLimit = new HTTPRateLimit(5, 1000);
 const gameWsRateLimit = new WebSocketRateLimit(500, 1000, 5);
 
@@ -320,10 +365,26 @@ app.ws<GameSocketData>("/play", {
         const searchParams = new URLSearchParams(req.getQuery());
         const gameId = searchParams.get("gameId");
 
-        if (!gameId || !server.manager.getById(gameId)) {
+        if (!gameId) {
+            console.log("game_id_missing");
             forbidden(res);
             return;
         }
+
+        const gameData = server.manager.getById(gameId);
+
+        if (!gameData) {
+            console.log("invalid_game_id");
+            forbidden(res);
+            return;
+        }
+
+        if (!gameData.canJoin) {
+            console.log("game_started");
+            forbidden(res);
+            return;
+        }
+
         gameWsRateLimit.ipConnected(ip);
 
         const socketId = randomUUID();
