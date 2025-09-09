@@ -537,6 +537,7 @@ export class Game {
     private stop(saveToDb = true): void {
         if (this.stopped) return;
         this.stopped = true;
+        this.over = true;
         this.allowJoin = false;
         for (const player of this.playerBarn.players) {
             if (!player.disconnected) {
