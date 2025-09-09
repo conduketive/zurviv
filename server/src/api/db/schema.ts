@@ -44,10 +44,6 @@ export const usersTable = pgTable("users", {
         .notNull()
         .default(loadout.validate({} as Loadout))
         .$type<Loadout>(),
-    // used to check if the user has the role in the server
-    // we update this on everytime on login
-    // make sure to loggout the user when removing their server role
-    hasServerRole: boolean("has_server_role").notNull().default(false),
 });
 
 export type UsersTableInsert = typeof usersTable.$inferInsert;
