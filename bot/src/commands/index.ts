@@ -7,6 +7,7 @@ import {
     zBanAccountParams,
     zBanIpParams,
     zCloseGamesParams,
+    zCreatePrivateGameParams,
     zFindDiscordUserSlugParams,
     zSetAccountNameParams,
     zSetMatchDataNameParams,
@@ -186,6 +187,31 @@ const commands = {
             },
         ],
     }),
+    [Command.CreatePrivateGames]: createCommand({
+        name: Command.CreatePrivateGames,
+        description: "create a private game",
+        optionValidator: zCreatePrivateGameParams,
+        options: [
+            {
+                name: "map_name",
+                description: "The map name to create the game in",
+                required: true,
+                type: ApplicationCommandOptionType.String,
+            },
+            {
+                name: "team_mode",
+                description: "The team mode to create the game in",
+                required: true,
+                type: ApplicationCommandOptionType.String,
+            },
+            {
+                name: "region",
+                description: "The region to create the game in",
+                required: true,
+                type: ApplicationCommandOptionType.String,
+            },
+        ],
+    })
 };
 
 export type CommandHandlers = {

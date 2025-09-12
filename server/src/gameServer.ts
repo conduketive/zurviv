@@ -26,7 +26,7 @@ import {
     type GameSocketData,
     zFindGamePrivateBody,
 } from "./utils/types";
-import { Team } from "./game/team";
+import { zCreatePrivateGameParams } from "../../shared/types/moderation";
 
 process.on("uncaughtException", async (err) => {
     console.error(err);
@@ -287,8 +287,6 @@ app.post("/api/get_spectable_games", (res, req) => {
     );
 });
 
-
-
 app.options("/api/create_private_game", (res) => {
     cors(res);
     res.end();
@@ -309,9 +307,15 @@ app.post("/api/create_private_game", (res, req) => {
         (body: FindGamePrivateBody) => {
             try {
                 if (res.aborted) return;
+                const parsed = zCreatePrivateGameParams.safeParse(body);
+                if (!parsed.success || !parsed.data) {
+                    returnJson(res, { error: "failed_to_parse_body" });
+                    return;
+                }
+                const { map_name: mapName } = parsed.data;
                 const game = server.manager.newGame({
                     teamMode: TeamMode.Solo,
-                    mapName: "main"
+                    mapName
                 });
                 returnJson(res, { gameId: game.id });
             } catch (error) {

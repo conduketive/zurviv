@@ -57,3 +57,9 @@ export const zCloseGamesParams = z.object({
 export const zFindDiscordUserSlugParams = z.object({
     discord_user: z.string(),
 });
+
+export const zCreatePrivateGameParams = z.object({
+    region: z.string(),
+    map_name: z.string(),
+    team_mode: z.string(),
+});

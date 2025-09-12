@@ -5,7 +5,7 @@ import { saveConfig } from "../../../../../config";
 import { GameObjectDefs } from "../../../../../shared/defs/gameObjectDefs";
 import { MapDefs } from "../../../../../shared/defs/mapDefs";
 import { TeamMode } from "../../../../../shared/gameConfig";
-import { serverConfigPath } from "../../../config";
+import { Config, serverConfigPath } from "../../../config";
 import { type SaveGameBody, zUpdateRegionBody } from "../../../utils/types";
 import type { Context } from "../..";
 import { server } from "../../apiServer";
@@ -25,6 +25,7 @@ import {
 } from "../../db/schema";
 import { MOCK_USER_ID } from "../user/auth/mock";
 import { logPlayerIPs, ModerationRouter } from "./ModerationRouter";
+import { zCreatePrivateGameParams } from "../../../../../shared/types/moderation";
 
 export const PrivateRouter = new Hono<Context>()
     .use(privateMiddleware)
@@ -229,6 +230,33 @@ export const PrivateRouter = new Hono<Context>()
             await db.insert(matchDataTable).values(matchData);
             return c.json({ success: true }, 200);
         },
-    );
+    )
+    .post("/create_private_game",
+    validateParams(zCreatePrivateGameParams),
+    async (c) => {
+        const { region, map_name: mapName, team_mode: teamMode } = c.req.valid("json")
+        const gameServerUrl = Config.regions[Config.gameServer.thisRegion];
+        
+            if (!gameServerUrl)
+                return c.json({ message: "No address found for this region" }, 200);
+        
+            const res = await fetch(
+                `${gameServerUrl.https ? "https" : "http"}://${gameServerUrl.address}/api/create_private_game`,
+                {
+                    method: "POST",
+                    headers: {
+                        "content-type": "application/json",
+                        "survev-api-key": Config.secrets.SURVEV_API_KEY,
+                    },
+                    body: JSON.stringify({
+                        region: region,
+                        mapName: mapName,
+                        teamMode: teamMode,
+                    }),
+                },
+            );
+            const data = await res.json();
+            return c.json({ message: data.gameId }, 200);
+    });
 
 export type PrivateRouteApp = typeof PrivateRouter;

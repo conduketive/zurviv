@@ -25,7 +25,7 @@ export function createCommand<T extends z.ZodSchema>(config: {
     return config;
 }
 
-export async function genericExecute<N extends Exclude<Command, "search_player">>(
+export async function genericExecute<N extends Exclude<Command, "search_player" | "create_private_game">>(
     name: N,
     interaction: ChatInputCommandInteraction,
     validator: z.ZodTypeAny,
