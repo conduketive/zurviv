@@ -144,6 +144,5 @@ export type ProcessMsg =
     | KeepAliveMsg
     | UpdateDataMsg
     | AddJoinTokenMsg
-    | 
     | SocketMsgsMsg
     | SocketCloseMsg;
