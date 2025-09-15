@@ -96,7 +96,7 @@ class GameServer {
 
     getGamesToSpectate() {
         try {
-            const data = this.manager.getActiveGames();
+            const data = this.manager.getSpectableGames();
             return { success: true, data };
         } catch (err) {
             this.logger.error(`Failed to close games: `, err);
@@ -312,10 +312,10 @@ app.post("/api/create_private_game", (res, req) => {
                     returnJson(res, { error: "failed_to_parse_body" });
                     return;
                 }
-                const { map_name: mapName } = parsed.data;
                 const game = server.manager.newGame({
                     teamMode: TeamMode.Solo,
-                    mapName
+                    mapName: "cobalt",
+                    private: true,
                 });
                 returnJson(res, { gameId: game.id });
             } catch (error) {

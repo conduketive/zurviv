@@ -5,7 +5,7 @@ import {
     SlashCommandBuilder,
 } from "discord.js";
 import type z from "zod";
-import { type Command, honoClient } from "../utils";
+import { Command, honoClient } from "../utils";
 
 export function createCommand<T extends z.ZodSchema>(config: {
     name: Command;
@@ -25,12 +25,12 @@ export function createCommand<T extends z.ZodSchema>(config: {
     return config;
 }
 
-export async function genericExecute<N extends Exclude<Command, "search_player" | "create_private_game">>(
+export async function genericExecute<N extends Exclude<Command, "search_player">>(
     name: N,
     interaction: ChatInputCommandInteraction,
     validator: z.ZodTypeAny,
 ) {
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: name === Command.CreatePrivateGames });
 
     const options = interaction.options.data.reduce(
         (obj, { name, value }) => {
@@ -46,20 +46,34 @@ export async function genericExecute<N extends Exclude<Command, "search_player" 
     });
 
     if (!args.success) {
-        console.error("Failed to parse arguments", options, args.error);
-        await interaction.reply({
+        await interaction.followUp({
             content: "Invalid arguments",
             flags: MessageFlags.Ephemeral,
         });
         return;
     }
 
-    const res = await honoClient.moderation[name].$post({
-        json: args.data as any,
-    });
+    try {
+        const res = await honoClient.moderation[name].$post({
+            json: args.data as any,
+        });
+        
 
-    const { message } = await res.json();
-    await interaction.editReply(message);
+    const data = await res.json();
+
+    // extra guard in case;
+    if (!data || !data.message) {
+        await interaction.followUp({ content: "no response message", flags: MessageFlags.Ephemeral });
+        return;
+    }
+
+    const { message } = data;
+    await interaction.editReply({ content: message });
+    } catch (err) {
+        console.error("Failed to send request to API:", err);
+        await interaction.editReply({ content: "API errnor" });
+    }
+
 }
 
 export function createSlashCommand(config: ReturnType<typeof createCommand>) {

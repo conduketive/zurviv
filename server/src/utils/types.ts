@@ -29,6 +29,7 @@ export interface SaveGameBody {
 export interface ServerGameConfig {
     readonly mapName: keyof typeof MapDefs;
     readonly teamMode: TeamMode;
+    readonly private?: boolean;
 }
 
 export interface GameData {
@@ -39,6 +40,7 @@ export interface GameData {
     aliveCount: number;
     startedTime: number;
     stopped: boolean;
+    private: boolean;
 }
 
 export const zFindGamePrivateBody = z.object({
@@ -55,12 +57,6 @@ export const zFindGamePrivateBody = z.object({
         }),
     ),
 });
-
-export const zSpectateGameBody = z.object({
-    token: z.string(),
-});
-
-export type SpectateGameBody = z.infer<typeof zSpectateGameBody>;
 
 export type FindGamePrivateBody = z.infer<typeof zFindGamePrivateBody>;
 
@@ -79,7 +75,6 @@ export enum ProcessMsgType {
     KeepAlive,
     UpdateData,
     AddJoinToken,
-    AddSpectatorToken,
     SocketMsg,
     SocketClose,
 }
@@ -106,11 +101,6 @@ export interface AddJoinTokenMsg {
     type: ProcessMsgType.AddJoinToken;
     autoFill: boolean;
     tokens: FindGamePrivateBody["playerData"];
-}
-
-export interface AddSpectatorTokenMsg {
-    type: ProcessMsgType.AddSpectatorToken;
-    data: SpectateGameBody;
 }
 
 /**
