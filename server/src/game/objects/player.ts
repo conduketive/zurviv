@@ -238,20 +238,20 @@ export class PlayerBarn {
 
     activatePlayer(player: Player, group?: Group, team?: Team) {
         if (!joinMsg.spectating) {
-        if (team && group) {
-            team.addPlayer(player);
-            group.addPlayer(player);
-            player.setGroupStatuses();
-        } else if (!team && group) {
-            group.addPlayer(player);
-            player.teamId = player.groupId;
-            player.setGroupStatuses();
-        } else if (team && !group) {
-            team.addPlayer(player);
-            player.groupId = this.groupIdAllocator.getNextId();
-        } else {
-            player.groupId = player.teamId = this.groupIdAllocator.getNextId();
-        }
+            if (team && group) {
+                team.addPlayer(player);
+                group.addPlayer(player);
+                player.setGroupStatuses();
+            } else if (!team && group) {
+                group.addPlayer(player);
+                player.teamId = player.groupId;
+                player.setGroupStatuses();
+            } else if (team && !group) {
+                team.addPlayer(player);
+                player.groupId = this.groupIdAllocator.getNextId();
+            } else {
+                player.groupId = player.teamId = this.groupIdAllocator.getNextId();
+            }
         }
 
         if (player.game.map.perkMode) {

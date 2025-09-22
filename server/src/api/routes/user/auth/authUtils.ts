@@ -141,23 +141,23 @@ export async function createNewUser(payload: UsersTableInsert) {
 
         if (!itemsToUnlock.length) return;
 
-    const items = itemsToUnlock.map((outfit) => {
-        return {
-            userId: payload.id,
-            source: unlockType,
-            type: outfit,
-            timeAcquired: Date.now(),
-        };
-    });
-    const usersCount = await db.select({ count: count() }).from(usersTable);
-    if (usersCount && usersCount[0]?.count <= 30) {
-        items.push({
-            userId: payload.id,
-            source: unlockType,
-            type: "knuckles_legendary",
-            timeAcquired: Date.now(),
+        const items = itemsToUnlock.map((outfit) => {
+            return {
+                userId: payload.id,
+                source: unlockType,
+                type: outfit,
+                timeAcquired: Date.now(),
+            };
         });
-    }
+        const usersCount = await db.select({ count: count() }).from(usersTable);
+        if (usersCount && usersCount[0]?.count <= 30) {
+            items.push({
+                userId: payload.id,
+                source: unlockType,
+                type: "knuckles_legendary",
+                timeAcquired: Date.now(),
+            });
+        }
         await tx.insert(itemsTable).values(items);
     });
 }

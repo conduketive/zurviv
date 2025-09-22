@@ -16,7 +16,7 @@ export class JoinMsg implements AbstractMsg {
         boost: "",
         emotes: [] as string[],
     };
-    
+
     serialize(s: BitStream) {
         s.writeUint32(this.protocol);
         s.writeString(this.matchPriv);
