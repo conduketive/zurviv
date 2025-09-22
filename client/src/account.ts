@@ -96,39 +96,12 @@ export class Account {
     };
 
     loadout = loadouts.defaultLoadout();
-    loadoutPriv = "";
     items: Item[] = [];
     quests: Quest[] = [];
     questPriv = "";
     pass: Record<string, PassType> = {};
 
-    constructor(public config: ConfigManager) {
-        window.login = () => {
-            this.login();
-        };
-        window.deleteAccount = () => {
-            this.deleteAccount();
-        };
-        window.deleteItems = () => {
-            // Ehhh? what's this for?
-            this.ajaxRequest("/api/user/delete_items", {}, (_err, _data) => {
-                this.loadProfile();
-            });
-        };
-        window.unlock = (type) => {
-            console.log(`Unlocking ${type}`);
-            this.unlock(type);
-        };
-        window.setQuest = (questType, idx = 0) => {
-            this.setQuest({ questType, idx });
-        };
-        window.refreshQuest = (idx) => {
-            this.refreshQuest(idx);
-        };
-        window.setPassUnlock = (unlockType) => {
-            this.setPassUnlock(unlockType);
-        };
-    }
+    constructor(public config: ConfigManager) {}
 
     ajaxRequest(url: string, data: DataOrCallback, cb?: (err: any, res?: any) => void) {
         if (typeof data === "function") {
@@ -250,7 +223,6 @@ export class Account {
             this.loggingIn = false;
             this.loggedIn = false;
             this.profile = {} as this["profile"];
-            this.loadoutPriv = "";
             this.items = [];
             if (err) {
                 errorLogManager.storeGeneric("account", "load_profile_error");
@@ -259,7 +231,6 @@ export class Account {
             } else if (data.success) {
                 this.loggedIn = true;
                 this.profile = data.profile;
-                this.loadoutPriv = data.loadoutPriv;
                 this.items = data.items;
                 this.loadout = data.loadout;
                 const profile = this.config.get("profile") || { slug: "" };
@@ -338,7 +309,6 @@ export class Account {
                 this.loadout = loadoutPrev;
             } else {
                 this.loadout = res.loadout;
-                this.loadoutPriv = res.loadoutPriv;
             }
             this.emit("loadout", this.loadout);
         });
@@ -367,26 +337,6 @@ export class Account {
                 }
             });
         }
-    }
-
-    unlock(unlockType: string) {
-        // not needed by the client anymore
-        return;
-        this.ajaxRequest(
-            "/api/user/unlock",
-            {
-                unlockType,
-            },
-            (e, r) => {
-                if (e || !r.success) {
-                    console.error("account", "unlock_error");
-                    this.emit("error", "server_error");
-                    return;
-                }
-                this.items = r.items;
-                this.emit("items", this.items);
-            },
-        );
     }
 
     setQuest(args: SetQuestRequest) {

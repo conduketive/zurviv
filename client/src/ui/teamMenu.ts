@@ -205,7 +205,7 @@ export class TeamMenu {
         if (!device.mobile) {
             // Hide invite link
             this.hideUrl = false;
-            $("#team-hide-url").click((e) => {
+            $("#team-hide-url").on("click", (e) => {
                 const el = e.currentTarget;
                 this.hideUrl = !this.hideUrl;
                 $("#team-desc-text, #team-code-text").css({
@@ -782,7 +782,7 @@ export class TeamMenu {
                         this.editingName = false;
                         this.refreshUi();
                     };
-                    n.keypress((e) => {
+                    n.on("keydown", (e) => {
                         if (e.which === 13) {
                             m();
                             return false;
@@ -830,10 +830,10 @@ export class TeamMenu {
                     );
                 }
                 teamMembers.append(member);
-                n?.focus();
+                n?.trigger("focus");
             }
 
-            $(".icon-kick", teamMembers).click((e) => {
+            $(".icon-kick", teamMembers).on("click", (e) => {
                 const playerId = Number($(e.currentTarget).attr("data-playerid"));
                 this.sendMessage("kick", {
                     playerId,

@@ -1,4 +1,5 @@
 import { GameConfig } from "../../gameConfig";
+import type { DeepPartial } from "../../utils/util";
 import { v2 } from "../../utils/v2";
 import type { MapDef } from "../mapDefs";
 import { MapId } from "../types/misc";
@@ -12,7 +13,12 @@ import { MapId } from "../types/misc";
 
 export const Main: MapDef = {
     mapId: MapId.Main,
-    desc: { name: "Normal", icon: "", buttonCss: "" },
+    desc: {
+        name: "Normal",
+        icon: "",
+        buttonCss: "",
+        backgroundImg: "img/main_splash.png",
+    },
     assets: {
         audio: [
             { name: "club_music_01", channel: "ambient" },
@@ -235,7 +241,7 @@ export const Main: MapDef = {
             { name: "ak47", count: 1, weight: 2.7 },
             { name: "scar", count: 1, weight: 0.01 },
             { name: "dp28", count: 1, weight: 0.5 },
-            { name: "bar", count: 1, weight: 0.25 },
+            { name: "bar", count: 1, weight: 0.05 },
             { name: "mosin", count: 1, weight: 0.1 },
             { name: "m39", count: 1, weight: 0.1 },
             { name: "mp5", count: 1, weight: 10 },
@@ -280,7 +286,7 @@ export const Main: MapDef = {
             { name: "ak47", count: 1, weight: 4 },
             { name: "scar", count: 1, weight: 0.27 },
             { name: "dp28", count: 1, weight: 0.55 },
-            { name: "bar", count: 1, weight: 0.55 },
+            { name: "bar", count: 1, weight: 0.27 },
             { name: "mosin", count: 1, weight: 0.55 },
             { name: "m39", count: 1, weight: 0.55 },
             { name: "saiga", count: 1, weight: 0.26 },
@@ -466,6 +472,7 @@ export const Main: MapDef = {
         tier_airdrop_uncommon: [
             { name: "mk12", count: 1, weight: 2.5 },
             { name: "scar", count: 1, weight: 0.75 },
+            { name: "bar", count: 1, weight: 1 },
             { name: "mosin", count: 1, weight: 2.5 },
             { name: "m39", count: 1, weight: 2.5 },
             { name: "saiga", count: 1, weight: 1 },
@@ -541,7 +548,7 @@ export const Main: MapDef = {
             { name: "model94", count: 1, weight: 1 },
             { name: "colt45", count: 1, weight: 1 },
             { name: "outfitVerde", count: 1, weight: 0.1 },
-            { name: "outfitDesertCamo", count: 1, weight: 0.1 },
+            { name: "outfitDesertCamo", count: 1, weight: 0.3 },
         ],
         // seems to be unused? so adding this to suppress the warning
         tier_pumpkin_candy: [{ name: "", weight: 1, count: 1 }],
@@ -619,6 +626,11 @@ export const Main: MapDef = {
             { name: "", count: 1, weight: 25 },
             { name: "tier_perks", count: 1, weight: 1 },
         ],
+
+        // TODO: Savannah loot tables
+        tier_knives: [],
+        tier_snipers: [],
+        tier_cloud_02: [],
     },
     mapGen: {
         map: {
@@ -765,11 +777,5 @@ export const Main: MapDef = {
     },
     /* STRIP_FROM_PROD_CLIENT:END */
 };
-
-export type DeepPartial<T> = T extends object
-    ? {
-          [P in keyof T]?: DeepPartial<T[P]>;
-      }
-    : T;
 
 export type PartialMapDef = DeepPartial<MapDef>;

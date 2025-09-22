@@ -11,12 +11,6 @@ export enum TeamColor {
     Blue = 2,
 }
 
-export const SpecialAirdropConfig = {
-    startCircle: 1,
-    endCircle: 3,
-    aliveCountThreshold: 0.2,
-};
-
 const mapDef: PartialMapDef = {
     mapId: MapId.Faction,
     desc: {
@@ -24,6 +18,7 @@ const mapDef: PartialMapDef = {
         icon: "img/gui/star.svg",
         buttonCss: "btn-mode-faction",
         buttonText: "50v50",
+        backgroundImg: "img/main_splash_0_7_0.png",
     },
     assets: {
         audio: [
@@ -260,9 +255,8 @@ const mapDef: PartialMapDef = {
             { name: "ak47", count: 1, weight: 2.7 },
             { name: "scar", count: 1, weight: 0.01 },
             { name: "dp28", count: 1, weight: 0.5 },
-            { name: "bar", count: 1, weight: 0.25 },
+            { name: "bar", count: 1, weight: 0.05 },
             { name: "mosin", count: 1, weight: 0.1 },
-            { name: "bar", count: 1, weight: 0.1 },
             { name: "m39", count: 1, weight: 0.1 },
             { name: "mp5", count: 1, weight: 10 },
             { name: "mac10", count: 1, weight: 6 },
@@ -331,8 +325,8 @@ const mapDef: PartialMapDef = {
         ],
         tier_airdrop_uncommon: [
             { name: "mk12", count: 1, weight: 2.5 },
-            { name: "bar", count: 1, weight: 2 },
             { name: "scar", count: 1, weight: 0.75 },
+            { name: "bar", count: 1, weight: 1 },
             { name: "mosin", count: 1, weight: 2.5 },
             { name: "m39", count: 1, weight: 2.5 },
             { name: "saiga", count: 1, weight: 1 },
@@ -456,7 +450,7 @@ const mapDef: PartialMapDef = {
                 shack_03b: 3,
                 greenhouse_01: 1,
                 cache_01: 1,
-                cache_02: 1,
+                cache_02f: 1,
                 cache_07: 1,
                 mansion_structure_01: 1,
                 bunker_structure_01: { odds: 1 },

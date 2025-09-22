@@ -38,6 +38,7 @@ export interface DamageParams {
     gameSourceType?: string;
     mapSourceType?: string;
     source?: GameObject;
+    killCreditSource?: Player;
     isExplosion?: boolean;
     /**
      * The source weapon that originally triggered the damage
@@ -70,6 +71,21 @@ export class ObjectRegister {
         for (let i = 0; i < MAX_ID; i++) {
             this.idToObj[i] = null;
         }
+
+        const preAllocIds = (type: ObjectType, amount: number) => {
+            for (let i = 0; i < amount; i++) {
+                const id = this.allocId(type);
+                this.freeId(type, id);
+            }
+        };
+
+        preAllocIds(ObjectType.Player, 64);
+        preAllocIds(ObjectType.Loot, 256);
+        preAllocIds(ObjectType.DeadBody, 64);
+        preAllocIds(ObjectType.Decal, 256);
+        preAllocIds(ObjectType.Projectile, 128);
+        preAllocIds(ObjectType.Smoke, 64);
+        preAllocIds(ObjectType.Airdrop, 64);
     }
 
     getById(id: number) {
@@ -202,6 +218,7 @@ export abstract class BaseGameObject {
                 data: this,
             ) => void
         )(this.partialStream, this);
+        this.partialStream.writeAlignToNextByte();
     }
 
     serializeFull(): void {
@@ -220,6 +237,7 @@ export abstract class BaseGameObject {
                 data: this,
             ) => void
         )(this.fullStream, this);
+        this.fullStream.writeAlignToNextByte();
     }
 
     setDirty() {

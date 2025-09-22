@@ -1,4 +1,5 @@
-import { util } from "../../utils/util";
+import type { InventoryItem } from "../../gameConfig";
+import { type DeepPartial, util } from "../../utils/util";
 import { TeamColor } from "../maps/factionDefs";
 
 type BasicRoleWeapon = {
@@ -27,48 +28,13 @@ function getTeamHelmet(
     return colorToHelmetMap[teamcolor];
 }
 
-type DeepPartial<T> = T extends object
-    ? {
-          [P in keyof T]?: DeepPartial<T[P]>;
-      }
-    : T;
-
 type DefaultItems = {
     weapons: [RoleWeapon, RoleWeapon, RoleWeapon, RoleWeapon];
     backpack: string;
     helmet: string | ((teamcolor: TeamColor) => string);
     chest: string;
     outfit: string | ((teamcolor: TeamColor) => string);
-    inventory: {
-        "9mm": number;
-        "762mm": number;
-        "556mm": number;
-        "12gauge": number;
-        "50AE": number;
-        "308sub": number;
-        flare: number;
-        "45acp": number;
-        frag: number;
-        smoke: number;
-        strobe: number;
-        mirv: number;
-        snowball: number;
-        potato: number;
-        bandage: number;
-        healthkit: number;
-        soda: number;
-        painkiller: number;
-        "1xscope": number;
-        "2xscope": number;
-        "4xscope": number;
-        "8xscope": number;
-        "15xscope": number;
-        "30xscope": number;
-        "50xscope": number;
-        "100xscope": number;
-        "200xscope": number;
-        "400xscope": number;
-    };
+    inventory: Partial<Record<InventoryItem, number>>;
 };
 
 export interface RoleDef {
@@ -104,7 +70,7 @@ export interface RoleDef {
     color?: number;
 }
 
-function createDefaultItems<T extends DefaultItems>(e: DeepPartial<T>): T {
+function createDefaultItems(e: DeepPartial<DefaultItems>): DefaultItems {
     const defaultItems: DefaultItems = {
         weapons: [
             { type: "", ammo: 0 },
@@ -196,8 +162,8 @@ export const RoleDefs: Record<string, RoleDef> = {
                 })[teamcolor],
             inventory: {
                 "8xscope": 1,
+                bandage: 10,
                 healthkit: 1,
-                bandage: 5,
             },
         }),
     },
@@ -227,6 +193,9 @@ export const RoleDefs: Record<string, RoleDef> = {
                 })[teamcolor],
             inventory: {
                 "8xscope": 1,
+                bandage: 10,
+                healthkit: 1,
+                soda: 2,
             },
         }),
     },
@@ -256,7 +225,8 @@ export const RoleDefs: Record<string, RoleDef> = {
             inventory: {
                 "4xscope": 1,
                 bandage: 10,
-                soda: 3,
+                healthkit: 1,
+                soda: 2,
             },
         }),
     },
@@ -343,8 +313,8 @@ export const RoleDefs: Record<string, RoleDef> = {
             chest: "chest03",
             inventory: {
                 "4xscope": 1,
-                bandage: 5,
                 soda: 6,
+                bandage: 5,
             },
         }),
     },
@@ -391,7 +361,6 @@ export const RoleDefs: Record<string, RoleDef> = {
             inventory: {
                 "4xscope": 1,
                 bandage: 5,
-                soda: 2,
             },
         }),
     },
@@ -447,6 +416,9 @@ export const RoleDefs: Record<string, RoleDef> = {
             inventory: {
                 mirv: 8,
                 "8xscope": 1,
+                bandage: 10,
+                healthkit: 1,
+                soda: 2,
             },
         }),
     },

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { MapDefs } from "../defs/mapDefs";
 import type { TeamMode } from "../gameConfig";
 
 export const zFindGameBody = z.object({
@@ -65,7 +66,7 @@ export type FindGameResponse =
           error?: undefined;
       };
 
-export interface Info {
+export interface SiteInfoRes {
     country: string;
     gitRevision: string;
     captchaEnabled: boolean;
@@ -74,6 +75,7 @@ export interface Info {
         teamMode: TeamMode;
         enabled: boolean;
     }>;
+    clientTheme: keyof typeof MapDefs;
     pops: Record<
         string,
         {

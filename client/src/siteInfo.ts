@@ -1,15 +1,15 @@
 import $ from "jquery";
 import { EVENT_MODES } from "../../modesList";
-import { MapDefs } from "../../shared/defs/mapDefs";
+import { type MapDef, MapDefs } from "../../shared/defs/mapDefs";
 import { TeamModeToString } from "../../shared/defs/types/misc";
-import type { Info } from "../../shared/types/api";
+import type { SiteInfoRes } from "../../shared/types/api";
 import { api } from "./api";
 import type { ConfigManager } from "./config";
 import { device } from "./device";
 import type { Localization } from "./ui/localization";
 
 export class SiteInfo {
-    info = {} as Info;
+    info = {} as SiteInfoRes;
     loaded = false;
 
     constructor(
@@ -36,7 +36,7 @@ export class SiteInfo {
             teamSelector.append(elm);
         }
 
-        $.ajax(siteInfoUrl).done((data: Info) => {
+        $.ajax(siteInfoUrl).done((data: SiteInfoRes) => {
             this.info = data || {};
             this.loaded = true;
             this.updatePageFromInfo();
@@ -250,6 +250,15 @@ export class SiteInfo {
                     .html(this.info.youtube.name);
             }
             featuredYoutuberElem.css("display", displayYoutuber ? "block" : "none");
+
+            const mapDef = MapDefs[this.info.clientTheme] as MapDef;
+            if (mapDef) {
+                this.config.set("cachedBgImg", mapDef.desc.backgroundImg);
+                const bg = document.getElementById("background");
+                if (bg) {
+                    bg.style.backgroundImage = `url(${mapDef.desc.backgroundImg})`;
+                }
+            }
         }
     }
 }

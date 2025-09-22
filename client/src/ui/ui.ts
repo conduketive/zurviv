@@ -2342,14 +2342,13 @@ export class UiManager {
                 }
                 this.escMenuDisplayed = true;
                 this.escMenuElem.css("display", "block");
-                $("#ui-center").hover(
-                    () => {
+                $("#ui-center")
+                    .on("mouseenter", () => {
                         this.inputBinds.menuHovered = true;
-                    },
-                    () => {
+                    })
+                    .on("mouseleave", () => {
                         this.inputBinds.menuHovered = false;
-                    },
-                );
+                    });
                 this.inputBinds.menuHovered = false;
                 if (this.roleMenuActive) {
                     this.hideRoleMenu();

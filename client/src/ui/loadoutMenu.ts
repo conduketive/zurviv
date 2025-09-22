@@ -656,7 +656,7 @@ export class LoadoutMenu {
                 });
 
                 // Trash auto emotes
-                $(".ui-emote-auto-trash").click((e) => {
+                $(".ui-emote-auto-trash").on("click", (e) => {
                     const parent = $(e.currentTarget).parent();
                     this.updateSlot(parent, "", "");
                     this.updateLoadoutFromDOM();
@@ -1091,7 +1091,7 @@ export class LoadoutMenu {
             if (category.loadoutType == "crosshair") {
                 this.setSelectedCrosshair();
             }
-            this.modalCustomizeItemName.click();
+            this.modalCustomizeItemName.trigger("click");
         }
 
         // Disable crosshair elements on Edge

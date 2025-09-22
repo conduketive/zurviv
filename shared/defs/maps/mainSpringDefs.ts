@@ -8,6 +8,7 @@ const mapDef: PartialMapDef = {
     mapId: MapId.Savannah,
     desc: {
         name: "Spring",
+        backgroundImg: "img/main_splash_7_3.png",
         icon: "img/particles/part-leaf-07.svg",
         buttonCss: "btn-mode-spring",
     },

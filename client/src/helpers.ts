@@ -150,7 +150,7 @@ export const helpers = {
                 el.contentEditable = editable;
                 el.readOnly = readOnly;
             } else {
-                $temp.select();
+                $temp.trigger("select");
             }
             document.execCommand("copy");
             $temp.remove();

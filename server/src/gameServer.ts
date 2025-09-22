@@ -7,7 +7,7 @@ import * as net from "../../shared/net/net";
 import { Config } from "./config";
 import { GameProcessManager } from "./game/gameProcessManager";
 import { GIT_VERSION } from "./utils/gitRevision";
-import { Logger } from "./utils/logger";
+import { ServerLogger } from "./utils/logger";
 import {
     apiPrivateRouter,
     cors,
@@ -36,7 +36,7 @@ process.on("uncaughtException", async (err) => {
 });
 
 class GameServer {
-    readonly logger = new Logger("GameServer");
+    readonly logger = new ServerLogger("GameServer");
 
     readonly region = Config.regions[Config.gameServer.thisRegion];
     readonly regionId = Config.gameServer.thisRegion;
@@ -150,6 +150,12 @@ const app = Config.gameServer.ssl
           cert_file_name: Config.gameServer.ssl.certFile,
       })
     : App();
+
+app.get("/health", (res) => {
+    res.writeStatus("200 OK");
+    res.write("OK");
+    res.end();
+});
 
 app.options("/api/find_game", (res) => {
     cors(res);
@@ -316,10 +322,25 @@ app.ws<GameSocketData>("/play", {
         const searchParams = new URLSearchParams(req.getQuery());
         const gameId = searchParams.get("gameId");
 
-        if (!gameId || !server.manager.getById(gameId)) {
+        if (!gameId) {
+            server.logger.warn("game_id_missing");
             forbidden(res);
             return;
         }
+        const gameData = server.manager.getById(gameId);
+
+        if (!gameData) {
+            server.logger.warn("invalid_game_id");
+            forbidden(res);
+            return;
+        }
+
+        if (!gameData.canJoin) {
+            server.logger.warn("game_started");
+            forbidden(res);
+            return;
+        }
+
         gameWsRateLimit.ipConnected(ip);
 
         const socketId = randomUUID();

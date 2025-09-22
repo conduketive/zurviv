@@ -1,5 +1,5 @@
 import { Rarity } from "../../gameConfig";
-import { defineSkin } from "../../utils/util";
+import { type DeepPartial, util } from "../../utils/util";
 import type { Vec2 } from "../../utils/v2";
 import type { DeepPartial } from "../maps/baseDefs";
 
@@ -77,8 +77,8 @@ export interface Img {
     renderOnHand?: boolean;
 }
 
-function defineMeleeSkin(baseType: string, params: DeepPartial<MeleeDef>) {
-    return defineSkin<MeleeDef>(BaseDefs, baseType, params as MeleeDef);
+function defineMeleeSkin(baseType: string, params: DeepPartial<MeleeDef>): MeleeDef {
+    return util.mergeDeep({}, BaseDefs[baseType], params);
 }
 
 const BaseDefs: Record<string, MeleeDef> = {
