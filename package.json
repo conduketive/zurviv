@@ -12,6 +12,7 @@
     "dev:client": "cd client && pnpm dev",
     "build": "cd server && pnpm build && cd ../client && pnpm build",
     "stressTest": "cd server && pnpm stressTest",
+    "type": "tsc --noEmit",
     "lint": "biome check --write",
     "lint:ci": "biome check"
   },

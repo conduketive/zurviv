@@ -231,13 +231,13 @@ export class PlayerBarn {
 
         this.socketIdToPlayer.set(socketId, player);
 
-        this.activatePlayer(player, group, team);
+        this.activatePlayer(player, joinMsg.spectating,  group, team, );
 
         return player;
     }
 
-    activatePlayer(player: Player, group?: Group, team?: Team) {
-        if (!joinMsg.spectating) {
+    activatePlayer(player: Player, isSpectating: boolean, group?: Group, team?: Team) {
+        if (!isSpectating) {
             if (team && group) {
                 team.addPlayer(player);
                 group.addPlayer(player);
@@ -275,7 +275,7 @@ export class PlayerBarn {
         this.aliveCountDirty = true;
         this.game.pluginManager.emit("playerJoin", player);
 
-        if (joinMsg.spectating) {
+        if (isSpectating) {
             setTimeout(() => {
                 const spectateMsg = new net.SpectateMsg();
                 spectateMsg.specBegin = true;
@@ -323,7 +323,7 @@ export class PlayerBarn {
             null,
         );
 
-        this.activatePlayer(player, group, team);
+        this.activatePlayer(player, false, group, team);
 
         return player;
     }

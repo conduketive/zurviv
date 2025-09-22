@@ -12,7 +12,7 @@ import { MapId } from "../../types/misc";
 
 export const CompMain: MapDef = {
     mapId: MapId.CompMain,
-    desc: { name: "Comp Normal", icon: "", buttonCss: "" },
+    desc: { name: "Comp Normal", icon: "", buttonCss: "", backgroundImg: "" },
     assets: {
         audio: [
             { name: "club_music_01", channel: "ambient" },
@@ -350,7 +350,7 @@ export const CompMain: MapDef = {
             { name: "m39", count: 1, weight: 1.5 },
             { name: "saiga", count: 1, weight: 0.65 },
             { name: "mp220", count: 1, weight: 1.8 },
-            { name: "qbb", count: 1, weight: 0.4 },
+            { name: "qbb97", count: 1, weight: 0.4 },
             { name: "deagle", count: 1, weight: 0.2 },
             { name: "vector", count: 1, weight: 0.4 },
             { name: "scorpion", count: 1, weight: 0.2 },

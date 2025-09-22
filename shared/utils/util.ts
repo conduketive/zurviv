@@ -354,11 +354,6 @@ export const util = {
         return items[idx];
     },
 
-    randomItem<T>(array: T[]): T | undefined {
-        if (array.length === 0) return undefined;
-        return array[util.randomInt(0, array.length - 1)];
-    },
-
     weightedRandomObject(items: Record<string, number>) {
         const arr: Array<{
             type: string;
