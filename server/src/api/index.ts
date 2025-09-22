@@ -6,7 +6,7 @@ import { Hono } from "hono";
 import { getCookie } from "hono/cookie";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
-import { z } from "zod";
+import { promise, z } from "zod";
 import { version } from "../../../package.json";
 import {
     type FindGameResponse,
@@ -32,6 +32,7 @@ import { StatsRouter } from "./routes/stats/StatsRouter";
 import { AuthRouter } from "./routes/user/AuthRouter";
 import { userHasRole } from "./routes/user/auth/hasDiscordRole";
 import { UserRouter } from "./routes/user/UserRouter";
+import type { GetSpectableGamesRes } from "../../../shared/types/moderation";
 
 export type Context = {
     Variables: {
@@ -230,29 +231,34 @@ app.post(
 );
 
 app.post("/api/get_spectable_games", async (c) => {
-    const gameServerUrl = Config.regions[Config.gameServer.thisRegion];
-
-    if (!gameServerUrl)
-        return c.json({ message: "No address found for this region" }, 200);
-
-    const res = await fetch(
-        `${gameServerUrl.https ? "https" : "http"}://${gameServerUrl.address}/api/get_spectable_games`,
-        {
-            method: "POST",
-            headers: {
-                "content-type": "application/json",
-                "survev-api-key": Config.secrets.SURVEV_API_KEY,
+    // TODO: add local cache maybe?
+    const promises = Object.values(Config.regions).map(
+        async (region) => {
+         const res = await fetch(
+            `${region.https ? "https" : "http"}://${region.address}/api/get_spectable_games`,
+            {
+                method: "POST",
+                headers: {
+                    "content-type": "application/json",
+                    "survev-api-key": Config.secrets.SURVEV_API_KEY,
+                },
+                body: JSON.stringify({}),
             },
-            body: JSON.stringify({}),
-        },
-    );
+        );
+        const data = await res.json();
+        return data as { success: boolean; data: GetSpectableGamesRes[] };
+    });
 
-    const message = await res.json();
+    const responses = await Promise.allSettled(promises);
 
-    if (res.ok) {
-        return c.json({ message }, 200);
+    const regions = responses.filter(r => r.status === "fulfilled").map(r => r.value);
+
+    const data: GetSpectableGamesRes[] = [];
+    for (const games of regions) {
+        if (!games.success) continue;
+        data.push(...games.data); 
     }
-    return c.json({ message: "Failed to close games" }, 200);
+    return c.json(data, 200);
 });
 
 // reset player count to 0 if region seems to be down

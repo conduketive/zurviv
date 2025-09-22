@@ -63,3 +63,17 @@ export const zCreatePrivateGameParams = z.object({
     map_name: z.string(),
     team_mode: z.string(),
 });
+
+export const zGetSpectableGamesRes = z.object({
+    id: z.string(),
+    mapName: z.string(),
+    teamMode: z.number(),
+    aliveCount: z.number(),
+    useHttps: z.boolean(),
+    host: z.string(),
+    private: z.boolean(),
+    region: z.string(),
+    message: z.string(),
+});
+
+export type GetSpectableGamesRes = z.infer<typeof zGetSpectableGamesRes>;

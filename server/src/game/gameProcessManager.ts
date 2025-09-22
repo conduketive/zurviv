@@ -16,6 +16,8 @@ import {
     type ServerGameConfig,
 } from "../utils/types";
 import type { GameManager } from "./gameManager";
+import { type GetSpectableGamesRes, zGetSpectableGamesRes } from "../../../shared/types/moderation";
+import z from "zod";
 
 let path: string;
 if (process.env.NODE_ENV === "production") {
@@ -221,7 +223,7 @@ export class GameProcessManager implements GameManager {
 
     getSpectableGames() {
         const region = Config.regions[Config.gameServer.thisRegion];
-        return this.processes
+        const data = this.processes
             .filter((p) => !p.stopped && !p.private)
             .map((p) => ({
                 id: p.id,
@@ -233,7 +235,10 @@ export class GameProcessManager implements GameManager {
                 private: p.private,
                 region: Config.gameServer.thisRegion,
                 message: `[${[Config.gameServer.thisRegion]}][${p.mapName}][${TeamModeToString[p.teamMode]}] ${p.aliveCount} alive`,
-            }));
+            }) satisfies GetSpectableGamesRes);
+        
+        const parsed = z.array(zGetSpectableGamesRes).safeParse(data);
+        return parsed.success ? parsed.data : [];
     }
 
     getPlayerCount(): number {
