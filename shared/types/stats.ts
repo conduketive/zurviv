@@ -110,11 +110,11 @@ export interface Mode {
 //
 // Leaderboard
 //
-const teamModeMap = {
+export const teamModeMap = {
     solo: TeamMode.Solo,
     duo: TeamMode.Duo,
     squad: TeamMode.Squad,
-};
+} as const;
 
 export const zLeaderboardsRequest = z.object({
     interval: z.enum(["daily", "weekly", "alltime"]),

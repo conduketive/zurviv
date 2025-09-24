@@ -318,9 +318,10 @@ app.post("/api/create_private_game", (res, req) => {
                     returnJson(res, { error: "failed_to_parse_body" });
                     return;
                 }
+                const { team_mode, map_name } = parsed.data;
                 const game = server.manager.newGame({
-                    teamMode: TeamMode.Solo,
-                    mapName: "cobalt",
+                    teamMode: team_mode,
+                    mapName: map_name,
                     private: true,
                 });
                 returnJson(res, { gameId: game.id });
