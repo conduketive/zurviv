@@ -300,6 +300,12 @@ const commands = {
                 required: true,
                 type: ApplicationCommandOptionType.String,
             },
+            {
+                name: "region",
+                description: "The region to create the game in",
+                required: true,
+                type: ApplicationCommandOptionType.String,
+            },
         ],
     }),
 };
