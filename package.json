@@ -10,6 +10,7 @@
     "dev:api": "cd server && pnpm dev:api",
     "dev:game": "cd server && pnpm dev:game",
     "dev:client": "cd client && pnpm dev",
+    "build:server": "cd server && pnpm run build",
     "build": "cd server && pnpm build && cd ../client && pnpm build",
     "stressTest": "cd server && pnpm stressTest",
     "type": "tsc --noEmit",

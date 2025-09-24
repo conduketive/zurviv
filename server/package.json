@@ -15,7 +15,6 @@
     "db:seed": "tsx src/api/db/seed.ts",
     "db:studio": "drizzle-kit studio --config=src/api/drizzle.config.ts",
     "db:wipe": "rm -rf src/api/db/drizzle && tsx src/api/db/wipe.ts",
-    "build:server": "cd server && pnpm run build",
     "stressTest": "tsx src/stressTest.ts",
     "lint": "cd .. && pnpm lint"
   },
