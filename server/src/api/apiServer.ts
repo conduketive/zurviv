@@ -19,7 +19,7 @@ class Region {
 
     async fetch<Data extends object>(endPoint: string, body: object) {
         const url = `http${this.data.https ? "s" : ""}://${this.data.address}/${endPoint}`;
-        console.log({ url });
+        console.log({ url, body });
         try {
             const res = await fetch(url, {
                 method: "POST",

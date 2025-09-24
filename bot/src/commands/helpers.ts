@@ -78,11 +78,11 @@ export async function genericExecute<N extends Exclude<Command, "search_player">
             return;
         }
 
-        const { message } = await res.json();
+        const { message } = data;
         await interaction.editReply(message);
     } catch (err) {
-        console.error("Failed to send request to API:", err);
-        await interaction.editReply({ content: "API errnor" });
+        botLogger.error("Failed to send request to API:", err);
+        await interaction.editReply({ content: "API error" });
     }
 }
 
