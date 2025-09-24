@@ -1,5 +1,6 @@
 import $ from "jquery";
 import type { FindGameMatchData } from "../../../shared/types/api";
+import type { GetSpectableGamesRes } from "../../../shared/types/moderation";
 import loadout from "../../../shared/utils/loadout";
 import type { Account } from "../account";
 import { api } from "../api";
@@ -310,18 +311,20 @@ export class ProfileUi {
                         },
                         body: JSON.stringify({}),
                     });
-                    const data = await res.json();
 
-                    if (!data.message.success) {
+                    if (!res.ok) {
                         this.errorModal.show();
                         return;
                     }
 
+                    const data: GetSpectableGamesRes[] = await res.json();
+
                     const content =
-                        data.message.data.length === 0
+                        data.length === 0
                             ? `<div>No games to spectate</div>`
-                            : data.message.data.map(
-                                  (game: any) => `<div>
+                            : data
+                                  .map(
+                                      (game: any) => `<div>
                         <p style="font-size:18px;">${game.message}</p>
                         <button style="inline:block;margin-left:auth;"
                         data-game-id="${game.id}"
@@ -330,7 +333,8 @@ export class ProfileUi {
                         data-zone="${game.zone}"
                         class="btn-spectate-game btn-custom-mode-main btn-green btn-darken menu-option btn-mode-${game.mapName}">Spectate</button>
                     </div>`,
-                              );
+                                  )
+                                  .join("");
 
                     $("#modal-account-spectate-games .modal-body").html(content);
                     this.spectateGamesModal.show();

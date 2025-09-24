@@ -41,6 +41,7 @@ export function getHonoIp(c: Context, proxyHeader?: string): string | undefined 
 }
 
 export function forbidden(res: HttpResponse): void {
+    if (res.aborted) return;
     res.cork(() => {
         if (res.aborted) return;
         res.writeStatus("403 Forbidden").end("403 Forbidden");

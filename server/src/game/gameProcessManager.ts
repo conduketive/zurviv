@@ -1,10 +1,15 @@
 import type { WebSocket } from "uWebSockets.js";
 import { type ChildProcess, fork } from "child_process";
 import { randomUUID } from "crypto";
+import z from "zod";
 import { type MapDef, MapDefs } from "../../../shared/defs/mapDefs";
 import { TeamModeToString } from "../../../shared/defs/types/misc";
 import type { TeamMode } from "../../../shared/gameConfig";
 import * as net from "../../../shared/net/net";
+import {
+    type GetSpectableGamesRes,
+    zGetSpectableGamesRes,
+} from "../../../shared/types/moderation";
 import { Config } from "../config";
 import { ServerLogger } from "../utils/logger";
 import {
@@ -14,7 +19,6 @@ import {
     type ProcessMsg,
     ProcessMsgType,
     type ServerGameConfig,
-    type SpectateGameBody,
 } from "../utils/types";
 import type { GameManager } from "./gameManager";
 
@@ -28,6 +32,7 @@ if (process.env.NODE_ENV === "production") {
 class GameProcess implements GameData {
     process: ChildProcess;
 
+    private = false;
     canJoin = true;
     teamMode: TeamMode = 1;
     mapName = "";
@@ -71,6 +76,7 @@ class GameProcess implements GameData {
                     this.canJoin = msg.canJoin;
                     this.teamMode = msg.teamMode;
                     this.mapName = msg.mapName;
+                    this.private = msg.private;
                     if (this.id !== msg.id) {
                         this.manager.processById.delete(this.id);
                         this.id = msg.id;
@@ -128,6 +134,8 @@ class GameProcess implements GameData {
         this.id = id;
         this.teamMode = config.teamMode;
         this.mapName = config.mapName;
+        this.private = config.private ?? false;
+        console.log("Creating game with config", { config: config });
         this.stopped = false;
 
         const mapDef = MapDefs[this.mapName as keyof typeof MapDefs] as MapDef;
@@ -141,13 +149,6 @@ class GameProcess implements GameData {
             tokens,
         });
         this.avaliableSlots--;
-    }
-
-    addSpectatorToken(data: SpectateGameBody) {
-        this.send({
-            type: ProcessMsgType.AddSpectatorToken,
-            data,
-        });
     }
 
     handleMsg(data: ArrayBuffer, socketId: string, ip: string) {
@@ -223,20 +224,27 @@ export class GameProcessManager implements GameManager {
         return `Closed ${count} games`;
     }
 
-    getActiveGames() {
+    getSpectableGames() {
         const region = Config.regions[Config.gameServer.thisRegion];
-        return this.processes
-            .filter((p) => !p.stopped)
-            .map((p) => ({
-                id: p.id,
-                mapName: p.mapName,
-                teamMode: p.teamMode,
-                aliveCount: p.aliveCount,
-                useHttps: region.https,
-                host: region.address,
-                region: Config.gameServer.thisRegion,
-                message: `[${[Config.gameServer.thisRegion]}][${p.mapName}][${TeamModeToString[p.teamMode]}] ${p.aliveCount} alive`,
-            }));
+        const data = this.processes
+            .filter((p) => !p.stopped && !p.private)
+            .map(
+                (p) =>
+                    ({
+                        id: p.id,
+                        mapName: p.mapName,
+                        teamMode: p.teamMode,
+                        aliveCount: p.aliveCount,
+                        useHttps: region.https,
+                        host: region.address,
+                        private: p.private,
+                        region: Config.gameServer.thisRegion,
+                        message: `[${[Config.gameServer.thisRegion]}][${p.mapName}][${TeamModeToString[p.teamMode]}] ${p.aliveCount} alive`,
+                    }) satisfies GetSpectableGamesRes,
+            );
+
+        const parsed = z.array(zGetSpectableGamesRes).safeParse(data);
+        return parsed.success ? parsed.data : [];
     }
 
     getPlayerCount(): number {
@@ -361,8 +369,6 @@ export class GameProcessManager implements GameManager {
             console.log(`Failed to find game ${body.gameId}`);
             return "Failed to find game";
         }
-        game?.addSpectatorToken({ token: randomUUID() });
-
         return game.id;
     }
 

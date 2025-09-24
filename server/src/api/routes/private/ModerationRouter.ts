@@ -7,6 +7,7 @@ import {
     zBanAccountParams,
     zBanIpParams,
     zCloseGamesParams,
+    zCreatePrivateGameParams,
     zFindDiscordUserSlugParams,
     zGetPlayerIpParams,
     zSetAccountNameParams,
@@ -421,6 +422,44 @@ export const ModerationRouter = new Hono()
             return c.json({ message: "Closed games" }, 200);
         }
         return c.json({ message: "Failed to close games" }, 200);
+    })
+    .post("/create_private_game", validateParams(zCreatePrivateGameParams), async (c) => {
+        try {
+            const { region, map_name, team_mode } = c.req.valid("json");
+            const gameServerUrl = Config.regions[Config.gameServer.thisRegion];
+            console.log({ gameServerUrl });
+
+            if (!gameServerUrl)
+                return c.json({ message: "No address found for this region" }, 400);
+
+            const res = await fetch(
+                `${gameServerUrl.https ? "https" : "http"}://${gameServerUrl.address}/api/create_private_game`,
+                {
+                    method: "POST",
+                    headers: {
+                        "content-type": "application/json",
+                        "survev-api-key": Config.secrets.SURVEV_API_KEY,
+                    },
+                    body: JSON.stringify({ region, map_name, team_mode }),
+                },
+            );
+
+            if (!res.ok) {
+                return c.json({ message: "Game server unavailable" }, 500);
+            }
+
+            const data = await res.json();
+
+            if (!data.gameId) {
+                console.error("No gameId in response:", data);
+                return c.json({ message: "Failed to get game ID from server" }, 500);
+            }
+
+            return c.json({ message: `https://zurviv.io/?gameId=${data.gameId}` }, 200);
+        } catch (err) {
+            console.error("Error creating private game:", err);
+            return c.json({ message: "Failed to create private game" }, 500);
+        }
     });
 
 async function banAccount(userId: string, banReason: string, executorId: string) {

@@ -5,7 +5,7 @@ import {
     SlashCommandBuilder,
 } from "discord.js";
 import type z from "zod";
-import { botLogger, type Command, honoClient, isAdmin } from "../utils";
+import { botLogger, Command, honoClient, isAdmin } from "../utils";
 
 export function createCommand<T extends z.ZodSchema>(config: {
     name: Command;
@@ -32,7 +32,7 @@ export async function genericExecute<N extends Exclude<Command, "search_player">
     validator: z.ZodTypeAny,
     isPrivateRoute = false,
 ) {
-    await interaction.deferReply();
+    await interaction.deferReply({ ephemeral: name === Command.CreatePrivateGames });
 
     const options = interaction.options.data.reduce(
         (obj, { name, value }) => {
@@ -48,43 +48,42 @@ export async function genericExecute<N extends Exclude<Command, "search_player">
     });
 
     if (!args.success) {
-        botLogger.error("Failed to parse arguments", options, args.error);
-        await interaction.reply({
+        await interaction.followUp({
             content: "Invalid arguments",
             flags: MessageFlags.Ephemeral,
         });
         return;
     }
 
-    if (isPrivateRoute) {
-        await handlePrivateRoute(interaction, name, args.data);
-        return;
-    }
-
-    // @ts-expect-error - we don't care at this point
-    const res = await honoClient.moderation[name].$post({
-        json: args.data as any,
-    });
-    const { message } = await res.json();
-    await interaction.editReply(message);
-}
-
-async function handlePrivateRoute(
-    interaction: ChatInputCommandInteraction,
-    name: any,
-    payload: any,
-) {
-    if (!isAdmin(interaction)) {
+    if (isPrivateRoute && !isAdmin(interaction)) {
         await sendNoPermissionMessage(interaction);
         return;
     }
 
-    // @ts-expect-error - we don't care at this point
-    const res = await honoClient[name].$post({
-        json: payload,
-    });
-    const { message } = await res.json();
-    await interaction.editReply(message);
+    try {
+        // @ts-expect-error - we don't need validation at this point, params are validated beforehand
+        const client = isPrivateRoute ? honoClient[name] : honoClient.moderation[name];
+        const res = await client.$post({
+            json: args.data as any,
+        });
+
+        const data = await res.json();
+
+        // extra guard in case;
+        if (!data || !data.message) {
+            await interaction.followUp({
+                content: "no response message",
+                flags: MessageFlags.Ephemeral,
+            });
+            return;
+        }
+
+        const { message } = await res.json();
+        await interaction.editReply(message);
+    } catch (err) {
+        console.error("Failed to send request to API:", err);
+        await interaction.editReply({ content: "API errnor" });
+    }
 }
 
 export function createSlashCommand(config: ReturnType<typeof createCommand>) {

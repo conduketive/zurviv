@@ -2,8 +2,9 @@ import { App, SSLApp, type WebSocket } from "uWebSockets.js";
 import { randomUUID } from "crypto";
 import z from "zod";
 import { version } from "../../package.json";
-import { GameConfig } from "../../shared/gameConfig";
+import { GameConfig, TeamMode } from "../../shared/gameConfig";
 import * as net from "../../shared/net/net";
+import { zCreatePrivateGameParams } from "../../shared/types/moderation";
 import { Config } from "./config";
 import { GameProcessManager } from "./game/gameProcessManager";
 import { GIT_VERSION } from "./utils/gitRevision";
@@ -95,7 +96,7 @@ class GameServer {
 
     getGamesToSpectate() {
         try {
-            const data = this.manager.getActiveGames();
+            const data = this.manager.getSpectableGames();
             return { success: true, data };
         } catch (err) {
             this.logger.error(`Failed to close games: `, err);
@@ -257,6 +258,11 @@ app.post("/api/get_spectable_games", (res, req) => {
         res.aborted = true;
     });
 
+    if (req.getHeader("survev-api-key") !== Config.secrets.SURVEV_API_KEY) {
+        forbidden(res);
+        return;
+    }
+
     readPostedJSON(
         res,
         (body: FindGamePrivateBody) => {
@@ -287,6 +293,53 @@ app.post("/api/get_spectable_games", (res, req) => {
     );
 });
 
+app.options("/api/create_private_game", (res) => {
+    cors(res);
+    res.end();
+});
+
+app.post("/api/create_private_game", (res, req) => {
+    res.onAborted(() => {
+        res.aborted = true;
+    });
+
+    if (req.getHeader("survev-api-key") !== Config.secrets.SURVEV_API_KEY) {
+        forbidden(res);
+        return;
+    }
+
+    readPostedJSON(
+        res,
+        (body: FindGamePrivateBody) => {
+            try {
+                if (res.aborted) return;
+                const parsed = zCreatePrivateGameParams.safeParse(body);
+                if (!parsed.success || !parsed.data) {
+                    returnJson(res, { error: "failed_to_parse_body" });
+                    return;
+                }
+                const game = server.manager.newGame({
+                    teamMode: TeamMode.Solo,
+                    mapName: "cobalt",
+                    private: true,
+                });
+                returnJson(res, { gameId: game.id });
+            } catch (error) {
+                server.logger.warn("API create_private_game error: ", error);
+            }
+        },
+        () => {
+            if (res.aborted) return;
+            res.cork(() => {
+                if (res.aborted) return;
+                res.writeStatus("500 Internal Server Error");
+                res.write("500 Internal Server Error");
+                res.end();
+            });
+            server.logger.warn("/api/create_private_game: Error retrieving body");
+        },
+    );
+});
 const gameHTTPRateLimit = new HTTPRateLimit(5, 1000);
 const gameWsRateLimit = new WebSocketRateLimit(500, 1000, 5);
 

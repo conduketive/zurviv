@@ -497,6 +497,18 @@ class Application {
             loadStaticDomImages();
 
             SDK.gameLoadComplete();
+
+            const gameId = helpers.getParameterByName("gameId");
+            if (!gameId) return;
+
+            this.joinGame({
+                gameId,
+                data: "",
+                zone: "",
+                useHttps: false,
+                hosts: ["127.0.0.1:8001"],
+                addrs: ["127.0.0.1:8001"],
+            });
         }
     }
 
@@ -880,7 +892,6 @@ class Application {
     }
 
     joinGame(matchData: FindGameMatchData, spectate = false) {
-        console.log({ matchData });
         if (!this.game) {
             setTimeout(() => {
                 this.joinGame(matchData, spectate);

@@ -3,7 +3,7 @@ import Path from "node:path";
 import { createCanvas, loadImage } from "canvas";
 import { type ImgCache, imageFolder, imagesCacheFolder } from "./atlasBuilder";
 import { scaledSprites } from "./atlasDefs";
-import { detectEdges, Edges } from "./detectEdges";
+import { detectEdges, type Edges } from "./detectEdges";
 
 const tmpCanvas = createCanvas(0, 0);
 const tmpCtx = tmpCanvas.getContext("2d");
@@ -48,7 +48,6 @@ process.on("message", async (data: ParentMsg) => {
 
     for (const image of data.images) {
         try {
-
             const edges = await renderImage(image.path, image.hash);
             images[image.path] = {
                 hash: image.hash,

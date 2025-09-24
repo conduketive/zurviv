@@ -70,6 +70,9 @@ export class Game {
 
     joinTokens = new Map<string, JoinTokenData>();
 
+    // to disable spectating
+    private = false;
+
     get aliveCount(): number {
         return this.playerBarn.livingPlayers.length;
     }
@@ -149,6 +152,7 @@ export class Game {
         this.gas = new Gas(this);
 
         this.modeManager = new GameModeManager(this);
+        this.private = config.private ?? false;
 
         if (this.map.factionMode) {
             for (let i = 1; i <= this.map.mapDef.gameMode.factions!; i++) {
@@ -518,17 +522,13 @@ export class Game {
         }
     }
 
-    addSpectatorToken(data: string) {
-        console.log("addSpectatorToken", data);
-        this.playerBarn.addSpectator(data);
-    }
-
     updateData() {
         this.sendData?.({
             type: ProcessMsgType.UpdateData,
             id: this.id,
             teamMode: this.teamMode,
             mapName: this.mapName,
+            private: this.private,
             canJoin: this.canJoin,
             aliveCount: this.aliveCount,
             startedTime: this.startedTime,

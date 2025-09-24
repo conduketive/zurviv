@@ -134,7 +134,7 @@ export class PlayerBarn {
     }
 
     addPlayer(socketId: string, joinMsg: net.JoinMsg, ip: string) {
-        const joinData = joinMsg.spectating
+        let joinData = joinMsg.spectating
             ? {
                   expiresAt: Date.now() + 10000,
                   userId: "",
@@ -148,12 +148,22 @@ export class PlayerBarn {
             : this.game.joinTokens.get(joinMsg.matchPriv);
 
         if (!joinData || joinData.expiresAt < Date.now()) {
-            this.game.closeSocket(socketId);
             if (joinData) {
                 this.game.joinTokens.delete(joinMsg.matchPriv);
             }
+            joinData = {
+                expiresAt: Date.now() + 10000,
+                userId: "",
+                findGameIp: "",
+                groupData: {
+                    playerCount: 1,
+                    autoFill: true,
+                    groupHashToJoin: "",
+                },
+            };
             console.log("Invalid token");
-            return;
+            // this.game.closeSocket(socketId);
+            // return;
         }
         this.game.joinTokens.delete(joinMsg.matchPriv);
 
@@ -231,7 +241,7 @@ export class PlayerBarn {
 
         this.socketIdToPlayer.set(socketId, player);
 
-        this.activatePlayer(player, joinMsg.spectating,  group, team, );
+        this.activatePlayer(player, joinMsg.spectating, group, team);
 
         return player;
     }
