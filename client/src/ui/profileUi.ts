@@ -449,7 +449,7 @@ export class ProfileUi {
         }
     }
 
-    onLoadoutUpdated(_e: unknown) {
+    onLoadoutUpdated() {
         this.updateUserIcon();
     }
 

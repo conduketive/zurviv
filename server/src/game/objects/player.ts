@@ -1330,6 +1330,7 @@ export class Player extends BaseGameObject {
         speed: 1,
 
         noClip: false,
+        teleportToPings: false,
         godMode: false,
 
         /** drag and drop loot, obstacles, and buildings */
@@ -4361,6 +4362,11 @@ export class Player extends BaseGameObject {
         const emoteDef = GameObjectDefs[emoteMsg.type];
 
         if (emoteMsg.isPing) {
+            if (this.debug.teleportToPings) {
+                v2.set(this.pos, msg.pos);
+                this.setPartDirty();
+            }
+
             if (emoteDef.type !== "ping") {
                 return;
             }
@@ -4415,6 +4421,7 @@ export class Player extends BaseGameObject {
         }
 
         this.debug.noClip = msg.noClip;
+        this.debug.teleportToPings = msg.teleportToPings;
         this.debug.godMode = msg.godMode;
 
         this.debug.moveObjMode.enabled = msg.moveObjs;

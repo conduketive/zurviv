@@ -240,6 +240,9 @@ export class Editor {
             folder.addBinding(this.toolParams, "noClip", {
                 label: "No Clip",
             });
+            folder.addBinding(this.toolParams, "teleportToPings", {
+                label: "Teleport To Pings",
+            });
             folder.addBinding(this.toolParams, "godMode", {
                 label: "God Mode",
             });
@@ -406,6 +409,7 @@ export class Editor {
         msg.toggleLayer = this.toggleLayer;
 
         msg.noClip = this.toolParams.noClip;
+        msg.teleportToPings = this.toolParams.teleportToPings;
         msg.godMode = this.toolParams.godMode;
         msg.moveObjs = this.toolParams.moveObjs;
 

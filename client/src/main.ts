@@ -149,8 +149,7 @@ class Application {
             this.localization.localizeIndex();
             this.account.init();
 
-            (this.nameInput as unknown as HTMLInputElement).maxLength =
-                net.Constants.PlayerNameMaxLen;
+            this.nameInput.attr("maxLength", net.Constants.PlayerNameMaxLen);
 
             window.onload = () => {
                 function updateButtonText(

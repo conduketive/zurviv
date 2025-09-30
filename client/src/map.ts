@@ -266,7 +266,6 @@ export class Map {
                     this,
                     particleBarn,
                     audioManager,
-                    ambience,
                     activePlayer,
                     renderer,
                     camera,

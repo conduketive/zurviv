@@ -377,7 +377,6 @@ export class Building implements AbstractObject {
         map: Map,
         particleBarn: ParticleBarn,
         audioManager: AudioManager,
-        _ambience: unknown,
         activePlayer: Player,
         renderer: Renderer,
         camera: Camera,
