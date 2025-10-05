@@ -210,7 +210,7 @@ export const Main: MapDef = {
             { name: "painkiller", count: 1, weight: 1 },
             { name: "m4a1", count: 1, weight: 1 },
             { name: "m249", count: 1, weight: 1 },
-            // { name: "awc", count: 1, weight: 1 },
+            { name: "awc", count: 1, weight: 1 },
             { name: "pkp", count: 1, weight: 1 },
         ],
         tier_eye_stone: [
@@ -222,7 +222,7 @@ export const Main: MapDef = {
             { name: "painkiller", count: 1, weight: 1 },
             { name: "m4a1", count: 1, weight: 0.7 },
             { name: "m249", count: 1, weight: 0.2 },
-            // { name: "awc", count: 1, weight: 0.1 },
+            { name: "awc", count: 1, weight: 0.1 },
             { name: "pkp", count: 1, weight: 0.1 },
         ],
         tier_sledgehammer: [{ name: "sledgehammer", count: 1, weight: 1 }],
@@ -413,7 +413,7 @@ export const Main: MapDef = {
         tier_guns_rare_sniper: [
             { name: "mosin", count: 1, weight: 1 },
             { name: "sv98", count: 1, weight: 0.1 },
-            // { name: "awc", count: 1, weight: 0.05 },
+            { name: "awc", count: 1, weight: 0.05 },
         ],
         tier_guns_rare_demo: [
             { name: "mp220", count: 1, weight: 1 },
@@ -453,7 +453,7 @@ export const Main: MapDef = {
             { name: "garand", count: 1, weight: 1 },
             { name: "grozas", count: 1, weight: 1 },
             { name: "flare_gun", count: 1, weight: 1 },
-            // { name: "awc", count: 1, weight: 1 },
+            { name: "awc", count: 1, weight: 1 },
             { name: "scarssr", count: 1, weight: 1 },
             { name: "pkp", count: 1, weight: 1 },
             { name: "m249", count: 1, weight: 1 },
@@ -487,7 +487,7 @@ export const Main: MapDef = {
         ],
         tier_airdrop_rare: [
             { name: "garand", count: 1, weight: 6 },
-            // { name: "awc", count: 1, weight: 3 },
+            { name: "awc", count: 1, weight: 3 },
             { name: "pkp", count: 1, weight: 0.08 },
             { name: "m249", count: 1, weight: 0.1 },
             { name: "m4a1", count: 1, weight: 4 },
@@ -498,7 +498,7 @@ export const Main: MapDef = {
             { name: "scarssr", count: 1, weight: 1 }, // ?
             { name: "usas", count: 1, weight: 0.5 }, // ?
             { name: "p30l_dual", count: 1, weight: 1 }, // ?
-            // { name: "awc", count: 1, weight: 0.1 }, // ?
+            { name: "awc", count: 1, weight: 0.1 }, // ?
             { name: "pkp", count: 1, weight: 0.3 }, // ?
             { name: "m249", count: 1, weight: 0.3 }, // ?
         ],

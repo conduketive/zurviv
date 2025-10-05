@@ -260,7 +260,7 @@ const mapDef = {
         //     { name: "scarssr", count: 1, weight: 1 }, // ?
         //     { name: "usas", count: 1, weight: 0.5 }, // ?
         //     { name: "p30l_dual", count: 1, weight: 1 }, // ?
-        //     // { name: "awc", count: 1, weight: 0.1 }, // ?
+        //     { name: "awc", count: 1, weight: 0.1 }, // ?
         //     { name: "pkp", count: 1, weight: 0.3 }, // ?
         //     { name: "m249", count: 1, weight: 0.3 }, // ?
         // ],

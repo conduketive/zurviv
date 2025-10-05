@@ -1529,7 +1529,7 @@ export const GunDefs: Record<string, GunDef> = {
             deploy: "sv98_cycle_01",
         },
     },
-    /*awc: {
+    awc: {
         name: "AWM-S",
         type: "gun",
         quality: 1,
@@ -1580,7 +1580,7 @@ export const GunDefs: Record<string, GunDef> = {
             deploy: "awc_cycle_01",
             fallOff: 3,
         },
-    },*/
+    },
     m39: {
         name: "M39 EMR",
         type: "gun",
