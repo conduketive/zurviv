@@ -51,6 +51,7 @@ import { BaseGameObject, type DamageParams, type GameObject } from "./gameObject
 import type { Loot } from "./loot";
 import type { MapIndicator } from "./mapIndicator";
 import type { Obstacle } from "./obstacle";
+import { MapId } from "../../../../shared/defs/types/misc";
 
 type MoveObjsMode = {
     enabled: boolean;
@@ -4753,6 +4754,9 @@ export class Player extends BaseGameObject {
             this.speed += PerkProperties.field_medic.speedBoost;
         }
 
+        if (this.game.map.mapId === MapId.Gamerio) {
+            this.speed *= 1.5;
+        }
         this.speed = math.clamp(this.speed, 1, 10000);
     }
 
