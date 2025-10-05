@@ -571,7 +571,12 @@ export class PlayerBarn {
         // and doesn't need to be cryptographically secure lol
         const hash = Math.random().toString(16).slice(2);
         const groupId = this.groupIdAllocator.getNextId();
-        const group = new Group(hash, groupId, this.game.private ? false : autoFill, this.game.teamMode);
+        const group = new Group(
+            hash,
+            groupId,
+            this.game.private ? false : autoFill,
+            this.game.teamMode,
+        );
         this.groups.push(group);
         this.groupsByHash.set(hash, group);
         return group;

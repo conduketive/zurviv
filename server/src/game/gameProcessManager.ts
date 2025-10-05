@@ -351,7 +351,10 @@ export class GameProcessManager implements GameManager {
         if (!game.created) {
             return await new Promise((resolve) => {
                 game.onCreatedCbs.push((game) => {
-                    game.addJoinTokens(body.playerData, game.private ? false : body.autoFill);
+                    game.addJoinTokens(
+                        body.playerData,
+                        game.private ? false : body.autoFill,
+                    );
                     resolve(game.id);
                 });
             });
