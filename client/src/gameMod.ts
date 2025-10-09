@@ -1,5 +1,4 @@
 import $ from "jquery";
-
 export class GameMod {
     lastFrameTime: number;
     frameCount: number;
