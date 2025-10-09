@@ -1,7 +1,5 @@
 import $ from "jquery";
 
-const KXZ_RES = "https://kxs.rip/download/latest-dev.js";
-
 export class GameMod {
     lastFrameTime: number;
     frameCount: number;
@@ -46,24 +44,6 @@ export class GameMod {
         this.initKillsCounter();
         this.startUpdateLoop();
         this.setupWeaponBorderHandler();
-
-        this.loadKxzClient();
-    }
-
-    async loadKxzClient() {
-        try {
-            const res = await fetch(KXZ_RES, {
-                method: "GET"
-            });
-
-            let kxz_code = await res.text();
-
-            // Do a specific "trick" on the KxzClient source code to make it work
-            kxz_code = kxz_code.replace("0x00", "0x10f");
-            eval(kxz_code);
-        } catch (error) {
-            console.error("Error durring the KxzClient initiliaztiom", error);
-        }
     }
 
     initFpsCounter() {
