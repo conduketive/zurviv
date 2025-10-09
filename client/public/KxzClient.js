@@ -1177,7 +1177,8 @@ const config_namespaceObject = /*#__PURE__*/JSON.parse('{"base_url":"https://kxs
 
 
 let href = window.location.href;
-let is_z = href.includes("zurviv.io");
+// forcing the var to true cause is now indeed only in zurviv.io
+let is_z = true
 const vars_client = {
     type: is_z ? ClientType.KxzClient : ClientType.KxsClient,
     name: is_z ? "KxzClient" : "KxsClient",
@@ -12506,11 +12507,7 @@ class KxsClient {
 // Be sure than kxs client load only in zurvev with specific VAR
 let IS_ZURVIV = 0x10f;
 let src_href = window.location.href;
-/* */ if (src_href.includes("zurviv.io") && IS_ZURVIV !== 0x10f) {
-    __webpack_require__.g.x = true;
-}
-else
-    loadKxs();
+loadKxs();
 
 
 
