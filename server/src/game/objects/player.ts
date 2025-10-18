@@ -3382,10 +3382,17 @@ export class Player extends BaseGameObject {
 
         this.dirNew = v2.normalizeSafe(msg.toMouseDir);
 
-        this.moveLeft = msg.moveLeft;
-        this.moveRight = msg.moveRight;
-        this.moveUp = msg.moveUp;
-        this.moveDown = msg.moveDown;
+        const allowMovement = !this.game.mapName.startsWith("comp") || this.game.started;
+
+        if ( allowMovement ) {
+            this.moveLeft = msg.moveLeft;
+            this.moveRight = msg.moveRight;
+            this.moveUp = msg.moveUp;
+            this.moveDown = msg.moveDown;
+            if (msg.shootStart) {
+                this.shootStart = true;
+            }
+        }
         this.portrait = msg.portrait;
         this.touchMoveActive = msg.touchMoveActive;
         this.touchMoveDir = v2.normalizeSafe(msg.touchMoveDir);
@@ -3393,10 +3400,6 @@ export class Player extends BaseGameObject {
         this.toMouseLen = msg.toMouseLen;
 
         this.shootHold = msg.shootHold;
-
-        if (msg.shootStart) {
-            this.shootStart = true;
-        }
 
         // HACK? client for some reason sends Interact followed by Cancel on mobile
         // so we ignore the cancel request when reviving a player
