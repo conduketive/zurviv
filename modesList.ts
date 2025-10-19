@@ -17,13 +17,14 @@ const modes = [
     "turkey",
     "faction",
     "faction_potato",
+    "faction_halloween",
     "comp_main",
     "GG",
     "gamerio",
 ] as const;
 
 for (const mode of modes) {
-    if (mode === "faction" || mode === "faction_potato") {
+    if (mode.startsWith("faction")) {
         MODES_LIST.push({ mapName: mode, teamMode: TeamMode.Squad, enabled: true });
         continue;
     }
@@ -32,6 +33,6 @@ for (const mode of modes) {
     }
 }
 
-export const EVENT_MODES = ["GG", "gamerio", "faction_potato"].map((t) =>
+export const EVENT_MODES = ["GG", "gamerio", "faction_potato", "faction_halloween"].map((t) =>
     t.toLocaleLowerCase(),
 );

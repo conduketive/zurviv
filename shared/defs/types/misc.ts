@@ -17,6 +17,7 @@ export enum MapId {
     GG = 100,
     Gamerio = 101,
     FactionPotato = 102,
+    FactionHalloween = 103,
 }
 
 export const TeamModeToString = {

@@ -4,6 +4,7 @@ import { Cobalt } from "./maps/cobaltDefs";
 import { CompMain } from "./maps/comp/compBaseDefs";
 import { Desert } from "./maps/desertDefs";
 import { Faction } from "./maps/factionDefs";
+import { FactionHalloween } from "./maps/factionHalloween";
 import { FactionPotato } from "./maps/factionPotatoDefs";
 import { Gamerio } from "./maps/gamerio";
 import { GG } from "./maps/gg";
@@ -61,6 +62,7 @@ export const MapDefs = {
     test_faction: testFaction,
     /* STRIP_FROM_PROD_CLIENT:END */
     faction_potato: FactionPotato,
+    faction_halloween: FactionHalloween,
     comp_main: CompMain,
 } satisfies Record<string, MapDef>;
 
