@@ -120,7 +120,7 @@ export const zLeaderboardsRequest = z.object({
     interval: z.enum(["daily", "weekly", "alltime"]),
     mapId: z.enum(VALID_MAP_IDS).transform((v) => Number(v)),
     type: z.enum(["most_kills", "most_damage_dealt", "kpg", "kills", "wins"]),
-    teamMode: z.enum(["solo", "duo", "squad"]).transform((mode) => teamModeMap[mode]),
+    teamMode: z.enum(["solo", "duo", "squad"]).transform((mode) => teamModeMap[mode] as TeamMode),
 });
 
 export type LeaderboardResponse = {

@@ -12,12 +12,15 @@ export enum MapId {
 
     // comp modes start at 50+
     CompMain = 50,
-
+    CompEuComp = 51,
+    
+    LocalMain = 99,
     // custom zurviv modes starts at 100+
     GG = 100,
     Gamerio = 101,
     FactionPotato = 102,
     FactionHalloween = 103,
+    
 }
 
 export const TeamModeToString = {

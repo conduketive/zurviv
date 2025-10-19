@@ -642,11 +642,13 @@ export class GameMap {
             const river = riverCreator.createLake(lake);
             this.riverDescs.push(river);
         }
-
+        
+        if ( mapConfig.rivers.weights.length == 0) {
+            return;
+        }
         //
         // Generate rivers
         //
-
         const widths = util.weightedRandom(
             mapConfig.rivers.weights,
             randomGenerator,
@@ -952,22 +954,32 @@ export class GameMap {
     }
 
     genFromMapDef(type: string, count: number): void {
+        const noRivers = this.mapDef.mapGen.map.rivers.weights.length !== 0;
+
         for (let i = 0; i < count; i++) {
             const def = MapObjectDefs[type];
 
             if (def.terrain?.waterEdge) {
                 this.genOnWaterEdge(type);
             } else if (def.terrain?.river) {
+                if ( noRivers ) return;
                 this.genOnRiver(type);
             } else if (def.terrain?.bridge) {
+                if ( noRivers ) return;
                 this.genBridge(type);
             } else if (def.terrain?.lakeCenter) {
+                if ( noRivers ) return;
                 this.genOnLakeCenter(type);
             } else if (def.terrain?.grass) {
-                this.genOnGrass(type);
+                try {
+                    this.genOnGrass(type);
+                } catch (error) {
+                    console.error(`failed to generate ${type}`);
+                }
             } else if (def.terrain?.beach) {
                 this.genOnBeach(type);
             } else if (def.terrain?.riverShore) {
+                if ( noRivers ) return;
                 this.genOnRiverShore(type);
             } else {
                 this.genOnGrass(type);

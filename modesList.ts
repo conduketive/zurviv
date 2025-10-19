@@ -16,6 +16,7 @@ const modes = [
     "cobalt",
     "turkey",
     "faction",
+    "local_main",
     "faction_potato",
     "faction_halloween",
     "comp_main",
@@ -33,6 +34,6 @@ for (const mode of modes) {
     }
 }
 
-export const EVENT_MODES = ["GG", "gamerio", "faction_potato", "faction_halloween"].map((t) =>
+export const EVENT_MODES = ["GG", "gamerio", "faction_potato", "faction_halloween", "local_main"].map((t) =>
     t.toLocaleLowerCase(),
 );

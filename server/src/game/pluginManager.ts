@@ -4,7 +4,7 @@ import type { Game } from "./game";
 import type { DamageParams } from "./objects/gameObject";
 import type { Player } from "./objects/player";
 
-interface PlayerDamageEvent extends DamageParams {
+export interface PlayerDamageEvent extends DamageParams {
     player: Player;
 }
 

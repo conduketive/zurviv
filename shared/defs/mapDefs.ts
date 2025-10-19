@@ -9,6 +9,7 @@ import { FactionPotato } from "./maps/factionPotatoDefs";
 import { Gamerio } from "./maps/gamerio";
 import { GG } from "./maps/gg";
 import { Halloween } from "./maps/halloweenDefs";
+import { LocalMain } from "./maps/local/localBaseDefs";
 import { MainSpring } from "./maps/mainSpringDefs";
 import { MainSummer } from "./maps/mainSummerDefs";
 import { Potato } from "./maps/potatoDefs";
@@ -56,6 +57,7 @@ export const MapDefs = {
     savannah: Savannah,
     cobalt: Cobalt,
     turkey: Turkey,
+    local_main: LocalMain,
 
     /* STRIP_FROM_PROD_CLIENT:START */
     test_normal: testNormal,

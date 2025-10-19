@@ -1,3 +1,4 @@
+import { MapDefs } from "../../../shared/defs/mapDefs";
 import { TeamMode } from "../../../shared/gameConfig";
 import * as net from "../../../shared/net/net";
 import type { Loadout } from "../../../shared/utils/loadout";
@@ -53,7 +54,7 @@ export class Game {
     stopTicker = 0;
     id: string;
     teamMode: TeamMode;
-    mapName: string;
+    mapName: keyof typeof MapDefs;
     isTeamMode: boolean;
     config: ServerGameConfig;
     pluginManager = new PluginManager(this);
