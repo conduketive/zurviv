@@ -1,9 +1,10 @@
 import type { ConfigType } from "./configType";
+import { MapDefs } from "./shared/defs/mapDefs";
 import { TeamMode } from "./shared/gameConfig";
 
 export const MODES_LIST: ConfigType["modes"] = [];
 
-const modes = [
+const modes: Array<keyof typeof MapDefs> = [
     "main",
     "main_spring",
     "halloween",
@@ -25,7 +26,7 @@ const modes = [
     "gamerio",
     "inferno",
     "birthday",
-] as const;
+];
 
 for (const mode of modes) {
     if (mode.startsWith("faction")) {

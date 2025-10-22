@@ -801,7 +801,7 @@ export const EuCompMain: MapDef = util.mergeDeep({}, Main, {
                 shack_03b: { small: 2, large: 3 }, // small river / sea cabins
                 greenhouse_01: { small: 1, large: 1 }, // greenhouses
                 cache_01: 1, // flare stone
-                mosin_tree: { small: 1, large: 1 }, // mosin tree
+                cache_02: { small: 1, large: 1 }, // mosin tree
                 cache_07: 1, //barrel
                 bunker_structure_01: { odds: 0.15 }, // ak74 bunker
                 bunker_structure_02: 1, // vector bunker

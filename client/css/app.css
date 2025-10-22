@@ -3534,6 +3534,34 @@ a:active {
   }
 }
 
+@keyframes localPulse {
+  /* for pulse */
+  from {
+    background-color: #a1cdad;
+    -webkit-box-shadow: 0 0 9px #c0dbc1;
+  }
+  50% {
+    background-color: #c0dbc1;
+    -webkit-box-shadow: 0 0 18px #a1cdad;
+  }
+  to {
+    background-color: #a1cdad;
+    -webkit-box-shadow: 0 0 9px #c0dbc1;
+  }
+}
+.btn-mode-local {
+  /* for desktop */
+  animation-name: localPulse;
+  border-bottom: 4px solid #84ac8d;
+}
+
+@media (max-width: 850px), (max-width: 900px) and (min-resolution: 3dppx) {
+  /* for phone */
+  .btn-mode-local {
+    border-bottom: 2px solid #84ac8d;
+  }
+}
+
 @keyframes birthdayPulse {
   /* for pulse */
   from {

@@ -3382,9 +3382,14 @@ export class Player extends BaseGameObject {
 
         this.dirNew = v2.normalizeSafe(msg.toMouseDir);
 
-        const allowMovement = !this.game.mapName.startsWith("comp") || this.game.started;
+        const allowMovement = () => {
+            if ( this.game.started ) return true;
+            const lobbyMaps = [MapId.CompMain, MapId.EuCompMain, MapId.LocalMain];
+            const isLobbyMap = lobbyMaps.includes(this.game.map.mapDef.mapId);
+            return !isLobbyMap;
+        }
 
-        if (allowMovement) {
+        if (allowMovement()) {
             this.moveLeft = msg.moveLeft;
             this.moveRight = msg.moveRight;
             this.moveUp = msg.moveUp;

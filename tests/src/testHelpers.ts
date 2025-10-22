@@ -3,6 +3,7 @@ import { type GameObjectDef, GameObjectDefs } from "../../shared/defs/gameObject
 import { MapObjectDefs } from "../../shared/defs/mapObjectDefs";
 import type { MapObjectDef } from "../../shared/defs/mapObjectsTyping";
 import { Main } from "../../shared/defs/maps/baseDefs";
+import { EuCompMain } from "../../shared/defs/maps/comp/euCompBaseDefs";
 
 interface GameTestHelpers<R = unknown> {
     toBeInRange: (value: { min: number; max: number }) => R;
@@ -122,7 +123,7 @@ expect.extend({
     },
 
     toBeValidLootTier: (received, _expected) => {
-        if (!(received in Main.lootTable)) {
+        if (!(received in Main.lootTable) && !(received in EuCompMain.lootTable)) {
             return {
                 message: () => `Expected '${received}' to be a valid loot table`,
                 pass: false,
