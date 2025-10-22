@@ -9116,6 +9116,24 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
         },
         sound: { explode: "crate_break_01" },
     } as unknown as Partial<ObstacleDef>),
+    crate_10_eu_comp: createCrate({
+        health: 200,
+        scale: { destroy: 0.75 },
+        loot: [
+            tierLoot("tier_supply_meds", 4, 5),
+            tierLoot("tier_supply_armor", 3, 5),
+            tierLoot("tier_supply_pistols", 1, 1),
+            tierLoot("tier_supply_scopes", 1, 2),
+            tierLoot("tier_supply_nades", 1, 2),            
+            tierLoot("tier_supply_ammo", 1, 1),
+        ],
+        map: { display: true },
+        img: {
+            sprite: "map-crate-10.img",
+            residue: "map-crate-res-03.img",
+        },
+        sound: { explode: "crate_break_01" },
+    } as unknown as Partial<ObstacleDef>),
     crate_11: createCrate({
         scale: { destroy: 0.75 },
         health: 200,
@@ -9410,6 +9428,19 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
         img: { sprite: "map-crate-22.img" },
         sound: { explode: "crate_break_01" },
     }),
+    eu_comp_supply: createAirdrop({
+        button: {
+            useImg: "map-airdrop-02.img",
+            useParticle: "airdropCrate01",
+            sound: { on: "airdrop_open_01", off: "" },
+        },
+        img: {
+            sprite: "map-airdrop-01.img",
+            residue: "none",
+        },
+        destroyType: "crate_10_eu_comp",
+        explodeParticle: "airdropCrate02",
+    } as unknown as Partial<ObstacleDef>),
     airdrop_crate_01: createAirdrop({
         button: {
             useImg: "map-airdrop-02.img",

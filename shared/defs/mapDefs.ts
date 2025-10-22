@@ -2,6 +2,7 @@ import type { Vec2 } from "../utils/v2";
 import { Main } from "./maps/baseDefs";
 import { Cobalt } from "./maps/cobaltDefs";
 import { CompMain } from "./maps/comp/compBaseDefs";
+import { EuCompMain } from "./maps/comp/euCompBaseDefs";
 import { Desert } from "./maps/desertDefs";
 import { Faction } from "./maps/factionDefs";
 import { FactionHalloween } from "./maps/factionHalloween";
@@ -58,7 +59,7 @@ export const MapDefs = {
     cobalt: Cobalt,
     turkey: Turkey,
     local_main: LocalMain,
-
+    comp_eu_main: EuCompMain,
     /* STRIP_FROM_PROD_CLIENT:START */
     test_normal: testNormal,
     test_faction: testFaction,

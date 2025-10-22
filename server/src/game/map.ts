@@ -1272,10 +1272,13 @@ export class GameMap {
     }
 
     getOriAndScale(type: string): { ori: number; scale: number } {
+        try {
+
         let ori = 0;
         let scale = 1;
 
         const def = MapObjectDefs[type];
+        
         if (def.type === "building" || def.type === "structure") {
             if ("oris" in def) {
                 ori = def.oris![util.randomInt(0, def.oris!.length - 1)];
@@ -1287,6 +1290,10 @@ export class GameMap {
         }
 
         return { ori, scale };
+        }
+        catch (error) {
+            throw new Error(`Failed to get ori and scale for ${type}`);
+        }
     }
 
     genOnWaterEdge(type: string): void {

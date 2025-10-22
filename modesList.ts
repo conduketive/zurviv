@@ -20,6 +20,7 @@ const modes = [
     "faction_potato",
     "faction_halloween",
     "comp_main",
+    "comp_eu_main",
     "GG",
     "gamerio",
 ] as const;

@@ -10,6 +10,8 @@ import { type Vec2, v2 } from "./v2";
 const cachedColliders: Record<string, Collider> = {};
 
 function computeBoundingCollider(type: string): Collider {
+    try {
+
     const def = MapObjectDefs[type];
     if (def.type === "structure") {
         const aabbs: AABB[] = [];
@@ -83,6 +85,10 @@ function computeBoundingCollider(type: string): Collider {
     }
     assert(def.collision !== undefined);
     return def.collision;
+    }
+    catch (error) {
+        throw new Error(`Failed to compute bounding collider for ${type}`);
+    }
 }
 
 //

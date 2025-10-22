@@ -12,7 +12,7 @@ export enum MapId {
 
     // comp modes start at 50+
     CompMain = 50,
-    CompEuComp = 51,
+    EuCompMain = 51,
     
     LocalMain = 99,
     // custom zurviv modes starts at 100+
