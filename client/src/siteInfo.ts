@@ -271,7 +271,7 @@ export function getFormattedMapName(mapName: string) {
         eu_comp_main: "EU Comp",
         faction_potato: "Faction Potato",
         faction_halloween: "Faction Halloween",
-        local_main: "Local"  
+        local_main: "Local",
     };
     if (mapName in mapWithCustomName) {
         return mapWithCustomName[mapName as keyof typeof mapWithCustomName];

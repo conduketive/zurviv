@@ -352,7 +352,7 @@ export const GameConfig = {
             chambered: 0xb500ff,
             apSaturated: 0x470349,
         },
-        "laser": {
+        laser: {
             regular: 0xff0000,
             saturated: 0xff0000,
             chambered: 0xff0000,

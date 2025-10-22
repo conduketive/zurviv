@@ -1,5 +1,5 @@
 import type { ConfigType } from "./configType";
-import { MapDefs } from "./shared/defs/mapDefs";
+import type { MapDefs } from "./shared/defs/mapDefs";
 import { TeamMode } from "./shared/gameConfig";
 
 export const MODES_LIST: ConfigType["modes"] = [];

@@ -3485,7 +3485,7 @@ export const GunDefs: Record<string, GunDef> = {
             attack: 0.0,
         },
         lootImg: {
-            sprite: "loot-weapon-lasr-gun.img", 
+            sprite: "loot-weapon-lasr-gun.img",
             tint: 0x00ff00,
             border: "loot-circle-outer-01.img",
             borderTint: 0x000000,
