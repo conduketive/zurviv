@@ -8,6 +8,7 @@ import { FactionPotato } from "./maps/factionPotatoDefs";
 import { Gamerio } from "./maps/gamerio";
 import { GG } from "./maps/gg";
 import { Halloween } from "./maps/halloweenDefs";
+import { inferno } from "./maps/inferno";
 import { MainSpring } from "./maps/mainSpringDefs";
 import { MainSummer } from "./maps/mainSummerDefs";
 import { Potato } from "./maps/potatoDefs";
@@ -20,7 +21,6 @@ import { Woods } from "./maps/woodsDefs";
 import { WoodsSnow } from "./maps/woodsSnowDefs";
 import { WoodsSpring } from "./maps/woodsSpringDefs";
 import { WoodsSummer } from "./maps/woodsSummerDefs";
-import { inferno } from "./maps/inferno";
 import type { MapId } from "./types/misc";
 
 export type Atlas =

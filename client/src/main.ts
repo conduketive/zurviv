@@ -885,9 +885,9 @@ class Application {
             matchData = {
                 ...matchData,
                 gameId,
-            }
+            };
         }
-        
+
         if (!this.game) {
             setTimeout(() => {
                 this.joinGame(matchData, spectate);

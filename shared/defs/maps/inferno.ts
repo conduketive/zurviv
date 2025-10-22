@@ -8,9 +8,9 @@ import { Main, type PartialMapDef } from "./baseDefs";
 const mapDef: PartialMapDef = {
     mapId: MapId.Inferno,
     desc: {
-        name: 'Inferno',
-        icon: 'img/gui/inferno.svg',
-        buttonCss: 'btn-mode-inferno',
+        name: "Inferno",
+        icon: "img/gui/inferno.svg",
+        buttonCss: "btn-mode-inferno",
     },
     assets: {
         audio: [
@@ -22,15 +22,15 @@ const mapDef: PartialMapDef = {
     },
     biome: {
         colors: {
-            background: 0x20536E,
-            water: 0xFE8438,
-            waterRipple: 0xFE8438,
-            beach: 0x534D45,
+            background: 0x20536e,
+            water: 0xfe8438,
+            waterRipple: 0xfe8438,
+            beach: 0x534d45,
             riverbank: 0x252525,
-            grass: 0x3C3C3C,
+            grass: 0x3c3c3c,
             underground: 0x1b0d03,
-            playerSubmerge: 0xFFFFFF,
-            playerGhillie: 0x83af50
+            playerSubmerge: 0xffffff,
+            playerGhillie: 0x83af50,
         },
     },
     gameMode: { maxPlayers: 80 },

@@ -6,11 +6,10 @@ import { GameObjectDefs } from "../../../../../shared/defs/gameObjectDefs";
 import { MapDefs } from "../../../../../shared/defs/mapDefs";
 import { TeamMode } from "../../../../../shared/gameConfig";
 import {
-    zCreatePrivateGameParams,
     zGiveItemParams,
     zRemoveItemParams,
 } from "../../../../../shared/types/moderation";
-import { Config, serverConfigPath } from "../../../config";
+import { serverConfigPath } from "../../../config";
 import {
     type SaveGameBody,
     zSetClientThemeBody,

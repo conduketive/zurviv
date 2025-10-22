@@ -6,7 +6,7 @@ import { Hono } from "hono";
 import { getCookie } from "hono/cookie";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
-import { promise, z } from "zod";
+import { z } from "zod";
 import { version } from "../../../package.json";
 import {
     type FindGameResponse,

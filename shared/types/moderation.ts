@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { teamModeMap } from "./stats";
 import { MapDefs } from "../defs/mapDefs";
+import { teamModeMap } from "./stats";
 
 export const zGetPlayerIpParams = z.object({
     name: z.string(),
@@ -81,9 +81,18 @@ export const zRemoveItemParams = z.object({
 
 export const zCreatePrivateGameParams = z.object({
     region: z.string(),
-    map_name: z.enum(Object.keys(MapDefs) as [keyof typeof MapDefs, ...Array<keyof typeof MapDefs>]).catch("main"),
-    team_mode: z.enum(["solo", "duo", "squad"]).catch("solo").transform((mode) => teamModeMap[mode]),
-  
+    map_name: z
+        .enum(
+            Object.keys(MapDefs) as [
+                keyof typeof MapDefs,
+                ...Array<keyof typeof MapDefs>,
+            ],
+        )
+        .catch("main"),
+    team_mode: z
+        .enum(["solo", "duo", "squad"])
+        .catch("solo")
+        .transform((mode) => teamModeMap[mode]),
 });
 
 export const zGetSpectableGamesRes = z.object({

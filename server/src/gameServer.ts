@@ -2,7 +2,7 @@ import { App, SSLApp, type WebSocket } from "uWebSockets.js";
 import { randomUUID } from "crypto";
 import z from "zod";
 import { version } from "../../package.json";
-import { GameConfig, TeamMode } from "../../shared/gameConfig";
+import { GameConfig } from "../../shared/gameConfig";
 import * as net from "../../shared/net/net";
 import { zCreatePrivateGameParams } from "../../shared/types/moderation";
 import { Config } from "./config";
