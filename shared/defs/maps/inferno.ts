@@ -22,7 +22,7 @@ const mapDef: PartialMapDef = {
     },
     biome: {
         colors: {
-            background: 0x20536e,
+            background: 0xfe8438,
             water: 0xfe8438,
             waterRipple: 0xfe8438,
             beach: 0x534d45,
@@ -123,9 +123,6 @@ const mapDef: PartialMapDef = {
                 house_red_02: { small: 3, large: 4 },
                 barn_01: { small: 2, large: 3 },
                 barn_02: 1,
-                hut_01: 3,
-                hut_02: 1, // spas hut
-                hut_03: 1, // scout hut
                 shack_03a: 2,
                 shack_03b: { small: 2, large: 3 },
                 greenhouse_02: 1,
@@ -158,6 +155,7 @@ const mapDef: PartialMapDef = {
         ],
         spawnReplacements: [
             {
+                stone_03: "stone_03i",
                 tree_01: "tree_30",
             },
         ],
