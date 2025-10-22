@@ -163,6 +163,7 @@ const _allowedEmotes = [
     "emote_coconut",
     "emote_crab",
     "emote_whale",
+    "emote_cake",
     "emote_logometeor",
     "emote_salt",
     "emote_disappointface",

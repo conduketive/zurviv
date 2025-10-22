@@ -1,5 +1,6 @@
 import type { Vec2 } from "../utils/v2";
 import { Main } from "./maps/baseDefs";
+import { Birthday } from "./maps/birthdayDefs";
 import { Cobalt } from "./maps/cobaltDefs";
 import { CompMain } from "./maps/comp/compBaseDefs";
 import { EuCompMain } from "./maps/comp/euCompBaseDefs";
@@ -60,6 +61,7 @@ export const MapDefs = {
     savannah: Savannah,
     cobalt: Cobalt,
     turkey: Turkey,
+    birthday: Birthday,
     local_main: LocalMain,
     comp_eu_main: EuCompMain,
     inferno: inferno,
@@ -233,15 +235,15 @@ export interface MapDef {
             }>;
             placeSpawns: string[];
         };
-        densitySpawns: Array<Record<string, number>>;
-        fixedSpawns: Array<
-            Record<string, number | { odds: number } | { small: number; large: number }>
-        >;
+        densitySpawns: [Record<string, number>];
+        fixedSpawns: [
+            Record<string, number | { odds: number } | { small: number; large: number }>,
+        ];
         randomSpawns: Array<{
             spawns: string[];
             choose: number;
         }>;
-        spawnReplacements: Array<Record<string, string>>;
+        spawnReplacements: [Record<string, string>];
         importantSpawns: string[];
     };
 }

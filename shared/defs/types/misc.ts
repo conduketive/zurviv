@@ -23,6 +23,7 @@ export enum MapId {
 
     // kong modes
     Inferno = 18,
+    Birthday = 8,
 }
 
 export const TeamModeToString = {

@@ -4,6 +4,8 @@ import { util } from "../../shared/utils/util";
 import type { Locale } from "./ui/localization";
 
 export const debugToolsConfig = {
+    enabled: false,
+
     zoomEnabled: false,
     zoom: GameConfig.scopeZoomRadius.desktop["1xscope"],
 
@@ -186,6 +188,9 @@ export class ConfigManager {
     }
 
     checkUpgradeConfig() {
+        // validation logic
+        this.config.loadout = loadout.validate(this.config.loadout);
+
         // seem not to be implemeted yet
         // this.get("version");
         // // @TODO: Put upgrade code here

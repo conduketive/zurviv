@@ -68,8 +68,6 @@ export class Editor {
         this.config = config;
         this.config.addModifiedListener(this.onConfigModified.bind(this));
 
-        this.setEnabled(false);
-
         this.toolParams = this.config.get("debugTools")!;
         this.toolParams.role = "";
 
@@ -343,6 +341,8 @@ export class Editor {
                 e.stopPropagation();
             });
         }
+
+        this.setEnabled(this.toolParams.enabled);
     }
 
     onConfigModified(_key?: string) {
@@ -353,6 +353,9 @@ export class Editor {
         this.enabled = e;
         this.refreshUi();
         if (e) this.sendMsg = true;
+
+        this.toolParams.enabled = e;
+        this.config.set("debugTools", this.toolParams);
     }
 
     refreshUi() {

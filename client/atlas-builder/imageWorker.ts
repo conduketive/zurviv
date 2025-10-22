@@ -1,7 +1,12 @@
 import fs from "node:fs";
 import Path from "node:path";
 import { createCanvas, loadImage } from "canvas";
-import { type ImgCache, imageFolder, imagesCacheFolder } from "./atlasBuilder";
+import {
+    atlasLogger,
+    type ImgCache,
+    imageFolder,
+    imagesCacheFolder,
+} from "./atlasBuilder";
 import { scaledSprites } from "./atlasDefs";
 import { detectEdges, type Edges } from "./detectEdges";
 
@@ -20,11 +25,13 @@ async function renderImage(path: string, hash: string) {
     tmpCtx.drawImage(image, 0, 0, tmpCanvas.width, tmpCanvas.height);
 
     let edges: Edges;
+
     try {
-        edges = detectEdges(tmpCanvas, { tolerance: 0 });
-    } catch (err) {
-        console.warn(`Failed to detect edges for image: ${path}`);
-        console.warn(err);
+        edges = detectEdges(tmpCanvas, {
+            tolerance: 0,
+        });
+    } catch (error) {
+        atlasLogger.error(`Failed to detect edges for ${path}`, error);
         edges = {
             top: 0,
             bottom: 0,

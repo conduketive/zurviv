@@ -24,6 +24,7 @@ const modes = [
     "GG",
     "gamerio",
     "inferno",
+    "birthday",
 ] as const;
 
 for (const mode of modes) {
