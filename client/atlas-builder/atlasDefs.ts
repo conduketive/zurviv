@@ -4,6 +4,7 @@ import { DesertAtlas } from "./defs/desert";
 import { FactionAtlas } from "./defs/faction";
 import { GradientAtlas } from "./defs/gradient";
 import { HalloweenAtlas } from "./defs/halloween";
+import { InfernoAtlas } from "./defs/inferno";
 import { LoadoutAtlas } from "./defs/loadout";
 import { MainAtlas } from "./defs/main";
 import { PotatoAtlas } from "./defs/potato";
@@ -40,6 +41,7 @@ export const Atlases: Record<Atlas, AtlasDef> = {
     woods: WoodsAtlas,
     cobalt: CobaltAtlas,
     savannah: SavannahAtlas,
+    inferno: InfernoAtlas,
 };
 export type AtlasRes = "high" | "low";
 

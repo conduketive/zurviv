@@ -21,6 +21,9 @@ export enum MapId {
     FactionPotato = 102,
     FactionHalloween = 103,
     
+
+    // kong modes
+    Inferno = 18,
 }
 
 export const TeamModeToString = {

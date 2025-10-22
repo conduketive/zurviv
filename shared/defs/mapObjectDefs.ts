@@ -8655,6 +8655,16 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
         },
         map: { display: true, color: 0xd64100, scale: 1.5 },
     } as unknown as Partial<ObstacleDef>),
+    bush_30: createBush({
+        scale: { createMin: 1, createMax: 1 },
+        collision: collider.createCircle(v2.create(0, 0), 1.75),
+        img: {
+            sprite: "map-bush-30.img",
+            residue: "map-bush-res-06.img",
+            alpha: 1,
+        },
+        map: { display: true, color: 0x4a4a4a, scale: 1.5 },
+    } as unknown as Partial<ObstacleDef>),
     bush_07: createBush({
         hitParticle: "leafRiver",
         explodeParticle: "leafRiver",
@@ -9441,6 +9451,19 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
         destroyType: "crate_10_eu_comp",
         explodeParticle: "airdropCrate02",
     } as unknown as Partial<ObstacleDef>),
+    crate_30: createCrate({
+        health: 140,
+        loot: [
+            autoLoot("m1014", 1),
+            autoLoot("helmet03_lt_aged", 1),
+            autoLoot("outfitRedLeaderAged", 1),
+            autoLoot("machete_taiga", 1),
+        ],
+        map: { display: true, color: 0xcc0000 },
+        terrain: { grass: true, beach: false },
+        img: { sprite: "map-crate-30.img" },
+        sound: { explode: "crate_break_01" },
+    }),
     airdrop_crate_01: createAirdrop({
         button: {
             useImg: "map-airdrop-02.img",
@@ -10425,6 +10448,12 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
             residue: "map-stone-res-02x.img",
         },
     }),
+    stone_03i: createRiverStone({
+        img: {
+            sprite: "map-stone-03i.img",
+            residue: "map-stone-res-02i.img",
+        },
+    }),
     stone_04: createStone({
         stonePlated: true,
         scale: {
@@ -10977,6 +11006,16 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
             zIdx: 801,
         },
         terrain: { grass: true, beach: false, riverShore: true },
+    } as unknown as Partial<ObstacleDef>),
+    tree_30: createTree({
+        scale: { createMin: 1.2, createMax: 1.4 },
+        health: 225,
+        map: { color: 0x4a4a4a, scale: 2.5 },
+        img: {
+            sprite: "map-tree-30.img",
+            residue: "map-tree-res-02.img",
+            scale: 0.35,
+        },
     } as unknown as Partial<ObstacleDef>),
     tree_09: createTree({
         health: 120,

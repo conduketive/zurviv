@@ -11,6 +11,7 @@ import { Gamerio } from "./maps/gamerio";
 import { GG } from "./maps/gg";
 import { Halloween } from "./maps/halloweenDefs";
 import { LocalMain } from "./maps/local/localBaseDefs";
+import { inferno } from "./maps/inferno";
 import { MainSpring } from "./maps/mainSpringDefs";
 import { MainSummer } from "./maps/mainSummerDefs";
 import { Potato } from "./maps/potatoDefs";
@@ -37,7 +38,8 @@ export type Atlas =
     | "snow"
     | "woods"
     | "cobalt"
-    | "savannah";
+    | "savannah"
+    | "inferno";
 
 export const MapDefs = {
     main: Main,
@@ -59,7 +61,8 @@ export const MapDefs = {
     cobalt: Cobalt,
     turkey: Turkey,
     local_main: LocalMain,
-    comp_eu_main: EuCompMain,
+    comp_eu_main: EuCompMain,    inferno: inferno,
+
     /* STRIP_FROM_PROD_CLIENT:START */
     test_normal: testNormal,
     test_faction: testFaction,

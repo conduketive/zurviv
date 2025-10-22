@@ -23,6 +23,7 @@ const modes = [
     "comp_eu_main",
     "GG",
     "gamerio",
+    "inferno",
 ] as const;
 
 for (const mode of modes) {
