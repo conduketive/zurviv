@@ -25,7 +25,10 @@ export const EuCompMain: MapDef = util.mergeDeep({}, Main, {
                 {
                     circleIdx: 1,
                     wait: 50,
-                    options: { type: GameConfig.Plane.Airdrop, airdropType: "supply_crate_01" },
+                    options: {
+                        type: GameConfig.Plane.Airdrop,
+                        airdropType: "supply_crate_01",
+                    },
                 },
                 {
                     circleIdx: 3,
@@ -131,8 +134,8 @@ export const EuCompMain: MapDef = util.mergeDeep({}, Main, {
             { name: "healthkit", count: 1, weight: 4 },
         ],
         tier_soda: [
-            { name: "soda", count: 2, weight: 1},
-            { name: "soda", count: 1, weight: 1},
+            { name: "soda", count: 2, weight: 1 },
+            { name: "soda", count: 1, weight: 1 },
         ],
         tier_throwables: [
             { name: "frag", count: 2, weight: 1 }, // !
@@ -171,9 +174,12 @@ export const EuCompMain: MapDef = util.mergeDeep({}, Main, {
         tier_scopes_sniper: [
             { name: "4xscope", count: 1, weight: 5 }, // ?
             //{ name: "8xscope", count: 1, weight: 1 }, // ?
-           // { name: "15xscope", count: 1, weight: 0.02 }, // ?
+            // { name: "15xscope", count: 1, weight: 0.02 }, // ?
         ],
-        tier_mansion_floor: [{ name: "outfitCasanova", count: 1, weight: 0.66 }, { name: "saw", count: 1, weight: 33 }],
+        tier_mansion_floor: [
+            { name: "outfitCasanova", count: 1, weight: 0.66 },
+            { name: "saw", count: 1, weight: 33 },
+        ],
         tier_vault_floor: [{ name: "crowbar", count: 1, weight: 1 }],
         tier_police_floor: [{ name: "kukri_trad", count: 1, weight: 1 }],
         tier_hydra_floor: [{ name: "spade", count: 1, weight: 1 }],
@@ -188,7 +194,7 @@ export const EuCompMain: MapDef = util.mergeDeep({}, Main, {
             //{ name: "15xscope", count: 1, weight: 0.1 }, // ?
         ],
         tier_pink_bush: [
-            { name: "model94", count: 1, weight: 0.33 },  // 1/3 for every gun
+            { name: "model94", count: 1, weight: 0.33 }, // 1/3 for every gun
             { name: "vector45", count: 1, weight: 0.33 },
             { name: "mkg45", count: 1, weight: 0.33 },
         ],
@@ -221,7 +227,7 @@ export const EuCompMain: MapDef = util.mergeDeep({}, Main, {
         tier_fireaxe: [{ name: "fireaxe", count: 1, weight: 1 }],
         tier_club_melee: [
             { name: "machete_taiga", count: 1, weight: 0.9 },
-            { name: "chest03", count: 1, weight: 0.1 }
+            { name: "chest03", count: 1, weight: 0.1 },
         ],
         tier_guns: [
             { name: "famas", count: 1, weight: 1.2 },
@@ -265,10 +271,10 @@ export const EuCompMain: MapDef = util.mergeDeep({}, Main, {
             { name: "backpack03", count: 1, weight: 0.02 },
         ],
         tier_ring_case: [
-            { name: "grozas", count: 1, weight: 0.67 }, 
-            { name: "ots38_dual", count: 1, weight: 0.11 }, 
+            { name: "grozas", count: 1, weight: 0.67 },
+            { name: "ots38_dual", count: 1, weight: 0.11 },
             { name: "pkp", count: 1, weight: 0.11 },
-            { name: "sv98", count: 1, weight: 0.11 }, 
+            { name: "sv98", count: 1, weight: 0.11 },
         ],
         tier_chest: [
             { name: "mk12", count: 1, weight: 0.45 },
@@ -332,59 +338,59 @@ export const EuCompMain: MapDef = util.mergeDeep({}, Main, {
             { name: "ot38", count: 1, weight: 0.4 },
         ],
         tier_ak_military_crate: [
-            { name: "groza", count: 1, weight: 0.2 }, 
+            { name: "groza", count: 1, weight: 0.2 },
             { name: "spas12", count: 1, weight: 0.1 },
             { name: "m870", count: 1, weight: 0.15 },
             { name: "mp220", count: 1, weight: 0.1 },
             { name: "ots38", count: 1, weight: 0.2 },
             { name: "saiga", count: 1, weight: 0.05 },
             { name: "tier_hawk", count: 1, weight: 0.05 },
-            { name: "ak74", count: 1, weight: 0.05 }, 
+            { name: "ak74", count: 1, weight: 0.05 },
             { name: "l86", count: 1, weight: 0.1 },
         ],
         tier_bank_vault_basic: [
-            { name: "famas", count: 1, weight: 0.15 }, 
+            { name: "famas", count: 1, weight: 0.15 },
             { name: "qbb97", count: 1, weight: 0.03 },
             { name: "dp28", count: 1, weight: 0.1 },
             { name: "m870", count: 1, weight: 0.15 },
             { name: "mp220", count: 1, weight: 0.1 },
-            { name: "hk416", count: 1, weight: 0.13 }, 
+            { name: "hk416", count: 1, weight: 0.13 },
             { name: "ak47", count: 1, weight: 0.1 },
             { name: "m93r_dual", count: 1, weight: 0.09 },
             { name: "mkg45", count: 1, weight: 0.04 },
-            { name: "m39", count: 1, weight: 0.05 }, 
-            { name: "mk12", count: 1, weight: 0.05 }, 
-            { name: "m4a1", count: 1, weight: 0.02 }, 
+            { name: "m39", count: 1, weight: 0.05 },
+            { name: "mk12", count: 1, weight: 0.05 },
+            { name: "m4a1", count: 1, weight: 0.02 },
             { name: "scar", count: 1, weight: 0.01 },
             { name: "vector", count: 1, weight: 0.01 },
             { name: "saiga", count: 1, weight: 0.01 },
         ],
         tier_bank_vault_gold: [
-            { name: "famas", count: 1, weight: 0.2 }, 
+            { name: "famas", count: 1, weight: 0.2 },
             { name: "qbb97", count: 1, weight: 0.13 },
             { name: "dp28", count: 1, weight: 0.06 },
             { name: "m870", count: 1, weight: 0.12 },
             { name: "mp220", count: 1, weight: 0.1 },
             { name: "hk416", count: 1, weight: 0.05 },
             { name: "mkg45", count: 1, weight: 0.08 },
-            { name: "m39", count: 1, weight: 0.07 }, 
-            { name: "mk12", count: 1, weight: 0.07 }, 
+            { name: "m39", count: 1, weight: 0.07 },
+            { name: "mk12", count: 1, weight: 0.07 },
             { name: "m93r_dual", count: 1, weight: 0.05 },
-            { name: "m4a1", count: 1, weight: 0.08 }, 
+            { name: "m4a1", count: 1, weight: 0.08 },
             { name: "scar", count: 1, weight: 0.03 },
             { name: "vector", count: 1, weight: 0.03 },
             { name: "saiga", count: 1, weight: 0.03 },
         ],
         tier_bank_vault_packs: [
-            { name: "tier_packs", count: 1, weight: 0.66},
-            { name: "", count: 1, weight: 0.33},
+            { name: "tier_packs", count: 1, weight: 0.66 },
+            { name: "", count: 1, weight: 0.33 },
         ],
         tier_ak_bunker: [
             { name: "ak74", count: 1, weight: 0.6 },
-            { name: "ak47", count: 1, weight: 0.4 }, 
+            { name: "ak47", count: 1, weight: 0.4 },
         ],
         tier_chest_sniper_tea: [
-            { name: "mosin", count: 1, weight: 0.16 },  // 8%
+            { name: "mosin", count: 1, weight: 0.16 }, // 8%
             //{ name: "sv98", count: 1, weight: 0.0662 },   // 1.75%
             { name: "scout_elite", count: 1, weight: 0.5 },
             { name: "saiga", count: 1, weight: 0.3 },
@@ -396,7 +402,7 @@ export const EuCompMain: MapDef = util.mergeDeep({}, Main, {
             { name: "", count: 1, weight: 0.4 },
         ],
         tier_chest_sniper: [
-            { name: "garand", count: 1, weight: 0.25 },  // 8%
+            { name: "garand", count: 1, weight: 0.25 }, // 8%
             //{ name: "sv98", count: 1, weight: 0.0662 },   // 1.75%
             { name: "scout_elite", count: 1, weight: 0.5 },
             { name: "saiga", count: 1, weight: 0.3 },
@@ -407,7 +413,7 @@ export const EuCompMain: MapDef = util.mergeDeep({}, Main, {
             //{ name: "awc", count: 1, weight: 0.074 },
         ],
         tier_chest_sniper_spec: [
-            { name: "garand", count: 1, weight: 0.3 },  // 8%
+            { name: "garand", count: 1, weight: 0.3 }, // 8%
             //{ name: "sv98", count: 1, weight: 0.0662 },   // 1.75%
             { name: "scout_elite", count: 1, weight: 0.5 },
             { name: "saiga", count: 1, weight: 0.3 },
@@ -454,10 +460,10 @@ export const EuCompMain: MapDef = util.mergeDeep({}, Main, {
             { name: "pkm", count: 1, weight: 0.03 },
         ],
         tier_crossing: [
-            { name: "ots38", count: 1, weight: 0.2},
-            { name: "ots38_dual", count: 1, weight: 0.3},
-            { name: "p30l", count: 1, weight: 0.3},
-            { name: "m134", count: 1, weight: 0.1},
+            { name: "ots38", count: 1, weight: 0.2 },
+            { name: "ots38_dual", count: 1, weight: 0.3 },
+            { name: "p30l", count: 1, weight: 0.3 },
+            { name: "m134", count: 1, weight: 0.1 },
         ],
         tier_lmgs: [
             { name: "dp28", count: 1, weight: 2 }, // ?
@@ -488,7 +494,7 @@ export const EuCompMain: MapDef = util.mergeDeep({}, Main, {
         ],
         tier_forest_helmet: [{ name: "helmet03_forest", count: 1, weight: 1 }],
         tier_outfits: [
-            { name: "", count: 1, weight: 0.5},
+            { name: "", count: 1, weight: 0.5 },
             { name: "outfitCobaltShell", count: 1, weight: 0.2 }, // ?
             { name: "outfitKeyLime", count: 1, weight: 0.15 }, // ?
             { name: "outfitWoodland", count: 1, weight: 0.1 }, // ?
@@ -496,13 +502,13 @@ export const EuCompMain: MapDef = util.mergeDeep({}, Main, {
             { name: "outfitGhillie", count: 1, weight: 0.01 }, // ?
         ],
         tier_shotgun_barrel: [
-            { name: "tier_hawk", count: 1, weight: 0.30},
-            { name: "bar", count: 1, weight: 0.4},
-            { name: "usas", count: 1, weight: 0.30},
+            { name: "tier_hawk", count: 1, weight: 0.3 },
+            { name: "bar", count: 1, weight: 0.4 },
+            { name: "usas", count: 1, weight: 0.3 },
         ],
         tier_lvl3_chance: [
-            { name: "chest03", count: 1, weight: 0.15},
-            { name: "", count: 1, weight: 0.85},
+            { name: "chest03", count: 1, weight: 0.15 },
+            { name: "", count: 1, weight: 0.85 },
         ],
         tier_islander_outfit: [{ name: "outfitIslander", count: 1, weight: 1 }],
         tier_imperial_outfit: [{ name: "outfitImperial", count: 1, weight: 1 }],
@@ -659,15 +665,13 @@ export const EuCompMain: MapDef = util.mergeDeep({}, Main, {
             { name: "colt45", count: 1, weight: 0.13 },
             { name: "colt45_dual", count: 1, weight: 0.16 },
             { name: "m1911", count: 1, weight: 0.13 },
-            { name: "m1911_dual", count: 1, weight: 0.25 }, 
+            { name: "m1911_dual", count: 1, weight: 0.25 },
         ],
         tier_supply_scopes: [
             { name: "4xscope", count: 1, weight: 1 },
             { name: "", count: 1, weight: 0.2 },
         ],
-        tier_supply_nades: [
-            { name: "tier_better_throwables", count: 2, weight: 1 },
-        ],
+        tier_supply_nades: [{ name: "tier_better_throwables", count: 2, weight: 1 }],
         tier_supply_ammo: [
             { name: "12gauge", count: 20, weight: 0.25 },
             { name: "50AE", count: 29, weight: 0.25 },
@@ -785,8 +789,8 @@ export const EuCompMain: MapDef = util.mergeDeep({}, Main, {
         fixedSpawns: [
             {
                 // small is spawn count for solos and duos, large is spawn count for squads
-                warehouse_01: { small: 2, large: 5, },
-                house_red_01: { small: 3, large: 7, }, 
+                warehouse_01: { small: 2, large: 5 },
+                house_red_01: { small: 3, large: 7 },
                 house_red_02: { small: 3, large: 7 },
                 barn_01: { small: 1, large: 4 }, //green houses
                 barn_02: { small: 1, large: 1 },
@@ -795,9 +799,9 @@ export const EuCompMain: MapDef = util.mergeDeep({}, Main, {
                 hut_03: 1, // scout hut
                 shack_03a: 2, // small river / sea cabins
                 shack_03b: { small: 2, large: 3 }, // small river / sea cabins
-                greenhouse_01: { small: 1, large: 1}, // greenhouses
+                greenhouse_01: { small: 1, large: 1 }, // greenhouses
                 cache_01: 1, // flare stone
-                mosin_tree: { small: 1, large: 1}, // mosin tree
+                mosin_tree: { small: 1, large: 1 }, // mosin tree
                 cache_07: 1, //barrel
                 bunker_structure_01: { odds: 0.15 }, // ak74 bunker
                 bunker_structure_02: 1, // vector bunker
@@ -813,14 +817,14 @@ export const EuCompMain: MapDef = util.mergeDeep({}, Main, {
                     small: 1,
                     large: 3,
                 },
-                stone_04: { small: 1, large: 1},
+                stone_04: { small: 1, large: 1 },
                 club_complex_01: 1,
                 mansion_structure_01: { small: 0, large: 0 },
                 police_01: { small: 0, large: 0 },
                 bank_01: { small: 0, large: 0 },
             },
         ],
-        randomSpawns: [ 
+        randomSpawns: [
             //medium tier spawns
             {
                 spawns: ["mansion_structure_01", "police_01", "bank_01"],

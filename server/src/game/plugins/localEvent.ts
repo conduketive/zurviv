@@ -1,10 +1,12 @@
 import { GameObjectDefs } from "../../../../shared/defs/gameObjectDefs";
-import type { GunDef } from "../../../../shared/defs/gameObjects/gunDefs";
 import { UnlockDefs } from "../../../../shared/defs/gameObjects/unlockDefs";
-import { GameConfig, InventoryItem, WeaponSlot } from "../../../../shared/gameConfig";
-import { ObjectType } from "../../../../shared/net/objectSerializeFns";
+import {
+    GameConfig,
+    type InventoryItem,
+    WeaponSlot,
+} from "../../../../shared/gameConfig";
 import type { Player } from "../../game/objects/player";
-import { GamePlugin, type PlayerDamageEvent } from "../../game/pluginManager";
+import { GamePlugin } from "../../game/pluginManager";
 
 /**
  * Checks if an item is present in the player's loadout
@@ -66,7 +68,7 @@ const customReloadPercentage: Record<string, number> = {
     lasr_gun: 7,
     lasr_gun_dual: 14,
 };
-function calculateAmmoToGive(type: string, currAmmo: number, maxClip: number): number {
+function _calculateAmmoToGive(type: string, currAmmo: number, maxClip: number): number {
     const amount = customReloadPercentage[type] ?? 50;
     if (amount === 0) return currAmmo;
     return Math.floor(Math.min(currAmmo + (maxClip * amount) / 100, maxClip));

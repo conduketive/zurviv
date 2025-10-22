@@ -22,6 +22,7 @@ import { PerkProperties } from "../../../../shared/defs/gameObjects/perkDefs";
 import type { RoleDef } from "../../../../shared/defs/gameObjects/roleDefs";
 import type { ThrowableDef } from "../../../../shared/defs/gameObjects/throwableDefs";
 import { UnlockDefs } from "../../../../shared/defs/gameObjects/unlockDefs";
+import { MapId } from "../../../../shared/defs/types/misc";
 import {
     type Action,
     type Anim,
@@ -51,7 +52,6 @@ import { BaseGameObject, type DamageParams, type GameObject } from "./gameObject
 import type { Loot } from "./loot";
 import type { MapIndicator } from "./mapIndicator";
 import type { Obstacle } from "./obstacle";
-import { MapId } from "../../../../shared/defs/types/misc";
 
 type MoveObjsMode = {
     enabled: boolean;
@@ -3384,7 +3384,7 @@ export class Player extends BaseGameObject {
 
         const allowMovement = !this.game.mapName.startsWith("comp") || this.game.started;
 
-        if ( allowMovement ) {
+        if (allowMovement) {
             this.moveLeft = msg.moveLeft;
             this.moveRight = msg.moveRight;
             this.moveUp = msg.moveUp;

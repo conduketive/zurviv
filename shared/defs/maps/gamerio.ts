@@ -1,7 +1,6 @@
 import { util } from "../../utils/util";
 import type { MapDef } from "../mapDefs";
 import { MapId } from "../types/misc";
-import { Main } from "./baseDefs";
 import { Halloween } from "./halloweenDefs";
 
 const mapDef = {

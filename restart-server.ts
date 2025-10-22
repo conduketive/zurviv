@@ -3,12 +3,12 @@
 import { $ } from "bun";
 
 try {
-  await $`sudo -v`;
-  process.chdir("/opt/survev/server");
-  await $`git pull`;
-  await $`pnpm run build`;
-  await $`sudo systemctl restart survev-game`;
+    await $`sudo -v`;
+    process.chdir("/opt/survev/server");
+    await $`git pull`;
+    await $`pnpm run build`;
+    await $`sudo systemctl restart survev-game`;
 } catch (error) {
-  console.error("Update failed:", error);
-  process.exit(1);
+    console.error("Update failed:", error);
+    process.exit(1);
 }

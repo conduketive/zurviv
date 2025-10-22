@@ -9134,7 +9134,7 @@ export const MapObjectDefs: Record<string, MapObjectDef> = {
             tierLoot("tier_supply_armor", 3, 5),
             tierLoot("tier_supply_pistols", 1, 1),
             tierLoot("tier_supply_scopes", 1, 2),
-            tierLoot("tier_supply_nades", 1, 2),            
+            tierLoot("tier_supply_nades", 1, 2),
             tierLoot("tier_supply_ammo", 1, 1),
         ],
         map: { display: true },

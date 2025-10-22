@@ -11,82 +11,80 @@ const cachedColliders: Record<string, Collider> = {};
 
 function computeBoundingCollider(type: string): Collider {
     try {
-
-    const def = MapObjectDefs[type];
-    if (def.type === "structure") {
-        const aabbs: AABB[] = [];
-        for (let i = 0; i < def.layers.length; i++) {
-            const obj = def.layers[i];
-            const rot = math.oriToRad(obj.ori);
-            const col = collider.transform(
-                mapHelpers.getBoundingCollider(obj.type),
-                obj.pos,
-                rot,
-                1.0,
-            );
-            aabbs.push(collider.toAabb(col));
-        }
-        for (let i = 0; i < def.stairs.length; i++) {
-            aabbs.push(def.stairs[i].collision);
-        }
-        const aabb = coldet.boundingAabb(aabbs);
-        // Expand structure aabb a small amount. This fixes an issue where
-        // moving loot scanning for nearby structures may exit a stairwell
-        // and no longer detect the nearby structure, thereby not switching
-        // layers back to the ground layer.
-        const margin = v2.create(1.0, 1.0);
-        aabb.min = v2.sub(aabb.min, margin);
-        aabb.max = v2.add(aabb.max, margin);
-        return collider.createAabb(aabb.min, aabb.max);
-    }
-    if (def.type === "building") {
-        const aabbs: AABB[] = [];
-        for (let i = 0; i < def.floor.surfaces.length; i++) {
-            const collisions = def.floor.surfaces[i].collision;
-            for (let j = 0; j < collisions.length; j++) {
-                aabbs.push(collisions[j]);
-            }
-        }
-        for (let i = 0; i < def.ceiling.zoomRegions.length; i++) {
-            const region = def.ceiling.zoomRegions[i];
-            if (region.zoomIn) {
-                aabbs.push(region.zoomIn);
-            }
-            if (region.zoomOut) {
-                aabbs.push(region.zoomOut);
-            }
-        }
-        // Map objects
-        for (let i = 0; i < def.mapObjects.length; i++) {
-            const mapObj = def.mapObjects[i];
-            let mt = mapObj.type!;
-            if (typeof mt === "object") {
-                mt = util.weightedRandomObject(mt);
-            }
-            if (mt !== "") {
-                const rot = math.oriToRad(mapObj.ori);
+        const def = MapObjectDefs[type];
+        if (def.type === "structure") {
+            const aabbs: AABB[] = [];
+            for (let i = 0; i < def.layers.length; i++) {
+                const obj = def.layers[i];
+                const rot = math.oriToRad(obj.ori);
                 const col = collider.transform(
-                    mapHelpers.getBoundingCollider(mt),
-                    mapObj.pos,
+                    mapHelpers.getBoundingCollider(obj.type),
+                    obj.pos,
                     rot,
-                    mapObj.scale,
+                    1.0,
                 );
                 aabbs.push(collider.toAabb(col));
             }
+            for (let i = 0; i < def.stairs.length; i++) {
+                aabbs.push(def.stairs[i].collision);
+            }
+            const aabb = coldet.boundingAabb(aabbs);
+            // Expand structure aabb a small amount. This fixes an issue where
+            // moving loot scanning for nearby structures may exit a stairwell
+            // and no longer detect the nearby structure, thereby not switching
+            // layers back to the ground layer.
+            const margin = v2.create(1.0, 1.0);
+            aabb.min = v2.sub(aabb.min, margin);
+            aabb.max = v2.add(aabb.max, margin);
+            return collider.createAabb(aabb.min, aabb.max);
         }
-        const aabb = coldet.boundingAabb(aabbs);
-        return collider.createAabb(aabb.min, aabb.max);
-    }
-    if (def.type === "decal") {
-        return collider.toAabb(def.collision);
-    }
-    if (def.type === "loot_spawner") {
-        return collider.createCircle(v2.create(0.0, 0.0), 3.0);
-    }
-    assert(def.collision !== undefined);
-    return def.collision;
-    }
-    catch (error) {
+        if (def.type === "building") {
+            const aabbs: AABB[] = [];
+            for (let i = 0; i < def.floor.surfaces.length; i++) {
+                const collisions = def.floor.surfaces[i].collision;
+                for (let j = 0; j < collisions.length; j++) {
+                    aabbs.push(collisions[j]);
+                }
+            }
+            for (let i = 0; i < def.ceiling.zoomRegions.length; i++) {
+                const region = def.ceiling.zoomRegions[i];
+                if (region.zoomIn) {
+                    aabbs.push(region.zoomIn);
+                }
+                if (region.zoomOut) {
+                    aabbs.push(region.zoomOut);
+                }
+            }
+            // Map objects
+            for (let i = 0; i < def.mapObjects.length; i++) {
+                const mapObj = def.mapObjects[i];
+                let mt = mapObj.type!;
+                if (typeof mt === "object") {
+                    mt = util.weightedRandomObject(mt);
+                }
+                if (mt !== "") {
+                    const rot = math.oriToRad(mapObj.ori);
+                    const col = collider.transform(
+                        mapHelpers.getBoundingCollider(mt),
+                        mapObj.pos,
+                        rot,
+                        mapObj.scale,
+                    );
+                    aabbs.push(collider.toAabb(col));
+                }
+            }
+            const aabb = coldet.boundingAabb(aabbs);
+            return collider.createAabb(aabb.min, aabb.max);
+        }
+        if (def.type === "decal") {
+            return collider.toAabb(def.collision);
+        }
+        if (def.type === "loot_spawner") {
+            return collider.createCircle(v2.create(0.0, 0.0), 3.0);
+        }
+        assert(def.collision !== undefined);
+        return def.collision;
+    } catch (_error) {
         throw new Error(`Failed to compute bounding collider for ${type}`);
     }
 }

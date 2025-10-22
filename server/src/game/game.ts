@@ -1,4 +1,4 @@
-import { MapDefs } from "../../../shared/defs/mapDefs";
+import type { MapDefs } from "../../../shared/defs/mapDefs";
 import { TeamMode } from "../../../shared/gameConfig";
 import * as net from "../../../shared/net/net";
 import type { Loadout } from "../../../shared/utils/loadout";

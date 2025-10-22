@@ -1,10 +1,9 @@
-import { Halloween } from "./halloweenDefs";
-
 import { util } from "../../utils/util";
 import type { MapDef } from "../mapDefs";
 import { MapId } from "../types/misc";
-import { type PartialMapDef } from "./baseDefs";
+import type { PartialMapDef } from "./baseDefs";
 import { Faction } from "./factionDefs";
+import { Halloween } from "./halloweenDefs";
 
 export enum TeamColor {
     // NONE = 0, // can be used ambiguously with code that runs the same regardless of team color
@@ -26,13 +25,10 @@ const mapDef: PartialMapDef = {
         backgroundImg: Halloween.desc.backgroundImg,
     },
     assets: {
-        audio: [
-            ...Halloween.assets.audio,
-            ...Faction.assets.audio,
-        ],
+        audio: [...Halloween.assets.audio, ...Faction.assets.audio],
         atlases: ["gradient", "loadout", "shared", "faction", "halloween"],
     },
-    biome: {...Halloween.biome},
+    biome: { ...Halloween.biome },
     gameMode: {
         killLeaderEnabled: true,
         spookyKillSounds: true,
@@ -107,7 +103,7 @@ const mapDef: PartialMapDef = {
                 cabin_01: "cabin_02",
             },
         ],
-    }
+    },
 };
 
 export const FactionHalloween = util.mergeDeep({}, Faction, mapDef) as MapDef;
