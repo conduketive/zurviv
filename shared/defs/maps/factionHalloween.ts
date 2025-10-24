@@ -104,11 +104,6 @@ const mapDef: PartialMapDef = {
             },
         ],
     },
-    };
+};
 
-    export const FactionHalloween = util.mergeDeep({}, Faction, mapDef) as MapDef;
-
-
-    console.log(
-        FactionHalloween["lootTable"]
-    )
+export const FactionHalloween = util.mergeDeep({}, Faction, mapDef) as MapDef;
