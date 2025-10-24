@@ -34,17 +34,15 @@ const mapDef: PartialMapDef = {
         spookyKillSounds: true,
     },
     lootTable: {
+        ...Halloween.lootTable,
         ...Faction.lootTable,
+        tier_container: [
+            ...Faction.lootTable["tier_container"],
+            { name: "tier_outfits", count: 1, weight: 0.1 },
+        ],
         tier_toilet: [
-            { name: "tier_guns", count: 1, weight: 0.1 },
-            { name: "tier_scopes", count: 1, weight: 0.05 },
-            { name: "tier_medical", count: 1, weight: 0.6 },
-            {
-                name: "tier_throwables",
-                count: 1,
-                weight: 0.05,
-            },
-            { name: "tier_outfits", count: 1, weight: 0 },
+            ...Faction.lootTable["tier_toilet"],
+            { name: "tier_outfits", count: 1, weight: 0.1 },
         ],
         tier_outfits: [
             { name: "outfitBarrel", count: 1, weight: 1 },
@@ -71,6 +69,8 @@ const mapDef: PartialMapDef = {
     mapGen: {
         fixedSpawns: [
             {
+                cache_pumpkin_01: 32,
+                cache_pumpkin_03: 32,
                 junkyard_01: 1,
                 warehouse_01h: 4,
                 house_red_01h: 7,
@@ -104,6 +104,11 @@ const mapDef: PartialMapDef = {
             },
         ],
     },
-};
+    };
 
-export const FactionHalloween = util.mergeDeep({}, Faction, mapDef) as MapDef;
+    export const FactionHalloween = util.mergeDeep({}, Faction, mapDef) as MapDef;
+
+
+    console.log(
+        FactionHalloween["lootTable"]
+    )
