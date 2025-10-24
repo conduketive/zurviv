@@ -4764,13 +4764,13 @@ input [type="image"]:focus {
 }
 
 #modal-ip-banned,
-#modal-invalide-role {
+#modal-invalid-role {
   background-color: #000;
   background-color: rgba(0, 0, 0, 0.75);
 }
 
 #modal-ip-banned .modal-content,
-#modal-invalide-role .modal-content {
+#modal-invalid-role .modal-content {
   text-decoration: none;
   left: 50%;
   transform: translateX(-50%);
@@ -4779,11 +4779,11 @@ input [type="image"]:focus {
   animation-duration: 0.2s;
 }
 
-#modal-invalide-role .modal-content {
+#modal-invalid-role .modal-content {
   bottom: 30% !important;
 }
 
-#modal-ip-banned .modal-body #modal-invalide-role .modal-body {
+#modal-ip-banned .modal-body #modal-invalid-role .modal-body {
   background: #000;
   color: #fff;
 }

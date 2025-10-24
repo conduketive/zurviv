@@ -52,7 +52,7 @@ class Application {
     errorModal = new MenuModal($("#modal-notification"));
     refreshModal = new MenuModal($("#modal-refresh"));
     ipBanModal = new MenuModal($("#modal-ip-banned"));
-    invalidRoleModal = new MenuModal($("#modal-invalide-role"));
+    invalidRoleModal = new MenuModal($("#modal-invalid-role"));
     config = new ConfigManager();
     localization = new Localization();
 
