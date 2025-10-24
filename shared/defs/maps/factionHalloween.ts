@@ -33,6 +33,7 @@ const mapDef: PartialMapDef = {
         killLeaderEnabled: true,
         spookyKillSounds: true,
     },
+    /* STRIP_FROM_PROD_CLIENT:START */
     lootTable: {
         ...Halloween.lootTable,
         ...Faction.lootTable,
@@ -104,6 +105,7 @@ const mapDef: PartialMapDef = {
             },
         ],
     },
+    /* STRIP_FROM_PROD_CLIENT:END */
 };
 
 export const FactionHalloween = util.mergeDeep({}, Faction, mapDef) as MapDef;
