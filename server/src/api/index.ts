@@ -141,16 +141,16 @@ app.post("/api/find_game", validateParams(zFindGameBody), async (c) => {
         return c.json<FindGameResponse>({ error: "behind_proxy" });
     }
     const body = c.req.valid("json");
-    // if (
-    //     process.env.NODE_ENV === "production"
-    //     // body.mode === "event" ||
-    //     // body.mode === "competitive" ||
-    //     // EVENT_MODES.includes(body.mapName)
-    // ) {
-    //     if (!hasServerRole) {
-    //         return c.json<FindGameResponse>({ error: "invalid_role" });
-    //     }
-    // }
+    if (
+        process.env.NODE_ENV === "production"
+        // body.mode === "event" ||
+        // body.mode === "competitive" ||
+        // EVENT_MODES.includes(body.mapName)
+    ) {
+        if (!hasServerRole) {
+            return c.json<FindGameResponse>({ error: "invalid_role" });
+        }
+    }
 
     if (server.captchaEnabled && !user) {
         if (!body.turnstileToken) {
