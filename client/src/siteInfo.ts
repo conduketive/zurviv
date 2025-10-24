@@ -268,9 +268,9 @@ export function getFormattedMapName(mapName: string) {
         main_spring: "Spring",
         main_summer: "Summer",
         comp_main: "NA Comp",
-        eu_comp_main: "EU Comp",
-        faction_potato: "Faction Potato",
-        faction_halloween: "Faction Halloween",
+        comp_eu_main: "EU Comp",
+        faction_potato: "Potato Faction",
+        faction_halloween: "Halloween Faction ",
         local_main: "Local",
     };
     if (mapName in mapWithCustomName) {
