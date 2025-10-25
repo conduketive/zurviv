@@ -813,8 +813,7 @@ export class Player extends BaseGameObject {
     startedSpectating: boolean = false;
 
     /**
-     * Players that joined as a spectator
-     * we filter them when finding players to spectate so they don't spectate themselves.
+     * @HACK use to filter players when finding who to spectate since we want don't spectate themselves for the short bit we are alive
      */
     joinedAsASpectator = false;
 
