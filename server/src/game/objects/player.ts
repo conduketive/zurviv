@@ -129,7 +129,7 @@ export class PlayerBarn {
 
     randomPlayer(player?: Player) {
         const livingPlayers = player
-            ? this.livingPlayers.filter((p) => p != player)
+            ? this.livingPlayers.filter((p) => p != player && !p.joinedAsASpectator)
             : this.livingPlayers;
         return livingPlayers[util.randomInt(0, livingPlayers.length - 1)];
     }
@@ -248,21 +248,19 @@ export class PlayerBarn {
     }
 
     activatePlayer(player: Player, isSpectating: boolean, group?: Group, team?: Team) {
-        if (!isSpectating) {
-            if (team && group) {
-                team.addPlayer(player);
-                group.addPlayer(player);
-                player.setGroupStatuses();
-            } else if (!team && group) {
-                group.addPlayer(player);
-                player.teamId = player.groupId;
-                player.setGroupStatuses();
-            } else if (team && !group) {
-                team.addPlayer(player);
-                player.groupId = this.groupIdAllocator.getNextId();
-            } else {
-                player.groupId = player.teamId = this.groupIdAllocator.getNextId();
-            }
+        if (team && group) {
+            team.addPlayer(player);
+            group.addPlayer(player);
+            player.setGroupStatuses();
+        } else if (!team && group) {
+            group.addPlayer(player);
+            player.teamId = player.groupId;
+            player.setGroupStatuses();
+        } else if (team && !group) {
+            team.addPlayer(player);
+            player.groupId = this.groupIdAllocator.getNextId();
+        } else {
+            player.groupId = player.teamId = this.groupIdAllocator.getNextId();
         }
 
         if (player.game.map.perkMode) {
@@ -287,6 +285,8 @@ export class PlayerBarn {
         this.game.pluginManager.emit("playerJoin", player);
 
         if (isSpectating) {
+            player.joinedAsASpectator = true;
+
             setTimeout(() => {
                 const spectateMsg = new net.SpectateMsg();
                 spectateMsg.specBegin = true;
@@ -294,7 +294,20 @@ export class PlayerBarn {
                 player.spectate(spectateMsg);
 
                 this.livingPlayers.splice(this.livingPlayers.indexOf(player), 1);
+                if (player.team) {
+                    player.team.removePlayer(player);
+                }
+                if (player.group) {
+                    player.group.removePlayer(player);
 
+                    if (player.group.players.length <= 0) {
+                        this.groups.splice(this.groups.indexOf(player.group), 1);
+                        this.groupsByHash.delete(player.group.hash);
+                    }
+                }
+                if (this.game.isTeamMode) {
+                    this.livingPlayers.sort((a, b) => a.teamId - b.teamId);
+                }
                 this.aliveCountDirty = true;
                 player.setDirty();
             }, 150);
@@ -798,6 +811,12 @@ export class Player extends BaseGameObject {
 
     /** true when player starts spectating new player, only stays true for that given tick */
     startedSpectating: boolean = false;
+
+    /**
+     * Players that joined as a spectator
+     * we filter them when finding players to spectate so they don't spectate themselves.
+     */
+    joinedAsASpectator = false;
 
     private _spectating?: Player;
 
@@ -2354,9 +2373,9 @@ export class Player extends BaseGameObject {
             player =
                 this.spectating.killedBy && !this.spectating.killedBy.dead
                     ? this.spectating.killedBy
-                    : playerBarn.randomPlayer();
+                    : playerBarn.randomPlayer(this);
             if (player === this) {
-                player = playerBarn.randomPlayer();
+                player = playerBarn.randomPlayer(this);
             }
             this.spectating = player;
         } else {
@@ -2589,6 +2608,9 @@ export class Player extends BaseGameObject {
 
         let playerToSpec: Player | undefined;
         switch (true) {
+            case this.joinedAsASpectator:
+                playerToSpec = this.game.playerBarn.randomPlayer(this);
+                break;
             case spectateMsg.specBegin:
                 const groupExistsOrAlive =
                     this.game.isTeamMode && this.group!.livingPlayers.length > 0;

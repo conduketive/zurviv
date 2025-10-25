@@ -542,10 +542,12 @@ app.ws<GameSocketData>("/spectate", {
         const socketId = randomUUID();
         let disconnectReason = "";
 
-        if (await isBehindProxy(ip, 0)) {
-            disconnectReason = "behind_proxy";
-        } else if (await server.isIpBanned(ip)) {
+        const ipData = await server.checkIp(ip);
+
+        if (ipData?.banned) {
             disconnectReason = "ip_banned";
+        } else if (ipData?.behindProxy) {
+            disconnectReason = "behind_proxy";
         }
 
         if (res.aborted) return;

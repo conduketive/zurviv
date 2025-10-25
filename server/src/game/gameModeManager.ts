@@ -207,9 +207,9 @@ export class GameModeManager {
             case GameMode.Solo:
                 return !player.dead ? [player] : [];
             case GameMode.Team:
-                return player.group!.livingPlayers;
+                return player.group?.livingPlayers ?? [];
             case GameMode.Faction:
-                return player.team!.livingPlayers;
+                return player.team?.livingPlayers ?? [];
         }
     }
 
@@ -294,7 +294,7 @@ export class GameModeManager {
             player.group?.randomPlayer(), // undefined if no player to choose
             player.team?.randomPlayer(), // undefined if no player to choose
             player.getAliveKiller(),
-            player.game.playerBarn.randomPlayer(),
+            player.game.playerBarn.randomPlayer(player),
         ];
 
         const playerToSpec = spectateTargets.filter((x) => x !== undefined).shift();
