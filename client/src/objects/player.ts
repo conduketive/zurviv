@@ -425,7 +425,7 @@ export class Player implements AbstractObject {
         this.bodyContainer.addChild(this.visorSprite);
         this.bodyContainer.addChild(this.frontSprite);
         this.bodyContainer.addChild(this.helmetSprite);
-        
+
         this.container.addChild(this.bodyContainer);
 
         this.container.addChild(this.nameText);
@@ -1604,7 +1604,6 @@ export class Player implements AbstractObject {
             this.helmetSprite.tint = helmetTint;
             this.helmetSprite.visible = true;
         }
-
 
         // Front Sprite
         if (outfitImg.frontSprite) {

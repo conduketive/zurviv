@@ -1,4 +1,5 @@
 import $ from "jquery";
+import type { GameMode } from "../../../modesList";
 import { GameConfig } from "../../../shared/gameConfig";
 import * as net from "../../../shared/net/net";
 import type { FindGameMatchData } from "../../../shared/types/api";
@@ -88,7 +89,7 @@ export class TeamMenu {
 
     selectedMode: number = this.roomData.gameModeIdx || 0;
     selectedTeam: number = this.roomData.maxPlayers || 1;
-    selectedGameMode: string = "casual";
+    selectedGameMode: GameMode = "casual";
 
     constructor(
         public config: ConfigManager,
@@ -289,7 +290,7 @@ export class TeamMenu {
                 button.innerHTML = `Game Mode: ${selectedButton.innerText} | ▼`;
                 this.selectedGameMode = selectedButton.innerText
                     .trim()
-                    .toLocaleLowerCase()!;
+                    .toLocaleLowerCase()! as GameMode;
 
                 $("[data-selected-game-mode]").attr(
                     "data-selected-game-mode",
@@ -302,8 +303,8 @@ export class TeamMenu {
                     y: this.siteInfo.getMapInGameMode(this.selectedGameMode),
                     x: selectedButton.innerText,
                 });
-                this.siteInfo.resetMapModeButton();
-                this.selectedGameMode = selectedButton.innerText;
+                this.siteInfo.resetMapModeButton(this.selectedGameMode);
+                this.selectedGameMode = selectedButton.innerText as GameMode;
             } else {
                 button.innerHTML = `Team Mode: ${selectedButton.innerText} | ▼`;
                 this.selectedTeam =

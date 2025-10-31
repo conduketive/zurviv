@@ -13,5 +13,5 @@ try {
     console.error("Update failed:", error);
     process.exit(1);
 } finally {
-    console.log("Done.")
+    console.log("Done.");
 }

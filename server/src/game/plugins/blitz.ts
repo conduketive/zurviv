@@ -5,8 +5,8 @@ import {
     type InventoryItem,
     WeaponSlot,
 } from "../../../../shared/gameConfig";
-import type { Player } from "../../game/objects/player";
-import { GamePlugin } from "../../game/pluginManager";
+import type { Player } from "../objects/player";
+import { GamePlugin } from "../pluginManager";
 
 /**
  * Checks if an item is present in the player's loadout
@@ -53,7 +53,8 @@ export function onPlayerJoin(data: Player) {
     data.boost = 100;
     data.weaponManager.setCurWeapIndex(WeaponSlot.Primary);
     data.addPerk("endless_ammo", false);
-    if (!data.game.map.perkMode) data.addPerk("takedown", false);
+    data.addPerk("self_revive", false);
+    // if (!data.game.map.perkMode) data.addPerk("takedown", false);
 }
 export default class DeathMatchPlugin extends GamePlugin {
     protected override initListeners(): void {

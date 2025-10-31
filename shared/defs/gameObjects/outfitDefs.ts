@@ -776,11 +776,11 @@ const SkinDefs: Record<string, OutfitDef> = {
         skinImg: {
             baseTint: 0xffffff,
             baseSprite: "player-base-outfitGamerio.img",
-            handTint: 0x00C8FF,
+            handTint: 0x00c8ff,
             handSprite: "player-hands-02.img",
-            footTint: 0x00C8FF,
+            footTint: 0x00c8ff,
             footSprite: "player-feet-02.img",
-            backpackTint: 0x00C8FF,
+            backpackTint: 0x00c8ff,
             backpackSprite: "player-circle-base-02.img",
         },
         lootImg: {

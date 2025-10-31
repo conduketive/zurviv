@@ -1,5 +1,5 @@
 import $ from "jquery";
-import { EVENT_MODES } from "../../modesList";
+import { type GameMode, getMapType } from "../../modesList";
 import { type MapDef, MapDefs } from "../../shared/defs/mapDefs";
 import { TeamModeToString } from "../../shared/defs/types/misc";
 import type { SiteInfoRes } from "../../shared/types/api";
@@ -43,13 +43,13 @@ export class SiteInfo {
         });
     }
 
-    modesMap: Record<string, string[]> = {
+    modesMap: Record<GameMode, string[]> = {
         competitive: [],
         casual: [],
         event: [],
+        other: [],
     };
     getGameModeStyles() {
-        const eventModes = EVENT_MODES;
         const availableModes = [];
         const modes = this.info.modes || [];
         const mapModeDropdownContainer = document.querySelector(
@@ -68,10 +68,8 @@ export class SiteInfo {
                 seenModes.add(mode.mapName);
 
                 const formattedMapName = getFormattedMapName(mode.mapName);
-                const isEvent = eventModes.includes(mode.mapName.toLocaleLowerCase());
-                const isComp = mode.mapName.startsWith("comp_");
 
-                const mapType = isComp ? "competitive" : isEvent ? "event" : "casual";
+                const mapType = getMapType(mode);
                 this.modesMap[mapType].push(mode.mapName);
 
                 const mapModeSoloButton = document.createElement("a");
@@ -79,11 +77,7 @@ export class SiteInfo {
                 mapModeSoloButton.id = `btn-start-mode-${i}`;
                 mapModeSoloButton.textContent = formattedMapName;
                 mapModeSoloButton.dataset.mapName = mode.mapName;
-                mapModeSoloButton.dataset.mapType = isComp
-                    ? "competitive"
-                    : isEvent
-                      ? "event"
-                      : "casual";
+                mapModeSoloButton.dataset.mapType = mapType;
 
                 mapModeDropdownContainer?.appendChild(mapModeSoloButton);
 
@@ -128,13 +122,10 @@ export class SiteInfo {
         return availableModes;
     }
 
-    getMapInGameMode(selectedGameMode: string) {
+    getMapInGameMode(selectedGameMode: GameMode) {
         return this.modesMap[selectedGameMode][0];
     }
-    resetMapModeButton(_selectedGameMode?: string) {
-        const selectedGameMode =
-            _selectedGameMode ??
-            $("[data-selected-game-mode]").attr("data-selected-game-mode")!;
+    resetMapModeButton(selectedGameMode: GameMode) {
         $("[data-selected-game-map-name]").attr(
             "data-selected-game-map-name",
             this.modesMap[selectedGameMode][0],
@@ -271,7 +262,7 @@ export function getFormattedMapName(mapName: string) {
         comp_eu_main: "EU Comp",
         faction_potato: "Potato Faction",
         faction_halloween: "Halloween Faction ",
-        local_main: "Local",
+        local_main: "Scrim",
     };
     if (mapName in mapWithCustomName) {
         return mapWithCustomName[mapName as keyof typeof mapWithCustomName];

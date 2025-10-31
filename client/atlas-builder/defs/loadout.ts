@@ -681,6 +681,6 @@ export const LoadoutAtlas: AtlasDef = {
         "player/player-base-outfitGamerio.png",
         "player/player-base-outfitContributr.svg",
         "player/player-base-outfitSGC.svg",
-        "player/player-accessory-outfitSGC.svg"
+        "player/player-accessory-outfitSGC.svg",
     ],
 };

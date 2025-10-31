@@ -1,6 +1,7 @@
 import type { ConfigType } from "./configType";
 import type { MapDefs } from "./shared/defs/mapDefs";
 import { TeamMode } from "./shared/gameConfig";
+import type { SiteInfoRes } from "./shared/types/api";
 
 export const MODES_LIST: ConfigType["modes"] = [];
 
@@ -38,10 +39,20 @@ for (const mode of modes) {
     }
 }
 
-export const EVENT_MODES = [
-    "GG",
-    "gamerio",
-    "faction_potato",
-    "faction_halloween",
-    "local_main",
-].map((t) => t.toLocaleLowerCase());
+export type GameMode = "casual" | "competitive" | "event" | "other";
+
+const EVENT_MODES = ["GG", "gamerio", "faction_potato", "faction_halloween"].map((t) =>
+    t.toLocaleLowerCase(),
+);
+
+const OTHER_MODES = ["local_main"];
+
+export function getMapType(mode: SiteInfoRes["modes"][number]): GameMode {
+    const mapName = mode.mapName.toLowerCase();
+
+    if (mapName.startsWith("comp_")) return "competitive";
+    if (EVENT_MODES.includes(mapName)) return "event";
+    if (OTHER_MODES.includes(mapName)) return "other";
+
+    return "casual";
+}

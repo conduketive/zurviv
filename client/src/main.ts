@@ -1,5 +1,6 @@
 import $ from "jquery";
 import * as PIXI from "pixi.js-legacy";
+import type { GameMode } from "../../modesList";
 import { GameConfig } from "../../shared/gameConfig";
 import * as net from "../../shared/net/net";
 import type {
@@ -208,11 +209,16 @@ class Application {
                     dropdown.on("click", (event) => {
                         if (event.target.tagName === "A") {
                             if (event.target.id?.startsWith("btn-game-mode-")) {
+                                const selectedMode = event.target.textContent
+                                    ?.trim()
+                                    .toLowerCase()!;
                                 $("[data-selected-game-mode]").attr(
                                     "data-selected-game-mode",
-                                    event.target.textContent?.trim().toLowerCase()!,
+                                    selectedMode,
                                 );
-                                this.siteInfo.resetMapModeButton();
+                                this.siteInfo.resetMapModeButton(
+                                    selectedMode as GameMode,
+                                );
                             } else if (event.target.id?.startsWith("btn-start-mode-")) {
                                 $("[data-selected-game-map-name]").attr(
                                     "data-selected-game-map-name",
@@ -767,10 +773,9 @@ class Application {
                 mapName: $("[data-selected-game-map-name]").attr(
                     "data-selected-game-map-name",
                 )!,
-                mode: $("[data-selected-game-mode]").attr("data-selected-game-mode") as
-                    | "casual"
-                    | "competitive"
-                    | "event",
+                mode: $("[data-selected-game-mode]").attr(
+                    "data-selected-game-mode",
+                ) as GameMode,
             };
 
             const tryQuickStartGameImpl = () => {
