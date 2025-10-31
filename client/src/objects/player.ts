@@ -197,6 +197,7 @@ export class Player implements AbstractObject {
     chestSprite = createSprite();
     flakSprite = createSprite();
     steelskinSprite = createSprite();
+    frontSprite = createSprite();
     helmetSprite = createSprite();
     visorSprite = createSprite();
     backpackSprite = createSprite();
@@ -217,7 +218,6 @@ export class Player implements AbstractObject {
     footRSubmergeSprite = createSprite();
     bodyEffectSprite = createSprite();
     patchSprite = createSprite();
-    frontSprite = createSprite();
     handLContainer = new PIXI.Container();
     handRContainer = new PIXI.Container();
 
@@ -414,10 +414,6 @@ export class Player implements AbstractObject {
         this.bodyContainer.addChild(this.footRContainer);
         this.bodyContainer.addChild(this.backpackSprite);
         this.bodyContainer.addChild(this.bodySprite);
-        this.frontSprite = new PIXI.Sprite();
-        this.frontSprite.anchor.set(0.5);
-        this.frontSprite.visible = false;
-        this.bodyContainer.addChild(this.frontSprite);
         this.bodyContainer.addChild(this.chestSprite);
         this.bodyContainer.addChild(this.flakSprite);
         this.bodyContainer.addChild(this.steelskinSprite);
@@ -427,8 +423,9 @@ export class Player implements AbstractObject {
         this.bodyContainer.addChild(this.handLContainer);
         this.bodyContainer.addChild(this.handRContainer);
         this.bodyContainer.addChild(this.visorSprite);
+        this.bodyContainer.addChild(this.frontSprite);
         this.bodyContainer.addChild(this.helmetSprite);
-
+        
         this.container.addChild(this.bodyContainer);
 
         this.container.addChild(this.nameText);
@@ -1608,6 +1605,18 @@ export class Player implements AbstractObject {
             this.helmetSprite.visible = true;
         }
 
+
+        // Front Sprite
+        if (outfitImg.frontSprite) {
+            this.frontSprite.texture = PIXI.Texture.from(outfitImg.frontSprite);
+            this.frontSprite.scale.set(bodyScale * 0.25);
+            this.frontSprite.position.set(-4, 0);
+            this.frontSprite.tint = 0xffffff;
+            this.frontSprite.visible = true;
+        } else {
+            this.frontSprite.visible = false;
+        }
+
         // Backpack
         if (this.m_getBagLevel() > 0 && !outfitDef.ghillie && !this.downed) {
             const bagOffsets = [10.25, 11.5, 12.75];
@@ -1807,20 +1816,6 @@ export class Player implements AbstractObject {
             this.visorSprite.visible = false;
         }
         this.bodyContainer.scale.set(bodyScale, bodyScale);
-        if (outfitImg.frontSprite) {
-            this.frontSprite.texture = PIXI.Texture.from(outfitImg.frontSprite);
-            this.frontSprite.scale.set(bodyScale * 0.25);
-            this.frontSprite.position.set(-4, 0);
-            this.frontSprite.tint = 0xffffff;
-            this.frontSprite.visible = true;
-        } else {
-            this.frontSprite.visible = false;
-        }
-
-        if (this.bodyContainer.children.includes(this.helmetSprite)) {
-            const helmetIndex = this.bodyContainer.getChildIndex(this.helmetSprite);
-            this.bodyContainer.setChildIndex(this.frontSprite, helmetIndex);
-        }
     }
 
     updateAura(dt: number, isActivePlayer: boolean, activePlayer: Player) {
